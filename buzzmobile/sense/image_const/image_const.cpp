@@ -7,7 +7,9 @@ int main(int argc, char** argv)
 {
   ros::init(argc, argv, "image_const");
   ros::NodeHandle nh;
-  ros::Publisher pub = nh.advertise<sensor_msgs::Image>("image", 1);
+  image_transport::ImageTransport it(nh); // magic  
+
+  image_transport::Publisher pub = it.advertise("image", 1);
   cv::Mat image = cv::imread(argv[1], CV_LOAD_IMAGE_COLOR);
   sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
 

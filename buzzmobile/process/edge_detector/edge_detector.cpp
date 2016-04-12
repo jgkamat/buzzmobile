@@ -10,19 +10,18 @@ void imageCallback(const sensor_msgs::ImageConstPtr&);
 int main(int argc, char** argv) {
   ros::init(argc, argv, "edgedetect");
   ros::NodeHandle n;
-  ros::Subscriber s = n.subscribe("image", 1000, imageCallback);
+  cv::namedWindow("Edges");
+  cv::startWindowThread();
+  ros::Subscriber s = n.subscribe("/image", 1, imageCallback);
   ros::spin();
+  cv::destroyWindow("Edges");
 }
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
   cv_bridge::CvImagePtr cv_ptr;
-  if (msg) {
     cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
     cv::Mat I = cv_ptr->image;
     cv::Mat out;
     cv::Canny(I, out, 50, 200);
     cv::imshow("Edges", out);
-  } else {
-    ROS_DEBUG("No message found");
-  }
 }
