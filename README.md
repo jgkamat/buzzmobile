@@ -43,3 +43,13 @@ Create new tabs for every node and run them as such:
 ```rosrun buzzmobile image_const```
 
 ```rosrun buzzmobile edge_detector```
+
+
+If you want to visualize youre nodes, you can run the ROS visualizer.
+
+```bash
+rosrun rviz rviz
+```
+
+In it, you can, for instance, create an 'image' instance, and set it to the
+value of the `/image_const` being broadcast. This will display the image.
