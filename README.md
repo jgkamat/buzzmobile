@@ -44,8 +44,7 @@ Create new tabs for every node and run them as such:
 
 ```rosrun buzzmobile edge_detector```
 
-
-If you want to visualize youre nodes, you can run the ROS visualizer.
+If you want to visualize your nodes, you can run the ROS visualizer.
 
 ```bash
 rosrun rviz rviz
