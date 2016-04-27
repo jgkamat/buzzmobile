@@ -30,6 +30,17 @@ make -j4
 sudo make install     # this part may take a while.
 ```
 
+To set up this repo, do:
+
+```bash
+cd ~
+mkdir -p catkin_ws/src
+cd catkin_ws/src
+catkin_init_workspace
+```
+
+Now you can clone this repo into `~/catkin_ws/src`.
+
 
 Running
 -------
