@@ -2,7 +2,7 @@
 #include <sensor_msgs/image_encodings.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
-#include "image_utils.hpp"
+#include "image_transform.hpp"
 
 image_transport::Publisher pub;
 void imageCallback(const sensor_msgs::ImageConstPtr&);
@@ -35,7 +35,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
   sensor_msgs::Image image_projected;
 
   // Transform perspective.
-  image_utils::transform_perspective(in, out);
+  image_transform::transform_perspective(in, out);
 
   // Publish image_projected.
   cv_ptr->image = out;
