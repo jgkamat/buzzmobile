@@ -19,4 +19,5 @@ include_directories(
                     ${OPENCV_INCLUDE_DIRS}
 )
 add_subdirectory(process/edge_detector)
+add_subdirectory(process/projector)
 add_subdirectory(sense/image_const)
