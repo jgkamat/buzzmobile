@@ -18,16 +18,10 @@ rosinit     # put these in your .bashrc too so they run everytime
 rosdevel    # you open a new terminal window/tab.
 ```
 
-Buzzmobile current requires [OpenCV 3.1.0](https://github.com/Itseez/opencv/archive/3.1.0.zip),
-so you must install that by extracting that `.zip`, then running:
+We recommend using OpenCV 3. You can install it with:
 
 ```bash
-cd opencv_3.1.0
-mkdir build
-cd build
-cmake ..
-make -j4
-sudo make install     # this part may take a while.
+sudo apt-get install ros-indigo-opencv3
 ```
 
 To set up this repo, do:
