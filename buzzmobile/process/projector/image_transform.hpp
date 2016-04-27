@@ -6,20 +6,20 @@
 
 namespace image_transform {
 
-int persp_transform_width = 2000;
-int persp_transform_height = 1500;
+int persp_transform_width = 2700;
+int persp_transform_height = 4900;
 
 cv::Point2f persp_transform_src_pts[4] = {
-  cv::Point2f(237,410),
-  cv::Point2f(396,410),
-  cv::Point2f(426,450),
-  cv::Point2f(206,450)
+  cv::Point2f(1593,2168),
+  cv::Point2f(1850,2168),
+  cv::Point2f(1859,2345),
+  cv::Point2f(1577,2345)
 };
 cv::Point2f persp_transform_dst_pts[4] = {
-  cv::Point2f(-20+(persp_transform_width/2),110),
-  cv::Point2f(20+(persp_transform_width/2),110),
-  cv::Point2f(20+(persp_transform_width/2),70),
-  cv::Point2f(-20+(persp_transform_width/2),70)
+  cv::Point2f(-20+(persp_transform_width/2),persp_transform_height-50),
+  cv::Point2f(20+(persp_transform_width/2),persp_transform_height-50),
+  cv::Point2f(20+(persp_transform_width/2),persp_transform_height-10),
+  cv::Point2f(-20+(persp_transform_width/2),persp_transform_height-10)
 };
 
 cv::Mat transform = getPerspectiveTransform(persp_transform_src_pts, persp_transform_dst_pts);
