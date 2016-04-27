@@ -6,8 +6,8 @@
 
 namespace image_transform {
 
-int persp_transform_width = 2700;
-int persp_transform_height = 4900;
+int persp_transform_width = 3700;
+int persp_transform_height = 6500;
 
 cv::Point2f persp_transform_src_pts[4] = {
   cv::Point2f(1593,2168),
