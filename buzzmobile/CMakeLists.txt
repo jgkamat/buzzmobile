@@ -8,8 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
 	      image_transport
               )
 find_package(OpenCV REQUIRED)
-catkin_package(
-                INCLUDE_DIRS
+catkin_package( INCLUDE_DIRS
                 LIBRARIES buzzmobile
                 CATKIN_DEPENDS roscpp std_msgs
                 DEPENDS system_lib
