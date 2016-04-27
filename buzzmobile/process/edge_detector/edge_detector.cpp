@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle n;
   cv::namedWindow("Edges");
   cv::startWindowThread();
-  ros::Subscriber s = n.subscribe("/static_image", 1, imageCallback);
+  ros::Subscriber s = n.subscribe("/image_raw", 1, imageCallback);
   ros::spin();
   cv::destroyWindow("Edges");
 }
