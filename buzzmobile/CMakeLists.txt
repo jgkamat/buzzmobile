@@ -20,4 +20,5 @@ include_directories(
 )
 add_subdirectory(process/edge_detector)
 add_subdirectory(process/projector)
+add_subdirectory(process/lane_detector)
 add_subdirectory(sense/image_const)
