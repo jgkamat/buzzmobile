@@ -34,6 +34,9 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
   cv::Mat out;
   sensor_msgs::Image image_projected;
 
+  // TODO: once we sample images form the car's camera, it may be a good idea to
+  // crop them before projecting.
+
   // Transform perspective.
   image_transform::transform_perspective(in, out);
 
