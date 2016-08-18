@@ -33,7 +33,7 @@ cd catkin_ws/src
 catkin_init_workspace
 ```
 
-Now you can clone this repo into `~/catkin_ws/src`.
+Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzmobile` to install some dependencies, like [usb_cam].
 
 
 Running
@@ -49,7 +49,8 @@ Create new tabs for every node and run them as such:
 
 ```rosrun buzzmobile edge_detector```
 
-```rosrun usb_cam usb_cam_node pixel_format:=yuyv```
+```rosparam set usb_cam/pixel_format yuyv
+rosrun usb_cam usb_cam_node```
 
 If you want to visualize your nodes, you can run the ROS visualizer.
 

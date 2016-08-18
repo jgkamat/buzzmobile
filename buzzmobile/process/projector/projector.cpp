@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
   ros::NodeHandle n;
   image_transport::ImageTransport it(n);
 
-  ros::Subscriber s = n.subscribe("/image_raw", 1, imageCallback);
+  ros::Subscriber s = n.subscribe("/head_camera/image", 1, imageCallback);
   pub = it.advertise("/image_projected", 1);
 
   ros::spin();
