@@ -49,6 +49,8 @@ Create new tabs for every node and run them as such:
 
 ```rosrun buzzmobile edge_detector```
 
+```rosrun usb_cam usb_cam_node pixel_format:=yuyv```
+
 If you want to visualize your nodes, you can run the ROS visualizer.
 
 ```bash
