@@ -60,3 +60,19 @@ rosrun rviz rviz
 
 In it, you can, for instance, create an 'image' instance, and set it to the
 value of the `/image_const` being broadcast. This will display the image.
+
+
+Recording
+---------
+
+If you want to record the messages being outputted by certain nodes, you can use rosbag:
+
+```
+mkdir ~/bagfiles
+cd ~/bagfiles
+rosbag record -O filename /message/name
+```
+
+To see info about the recorded data, do `rosbag info filename.bag`
+
+To play the data (and publish those messages), do `rosbag play test.bag`
