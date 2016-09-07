@@ -23,7 +23,6 @@ before_install:
 install:
    - cd ../
    # Install dependencies for source repos
-   - rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
 
 before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
   - source /opt/ros/$ROS_DISTRO/setup.bash  
