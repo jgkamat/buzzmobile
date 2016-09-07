@@ -22,7 +22,9 @@ before_install:
 
 install:
    - cd ../
-   # Install dependencies for source repos
+   - mkdir -p ~/catkin_ws/buzzmobile/src
+   - mv buzzmobile/ ~/catkin_ws/src
+   - cd ~/catkin_ws/src
 
 before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
   - source /opt/ros/$ROS_DISTRO/setup.bash  
