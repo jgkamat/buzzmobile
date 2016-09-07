@@ -1,20 +1,23 @@
 <?xml version="1.0"?>
 <package>
   <name>buzzmobile</name>
-  <version>0.0.0</version>
-  <description>dank</description>
-  <license>dank</license>
-  <maintainer email="dank@me.mes">dank</maintainer>
+  <version>0.0.1</version>
+  <description>An Autonomous vehicle and parade float.</description>
+  <license>MIT Liscence</license>
+  <maintainer email="contactgtagency@gmail.com">The Agency</maintainer>
+  <maintainer email="joshua.morton@gatech.edu">Joshua Morton</maintainer>
 
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>usb_cam</build_depend>
   <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>cv_bridge</build_depend>
 
   <run_depend>usb_cam</run_depend>
   <run_depend>roscpp</run_depend>
+  <run_depend>rospy</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>cv_bridge</run_depend>
 </package>

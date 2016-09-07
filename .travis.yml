@@ -1,0 +1,35 @@
+sudo: true
+dist: trusty
+language: generic
+python:
+    - "2.7"
+compiler:
+    - gcc
+
+before_install:
+    - export ROS_DISTRO=indigo
+    - export CI_SOURCE_PATH=$(pwd)
+    - export REPOSITORY_NAME=${PWD##*/}
+    - sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list'
+    - wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+    - sudo apt-get update -qq
+    # actually install ros
+    - sudo apt-get install -qq -y python-catkin-pkg python-rosdep ros-$ROS_DISTRO-catkin ros-$ROS_DISTRO-ros
+
+    # install opencv
+    - sudo apt-get install sudo apt-get install build-essential
+    - sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+    - sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+    - sudo rosdep init
+    - rosdep update
+
+install:
+   - cd ../
+   # Install dependencies for source repos
+   - rosdep install --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
+   - pip install -r requirements.txt
+
+before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
+  - source /opt/ros/$ROS_DISTRO/setup.bash  
+script: # All commands must exit with code 0 on success. Anything else is considered failure.
+  - catkin_make -j2
