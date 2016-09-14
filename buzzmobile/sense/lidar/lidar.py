@@ -43,10 +43,11 @@ def genLidarImage(lidarPoints):
     
     print polyPoints
 
-    cv2.fillConvexPoly(matrix, np.array(polyPoints, np.int32), 0)
+    #cv2.fillConvexPoly(matrix, np.array(polyPoints, np.int32), 0)
+    cv2.fillPoly(matrix, [np.array(polyPoints, np.int32)], 0)
     cv2.imshow("yo", matrix)
     cv2.waitKey(0)
     cv2.destroyAllWindows()    
 
 
-genLidarImage([(1, 2.4), (2, 3.3), (2.7, 2.7), (3.5, 3.6)])
+genLidarImage([(1, 2.4), (2, 3.3), (1.5, 9), (3.5, 3.6)])
