@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from maps import get_points
 
 """
 takes a list of points, connects them with a line, blurs the line
@@ -22,7 +23,17 @@ def interpolate(length, width, points, sigma_x, sigma_y):
 
 def main():
     # this is just for testing
-    points = [(0, 0), (500, 500)]
-    interpolate(500,500,1,points, 3, 3, 3)
+    #points = get_points("Atlanta, GA", "New York, NY")
+    points = [(y, -x) for (x, y) in get_points("Mexico City, MX", "New York, NY")]
+    interpolate(500, 500, [(round(x), round(y)) for (x, y) in normalized_points(points)], 3, 3)
+
+def normalized_points(points, output_width = 500, output_height = 500):
+    top_left = (min([x for (x, y) in points]), min([y for (x, y) in points]))
+    bottom_right = (max([x for (x, y) in points]), max([y for (x, y) in points]))
+    x_range = abs(top_left[0] - bottom_right[0])
+    y_range = abs(top_left[1] - bottom_right[1])
+    return [((x - top_left[0]) * output_width / x_range, 
+             (y - top_left[1]) * output_height / y_range) 
+             for (x, y) in points]
 
 if __name__ == '__main__': main()
