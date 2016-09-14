@@ -57,10 +57,10 @@ def get_points(start, destination, top_left=None, width_height=None):
 def get_points_in_rect(points, top_left, width_height):
     """
     Returns a list of point tuples within a rectangle specified by a top_left 
-    corner and a width_height tuple
+    corner and a width_height tuple.
 
     >>> get_points_in_rect([(0, 0), (2, 2), (3, 4), (5, -1)], (0, 2), (2, 2))
-    [(0, 0), (2, 2)]
+    [(2, 2)]
     """
     #calculate the bottom right corner to use repeatedly for range checking
     bottom_right = (top_left[0] + width_height[0], top_left[1] + width_height[1])
