@@ -24,8 +24,8 @@ def interpolate(length, width, points, sigma_x, sigma_y):
 def main():
     # this is just for testing
     #points = get_points("Atlanta, GA", "New York, NY")
-    points = [(y, -x) for (x, y) in get_points("Mexico City, MX", "New York, NY")]
-    interpolate(500, 500, [(round(x), round(y)) for (x, y) in normalized_points(points)], 3, 3)
+    #points = [(y, -x) for (x, y) in get_points("Mexico City, MX", "New York, NY")]
+    #interpolate(500, 500, [(round(x), round(y)) for (x, y) in normalized_points(points)], 3, 3)
 
 def normalized_points(points, output_width = 500, output_height = 500):
     top_left = (min([x for (x, y) in points]), min([y for (x, y) in points]))
