@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-#from maps import get_points
+from maps import get_points
 
 
 def interpolate(height=500, width=500, points, sigma_x, sigma_y):
