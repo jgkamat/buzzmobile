@@ -1,16 +1,19 @@
 import numpy as np
 import cv2
-from maps import get_points
+#from maps import get_points
 
-"""
-takes a list of points, connects them with a line, blurs the line
--------------------------------------------------------------
-length, width: length and width of the output image in pixels
-points: list of tuples, i.e. (x, y) points that will be plotted on the image
-sigma_x, sigma_y: gaussian kernel paramters (higher = more blurry)
-"""
-def interpolate(length, width, points, sigma_x, sigma_y):
-    output = np.zeros((length, width), np.uint8)
+
+def interpolate(height=500, width=500, points, sigma_x, sigma_y):
+    """
+    Takes a list of points, connects them with a line,
+    and Gaussian blurs the line.
+    ----------------------------------------------------------------------------
+    height, width: dimensions of the output image in pixels
+    points: list of tuples, i.e. (x, y) points that will be plotted on the image
+    sigma_x, sigma_y: gaussian kernel paramters (higher = more blurry)
+    ----------------------------------------------------------------------------
+    """
+    output = np.zeros((height, width), np.uint8)
     x = [x for (x, y) in points]
     y = [y for (x, y) in points]
     for i in range(len(points) - 1):
@@ -23,17 +26,20 @@ def interpolate(length, width, points, sigma_x, sigma_y):
 
 def main():
     # this is just for testing
-    #points = get_points("Atlanta, GA", "New York, NY")
-    #points = [(y, -x) for (x, y) in get_points("Mexico City, MX", "New York, NY")]
-    #interpolate(500, 500, [(round(x), round(y)) for (x, y) in normalized_points(points)], 3, 3)
+    points = [(y, -x) for (x, y) in get_points("Mexico City, MX", "New York, NY")]
+    interpolate(500, 500, [(round(x), round(y)) for (x, y) in normalized_points(points)], 3, 3)
 
-def normalized_points(points, output_width = 500, output_height = 500):
+def normalized_points(points, height=500, width=500):
+    """
+    Takes a list of points (tuples of x, y coordinates) and an output image size
+    and returns a transformed list of points that fit in the output image.
+    """
     top_left = (min([x for (x, y) in points]), min([y for (x, y) in points]))
     bottom_right = (max([x for (x, y) in points]), max([y for (x, y) in points]))
     x_range = abs(top_left[0] - bottom_right[0])
     y_range = abs(top_left[1] - bottom_right[1])
-    return [((x - top_left[0]) * output_width / x_range, 
-             (y - top_left[1]) * output_height / y_range) 
+    return [((x - top_left[0]) * width / x_range, 
+             (y - top_left[1]) * height / y_range) 
              for (x, y) in points]
 
 if __name__ == '__main__': main()
