@@ -70,3 +70,14 @@ def get_points_in_rect(points, top_left, width_height):
     return [i for i in points 
             if i[0] <= bottom_right[0] and i[1] <= bottom_right[1] 
             and i[0] >= top_left[0] and i[1] >= top_left[1]]
+            
+def haversine(lat1, lon1, lat2, lon2):
+    delta_lat = radians(lat2 - lat1)
+    delta_lon = radians(lon2 - lon1)
+    lat1 = radians(lat1)
+    lat2 = radians(lat2)
+    a = sin(delta_lat / 2)**2 + cos(lat1) * cos(lat2) * sin(delta_lon/2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    R = 6371e3
+    d = R * c
+    return d
