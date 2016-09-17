@@ -2,6 +2,7 @@ import numpy as np
 import googlemaps
 import polyline as pl
 from datetime import datetime
+
 from buzzmobile.sense.gps.googlemapskey import googlemapskey as gmpskey
 
 gmaps = googlemaps.Client(key=gmpskey)
@@ -48,3 +49,35 @@ def get_points(start, destination, top_left=None, width_height=None):
 
     #get the list of lat-long coordinates from the directions
     points = pl.decode(polyline)
+
+    #return only the points in the specified range
+    if top_left is None or width_height is None:
+        return points
+    else:
+        return get_points_in_rect(points, top_left, width_height)
+
+def get_points_in_rect(points, top_left, width_height):
+    """
+    Returns a list of point tuples within a rectangle specified by a top_left 
+    corner and a width_height tuple.
+
+    >>> get_points_in_rect([(0, 0), (2, 2), (3, 4), (5, -1)], (0, 2), (2, 2))
+    [(2, 2)]
+    """
+    #calculate the bottom right corner to use repeatedly for range checking
+    bottom_right = (top_left[0] + width_height[0], top_left[1] + width_height[1])
+    #return the points in the specified range
+    return [i for i in points 
+            if i[0] <= bottom_right[0] and i[1] <= bottom_right[1] 
+            and i[0] >= top_left[0] and i[1] >= top_left[1]]
+            
+def haversine(lat1, lon1, lat2, lon2):
+    delta_lat = radians(lat2 - lat1)
+    delta_lon = radians(lon2 - lon1)
+    lat1 = radians(lat1)
+    lat2 = radians(lat2)
+    a = sin(delta_lat / 2)**2 + cos(lat1) * cos(lat2) * sin(delta_lon/2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    R = 6371e3
+    d = R * c
+    return d

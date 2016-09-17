@@ -82,3 +82,5 @@ rosbag record -O filename /message/name
 To see info about the recorded data, do `rosbag info filename.bag`
 
 To play the data (and publish those messages), do `rosbag play test.bag`
+
+To see your video (if you recorded camera data), do `rqt_image_view` (rqt comes with ROS if your download the desktop version), play the data if it isn't already playing, hit the refresh button at the top, and then search for the topic your .bag file is publishing to. Your camera data will play in that window.
