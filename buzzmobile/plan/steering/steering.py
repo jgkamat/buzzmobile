@@ -40,19 +40,22 @@ def project_tentacle(x_0, y_0, heading, steering_angle, travel_distance,
     if steering_angle == 0:
         y = y_0 + (PIXELS_PER_METER * travel_distance)
         if num_points == 0:
-            return [(x_0, y)]
-        return [(x_0, y)] + project_tentacle(x_0, y, heading, steering_angle,
-                travel_distance, num_points - 1, wheel_base)
+            return [(int(round(x_0)), int(round(y)))]
+        return [(int(round(x_0)), int(round(y)))] + project_tentacle(x_0, y,
+                heading, steering_angle, travel_distance,
+                num_points - 1, wheel_base)
 
     radius = turning_radius(steering_angle, wheel_base)
     travel_angle = travel_distance / radius + heading
 
-    x = x_0 + PIXELS_PER_METER * radius * (np.cos(heading) - np.cos(travel_angle))
-    y = y_0 + PIXELS_PER_METER * radius * (np.sin(travel_angle) - np.sin(heading))
+    x = x_0 + PIXELS_PER_METER * radius * (
+            np.cos(heading) - np.cos(travel_angle)) * np.sign(steering_angle)
+    y = y_0 + PIXELS_PER_METER * radius * (
+            np.sin(travel_angle) - np.sin(heading))
 
     if num_points == 0:
-        return [(x, y)]
-    return [(x, y)] + project_tentacle(x, y,
+        return [(int(round(x)), int(round(y)))]
+    return [(int(round(x)), int(round(y)))] + project_tentacle(x, y,
                 travel_angle, steering_angle, travel_distance,
                 num_points - 1, wheel_base)
 
@@ -71,25 +74,27 @@ if __name__ == '__main__':
 
     result_frame = merge_frames([frame1, frame2], [1.0, 1.0])
 
-    max_angle = 0.5
-    travel_distance = 0.1
-    angles = np.linspace(0.0, max_angle, max_angle * 100)
-    colors = cm.rainbow(np.linspace(0, 1, len(angles)))
+    max_angle = 1.5
+    travel_distance = 1
+    # angles = np.linspace(0.0, max_angle, max_angle * 100)
+    # colors = cm.rainbow(np.linspace(0, 1, len(angles)))
 
-    for angle, c in zip(angles, colors):
-        pos_points = project_tentacle(0, 0, 0, angle, travel_distance, 30)
-        neg_points = project_tentacle(0, 0, 0, -angle, travel_distance, 30)
+    # for angle, c in zip(angles, colors):
+        # pos_points = project_tentacle(0, 0, 0, angle, travel_distance, 20)
+        # neg_points = project_tentacle(0, 0, 0, -angle, travel_distance, 20)
 
-        plt.scatter(*zip(*pos_points), color=c)
-        plt.scatter(*zip(*neg_points), color=c)
+        # plt.scatter(*zip(*pos_points), color=c)
+        # plt.scatter(*zip(*neg_points), color=c)
 
-    plt.show()
+    points = project_tentacle(width//2, height, -np.pi, 0.2, travel_distance, 20)
+    # plt.scatter(*zip(*points))
+    # plt.show()
 
-    # for i in range(len(points) - 1):
-        # pt1 = points[i]
-        # pt2 = points[i+1]
-        # cv2.line(result_frame, pt1, pt2, [0, 150, 136], 4)
+    for i in range(len(points) - 1):
+        pt1 = points[i]
+        pt2 = points[i+1]
+        cv2.line(result_frame, pt1, pt2, [0, 150, 136], 4)
 
-    # cv2.imshow('result_frame', result_frame)
-    # cv2.waitKey(0)
+    cv2.imshow('result_frame', result_frame)
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
