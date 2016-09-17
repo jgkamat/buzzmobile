@@ -1,5 +1,6 @@
 from __future__ import division
 import cv2
+import colorsys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -28,7 +29,7 @@ def ackerman_step(x_0, y_0, heading, steering_angle):
     final x, y, and the new heading.
     """
     if steering_angle == 0:
-        y = y_0 + (PIXELS_PER_METER * TRAVEL_DISTANCE)
+        y = y_0 + (PIXELS_PER_METER * TRAVEL_DISTANCE) * (1 if heading == 0.0 else -1)
         return x_0, y, heading
 
     radius = turning_radius(steering_angle)
@@ -67,10 +68,76 @@ def score_tentacle(points, frame):
         pt1 = points[i]
         pt2 = points[i+1]
         cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], 1)
-    tentacle_score_image = cv2.bitwise_and(frame, frame, mask=tentacle_mask)
-    tentacle_score = sum(sum(tentacle_score_image)) / sum(sum(tentacle_mask))
-    return tentacle_score_image, tentacle_score
 
+    normalizing_factor = sum(sum(tentacle_mask))
+    if normalizing_factor == 0.0:
+        return 0.0
+
+    tentacle_score_image = cv2.bitwise_and(frame, frame, mask=tentacle_mask)
+    tentacle_score = sum(sum(tentacle_score_image)) / normalizing_factor
+    return tentacle_score
+
+def pick_tentacle(x_0, y_0, frame):
+    angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * 100)
+    color_frame = cv2.cvtColor(frame, cv2.cv.CV_GRAY2RGB)
+
+    best_score = -1
+    best_points = []
+
+    for angle in angles:
+        if angle == 0:
+            points = project_tentacle(x_0, y_0, -np.pi, angle, NUM_POINTS)
+
+            score = score_tentacle(points, frame)
+            color = score_to_color(score)
+            draw_points(points, color_frame, color)
+
+            print score, '->', color
+            if score > best_score:
+                best_score = score
+                best_points = points
+        else:
+            pos_points = project_tentacle(x_0, y_0, -np.pi, angle, NUM_POINTS)
+            neg_points = project_tentacle(x_0, y_0, -np.pi, -angle, NUM_POINTS)
+
+            pos_score = score_tentacle(pos_points, frame)
+            pos_color = score_to_color(pos_score)
+            draw_points(pos_points, color_frame, pos_color)
+
+            neg_score = score_tentacle(neg_points, frame)
+            neg_color = score_to_color(neg_score)
+            draw_points(neg_points, color_frame, neg_color)
+
+            print pos_score, '->', pos_color
+            print neg_score, '->', neg_color
+            if pos_score > best_score:
+                best_score = pos_score
+                best_points = pos_points
+
+            if neg_score > best_score:
+                best_score = neg_score
+                best_points = neg_points
+
+    draw_points(best_points, color_frame, (255, 0, 0))
+
+    cv2.imshow('all tentacles', color_frame)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+def score_to_color(score):
+    score_to_h = lambda x: ((231 - 4) * x + 4) / 255
+    score_to_s = lambda x: ((65.2 - 77.4) * x + 77.4) / 255
+    score_to_v = lambda x: ((71 - 95.7) * x + 95.7) / 255
+
+    return [255 * c for c in colorsys.hsv_to_rgb(
+        score_to_h(score), score_to_s(score), score_to_v(score))]
+
+
+def draw_points(points, color_frame, color):
+    for i in range(len(points) - 1):
+        pt1 = points[i]
+        pt2 = points[i+1]
+        cv2.line(color_frame, pt1, pt2, color, 1)
 
 
 if __name__ == '__main__':
@@ -86,8 +153,6 @@ if __name__ == '__main__':
 
         return merged
 
-    np.set_printoptions(linewidth=200)
-
     frame1 = np.zeros((HEIGHT, WIDTH), np.uint8)
     cv2.line(frame1, (WIDTH//2, HEIGHT), (WIDTH//2, HEIGHT//2), 255, WIDTH//6)
     cv2.line(frame1, (WIDTH//2, HEIGHT//2), (WIDTH, HEIGHT//2), 255, WIDTH//6)
@@ -96,39 +161,5 @@ if __name__ == '__main__':
     cv2.circle(frame2, (WIDTH//2, HEIGHT), int(WIDTH//2.5), 255, thickness=-1)
 
     result_frame = merge_frames([frame1, frame2], [1.0, 1.0])
-    result_frame_color = cv2.cvtColor(result_frame, cv2.cv.CV_GRAY2RGB)
 
-
-    # angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * 100)
-    # colors = cm.rainbow(np.linspace(0, 1, len(angles)))
-    # for angle, c in zip(angles, colors):
-        # pos_points = project_tentacle(0, 0, 0, angle, 20)
-        # neg_points = project_tentacle(0, 0, 0, -angle, 20)
-
-        # plt.scatter(*zip(*pos_points), color=c)
-        # plt.scatter(*zip(*neg_points), color=c)
-    # plt.show()
-
-    points_1 = project_tentacle(WIDTH//2, HEIGHT, -np.pi, 0.2, NUM_POINTS)
-    tentacle_score_image_1, tentacle_score_1 = score_tentacle(points_1, result_frame)
-    cv2.imshow('tentacle_score_image_1', tentacle_score_image_1)
-    print 'points_1 score:', tentacle_score_1
-
-    points_2 = project_tentacle(WIDTH//2, HEIGHT, -np.pi, 0.1, NUM_POINTS)
-    tentacle_score_image_2, tentacle_score_2 = score_tentacle(points_2, result_frame)
-    cv2.imshow('tentacle_score_image_2', tentacle_score_image_2)
-    print 'points_2 score:', tentacle_score_2
-
-    for i in range(len(points_1) - 1):
-        pt1 = points_1[i]
-        pt2 = points_1[i+1]
-        cv2.line(result_frame_color, pt1, pt2, [0, 150, 136], 1)
-
-    for i in range(len(points_2) - 1):
-        pt1 = points_2[i]
-        pt2 = points_2[i+1]
-        cv2.line(result_frame_color, pt1, pt2, [0, 150, 136], 1)
-
-    cv2.imshow('result_frame_color', result_frame_color)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    pick_tentacle(WIDTH//2, HEIGHT, result_frame)
