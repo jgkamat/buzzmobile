@@ -1,5 +1,9 @@
 # Created by https://www.gitignore.io/api/c++,python,ros,vim,pycharm
 
+# No longer track the key file so people can update their keys
+# locally and not worry about them being pushed upstream
+buzzmobile/sense/gps/googlemapskey.py
+
 ### C++ ###
 # Prerequisites
 *.d

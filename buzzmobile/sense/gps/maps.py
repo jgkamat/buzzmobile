@@ -3,7 +3,9 @@ import googlemaps
 import polyline as pl
 from datetime import datetime
 
-gmaps = googlemaps.Client(key='AIzaSyC7iVrctZB49ckyfFWz8gId-snosNlBUqY')
+from buzzmobile.sense.gps.googlemapskey import googlemapskey as gmpskey
+
+gmaps = googlemaps.Client(key=gmpskey)
 
 def get_directions(start, destination):
     """
@@ -23,12 +25,12 @@ def get_directions(start, destination):
                                         mode="driving",
                                         units="metric",
                                         departure_time=now)
-    return direction_result 
-    
+    return direction_result
+
 def get_points(start, destination, top_left=None, width_height=None):
     """
-    Returns the list of latitude and longitude tuples between start and 
-    destination within a "rectangle" specified by a top left corner lat-long 
+    Returns the list of latitude and longitude tuples between start and
+    destination within a "rectangle" specified by a top left corner lat-long
     tuple and a width/height tuple.
 
     start and destination may be strings or gps coordinates, e.g.,

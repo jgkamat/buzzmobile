@@ -35,6 +35,12 @@ catkin_init_workspace
 
 Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzmobile` to install some dependencies, like [usb_cam].
 
+To use the google maps api, you need an api key. Put it under `buzzmobile/sense/gps/googlemapskey.py` like such:
+
+```python
+googlemapskey='your_secret_api_key'
+```
+
 
 Running
 -------
