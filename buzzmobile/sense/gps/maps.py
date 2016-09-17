@@ -36,10 +36,10 @@ def get_points(start, destination, top_left=None, width_height=None):
     start and destination may be strings or gps coordinates, e.g.,
 
     >>> get_directions("Sacramento, CA", "Anaheim, CA")
-    [(38.58157, -121.4944), (38.58084, -121.49323), (38.58194, -121.49501), 
+    [(38.58157, -121.4944), (38.58084, -121.49323), (38.58194, -121.49501),
         ...
     (33.83344, -117.92285), (33.8354, -117.91454)]
-    
+
     >>> get_directions("Sacramento, CA", "Atlanta, GA", (34, -88.6), (0.3, 0.3))
     [(34.27317, -88.50898), (34.23178, -88.42559), (34.23086, -88.32019)]
     """
