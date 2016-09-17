@@ -4,21 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-# TODO: REMOVE, use ROS node message.
-def merge_frames(frames, weights):
-    total_weight = sum(weights)
 
-    height, width = frames[0].shape
-    merged = np.zeros((height, width), np.uint8)
-
-    for frame, weight in zip(frames, weights):
-        alpha = (weight / total_weight)
-        merged = merged + (frame * alpha).astype(np.uint8)
-
-    return merged
-# END REMOVE
-
-# TODO: MODIFY THESE
+# TODO: MODIFY THESE PARAMS
 PIXELS_PER_METER = 15 # number of pixels per meter in each frame
 HEIGHT = WIDTH = 500 # height and width of frames in pixels
 MAX_ANGLE = 1.5 # max angle steering can happen in radians
@@ -70,6 +57,11 @@ def project_tentacle(x_0, y_0, heading, steering_angle,
             heading, steering_angle, num_points - 1)
 
 def score_tentacle(points, frame):
+    """
+    Returns the score per tentacle by masking the frame with the tentacle's
+    points, then summing the values of the result and normalizing by the sum of
+    the values of the mask.
+    """
     tentacle_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
     for i in range(len(points) - 1):
         pt1 = points[i]
@@ -82,6 +74,18 @@ def score_tentacle(points, frame):
 
 
 if __name__ == '__main__':
+    def merge_frames(frames, weights):
+        total_weight = sum(weights)
+
+        height, width = frames[0].shape
+        merged = np.zeros((height, width), np.uint8)
+
+        for frame, weight in zip(frames, weights):
+            alpha = (weight / total_weight)
+            merged = merged + (frame * alpha).astype(np.uint8)
+
+        return merged
+
     np.set_printoptions(linewidth=200)
 
     frame1 = np.zeros((HEIGHT, WIDTH), np.uint8)
