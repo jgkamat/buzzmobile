@@ -18,30 +18,34 @@ def merge_frames(frames, weights):
     return merged
 # END REMOVE
 
+# TODO: MODIFY THESE
+PIXELS_PER_METER = 15 # number of pixels per meter in each frame
+HEIGHT = WIDTH = 500 # height and width of frames in pixels
+MAX_ANGLE = 1.5 # max angle steering can happen in radians
+TRAVEL_DISTANCE = 0.3 # travel distance between ack steps in meters
+NUM_POINTS = 50 # number of points per tentacle
+WHEEL_BASE = 3 # distance between front and back wheel axels in meters
 
-PIXELS_PER_METER = 15 # TODO: MODIFY THIS ONCE IMAGE IS FINAL
-
-def turning_radius(steering_angle, wheel_base=3):
+def turning_radius(steering_angle):
     """
     Returns turning radius given current steering angle (in radians), and
     distance between front and back axel (in meters).
     """
     if steering_angle == 0:
         return float('inf')
-    return abs(wheel_base / np.tan(steering_angle))
+    return abs(WHEEL_BASE / np.tan(steering_angle))
 
-def ackerman_step(x_0, y_0, heading, steering_angle, travel_distance,
-        wheel_base=3):
+def ackerman_step(x_0, y_0, heading, steering_angle):
     """
     Performs a single ackerman's steering pose estimation step, returning the
     final x, y, and the new heading.
     """
     if steering_angle == 0:
-        y = y_0 + (PIXELS_PER_METER * travel_distance)
+        y = y_0 + (PIXELS_PER_METER * TRAVEL_DISTANCE)
         return x_0, y, heading
 
-    radius = turning_radius(steering_angle, wheel_base)
-    travel_angle = travel_distance / radius + heading
+    radius = turning_radius(steering_angle)
+    travel_angle = TRAVEL_DISTANCE / radius + heading
 
     x = x_0 + PIXELS_PER_METER * radius * (
             np.cos(heading) - np.cos(travel_angle)) * np.sign(steering_angle)
@@ -51,24 +55,22 @@ def ackerman_step(x_0, y_0, heading, steering_angle, travel_distance,
     return x, y, travel_angle
 
 
-def project_tentacle(x_0, y_0, heading, steering_angle, travel_distance,
-        num_points, wheel_base=3):
+def project_tentacle(x_0, y_0, heading, steering_angle,
+        num_points):
     """
     Returns a list of expected positions (in pixel coordinates),
     starting at (x, y), given constant steering_angle (in radians) and
-    travel_distance (in meters). Heading is angle at which the car is facing.
+    TRAVEL_DISTANCE (in meters). Heading is angle at which the car is facing.
     """
-    x, y, heading = ackerman_step(x_0, y_0, heading, steering_angle,
-            travel_distance, wheel_base)
+    x, y, heading = ackerman_step(x_0, y_0, heading, steering_angle)
     if num_points == 0:
         return [(int(round(x)), int(round(y)))]
 
     return [(int(round(x)), int(round(y)))] + project_tentacle(x, y,
-            heading, steering_angle, travel_distance,
-            num_points - 1, wheel_base)
+            heading, steering_angle, num_points - 1)
 
-def score_tentacle(width, height, points, frame):
-    tentacle_mask = np.zeros((height, width), np.uint8)
+def score_tentacle(points, frame):
+    tentacle_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
@@ -82,39 +84,34 @@ def score_tentacle(width, height, points, frame):
 if __name__ == '__main__':
     np.set_printoptions(linewidth=200)
 
-    height = width = 500
+    frame1 = np.zeros((HEIGHT, WIDTH), np.uint8)
+    cv2.line(frame1, (WIDTH//2, HEIGHT), (WIDTH//2, HEIGHT//2), 255, WIDTH//6)
+    cv2.line(frame1, (WIDTH//2, HEIGHT//2), (WIDTH, HEIGHT//2), 255, WIDTH//6)
 
-    frame1 = np.zeros((height, width), np.uint8)
-    cv2.line(frame1, (width//2, height), (width//2, height//2), 255, width//6)
-    cv2.line(frame1, (width//2, height//2), (width, height//2), 255, width//6)
-
-    frame2 = np.zeros((height, width), np.uint8)
-    cv2.circle(frame2, (width//2, height), int(width//2.5), 255, thickness=-1)
+    frame2 = np.zeros((HEIGHT, WIDTH), np.uint8)
+    cv2.circle(frame2, (WIDTH//2, HEIGHT), int(WIDTH//2.5), 255, thickness=-1)
 
     result_frame = merge_frames([frame1, frame2], [1.0, 1.0])
     result_frame_color = cv2.cvtColor(result_frame, cv2.cv.CV_GRAY2RGB)
 
-    max_angle = 1.5
-    travel_distance = 0.3
-    num_points = 50
 
-    # angles = np.linspace(0.0, max_angle, max_angle * 100)
+    # angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * 100)
     # colors = cm.rainbow(np.linspace(0, 1, len(angles)))
     # for angle, c in zip(angles, colors):
-        # pos_points = project_tentacle(0, 0, 0, angle, travel_distance, 20)
-        # neg_points = project_tentacle(0, 0, 0, -angle, travel_distance, 20)
+        # pos_points = project_tentacle(0, 0, 0, angle, 20)
+        # neg_points = project_tentacle(0, 0, 0, -angle, 20)
 
         # plt.scatter(*zip(*pos_points), color=c)
         # plt.scatter(*zip(*neg_points), color=c)
     # plt.show()
 
-    points_1 = project_tentacle(width//2, height, -np.pi, 0.2, travel_distance, num_points)
-    tentacle_score_image_1, tentacle_score_1 = score_tentacle(width, height, points_1, result_frame)
+    points_1 = project_tentacle(WIDTH//2, HEIGHT, -np.pi, 0.2, NUM_POINTS)
+    tentacle_score_image_1, tentacle_score_1 = score_tentacle(points_1, result_frame)
     cv2.imshow('tentacle_score_image_1', tentacle_score_image_1)
     print 'points_1 score:', tentacle_score_1
 
-    points_2 = project_tentacle(width//2, height, -np.pi, 0.1, travel_distance, num_points)
-    tentacle_score_image_2, tentacle_score_2 = score_tentacle(width, height, points_2, result_frame)
+    points_2 = project_tentacle(WIDTH//2, HEIGHT, -np.pi, 0.1, NUM_POINTS)
+    tentacle_score_image_2, tentacle_score_2 = score_tentacle(points_2, result_frame)
     cv2.imshow('tentacle_score_image_2', tentacle_score_image_2)
     print 'points_2 score:', tentacle_score_2
 
