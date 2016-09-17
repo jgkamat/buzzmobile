@@ -27,7 +27,7 @@ def merge_frames(frames, weights):
 if __name__ == '__main__':
     np.set_printoptions(linewidth=200)
 
-    height = width = 200
+    height = width = 500
 
     frame1 = np.zeros((height, width), np.uint8)
     cv2.line(frame1, (width/2, height), (width/2, height/2), 255, width/6)
