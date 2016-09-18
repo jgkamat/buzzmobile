@@ -78,6 +78,13 @@ def score_tentacle(points, frame):
     return tentacle_score
 
 def pick_tentacle(x_0, y_0, frame):
+    ###### TODO: if two tentacles are same score, pick one that goes least away
+    # from current heading.
+
+    # TODO add width
+
+    # todo add branching
+
     angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * 100)
     color_frame = cv2.cvtColor(frame, cv2.cv.CV_GRAY2RGB)
 
