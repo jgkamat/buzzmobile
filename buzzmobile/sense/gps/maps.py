@@ -74,6 +74,9 @@ def get_points_in_rect(points, top_left, width_height):
             and i[0] >= top_left[0] and i[1] >= top_left[1]]
             
 def haversine(lat1, lon1, lat2, lon2):
+    """
+    Calculates the distance between two lat-lon points in kilometers.
+    """
     delta_lat = math.radians(lat2 - lat1)
     delta_lon = math.radians(lon2 - lon1)
     lat1 = math.radians(lat1)
