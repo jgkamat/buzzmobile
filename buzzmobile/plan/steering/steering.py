@@ -9,7 +9,7 @@ import matplotlib.cm as cm
 # TODO: MODIFY THESE PARAMS
 PIXELS_PER_METER = 15 # number of pixels per meter in each frame
 HEIGHT = WIDTH = 500 # height and width of frames in pixels
-MAX_ANGLE = 1.5 # max angle steering can happen in radians
+MAX_ANGLE = 1.0 # max angle steering can happen in radians
 TRAVEL_DISTANCE = 0.3 # travel distance between ack steps in meters
 NUM_POINTS = 50 # number of points per tentacle
 WHEEL_BASE = 3 # distance between front and back wheel axels in meters
@@ -85,7 +85,7 @@ def pick_tentacle(x_0, y_0, frame):
 
     # todo add branching
 
-    angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * 100)
+    angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * 66)
     color_frame = cv2.cvtColor(frame, cv2.cv.CV_GRAY2RGB)
 
     best_score = -1
@@ -125,7 +125,7 @@ def pick_tentacle(x_0, y_0, frame):
                 best_score = neg_score
                 best_points = neg_points
 
-    draw_points(best_points, color_frame, (255, 0, 0))
+    draw_points(best_points, color_frame, (255, 100, 100))
 
     cv2.imshow('all tentacles', color_frame)
     cv2.waitKey(0)
