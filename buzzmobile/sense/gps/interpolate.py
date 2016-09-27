@@ -28,7 +28,6 @@ def main():
     points = [(y, -x) for (x, y) in maps.get_points("Mexico City, MX", "New York, NY")]
     first_set = close_points(points, 100000)
     interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized_points(first_set)], 3, 3)
-    #print([(int(round(x)), int(round(y))) for (x, y) in normalized_points(points)])
 
 def close_points(points, max_distance):
     start = points[0]
