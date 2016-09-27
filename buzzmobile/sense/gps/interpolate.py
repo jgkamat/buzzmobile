@@ -1,8 +1,8 @@
 import numpy as np
 import cv2
-from maps import get_points
+import maps
 
-def interpolate(height=500, width=500, points, sigma_x, sigma_y):
+def interpolate(points, sigma_x, sigma_y, height=500, width=500):
     """
     Takes a list of points, connects them with a line,
     and Gaussian blurs the line.
@@ -25,8 +25,24 @@ def interpolate(height=500, width=500, points, sigma_x, sigma_y):
 
 def main():
     # this is just for testing
-    points = [(y, -x) for (x, y) in get_points("Mexico City, MX", "New York, NY")]
-    interpolate(500, 500, [(round(x), round(y)) for (x, y) in normalized_points(points)], 3, 3)
+    points = [(y, -x) for (x, y) in maps.get_points("Mexico City, MX", "New York, NY")]
+    first_set = close_points(points, 100000)
+    interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized_points(first_set)], 3, 3)
+    #print([(int(round(x)), int(round(y))) for (x, y) in normalized_points(points)])
+
+def close_points(points, max_distance):
+    start = points[0]
+    x, y = start
+    final_index = 0
+    for i in range(len(points)):
+        distance = maps.haversine(x, y, points[i][0], points[i][1])
+        print(distance)
+        if distance > max_distance:
+            print("MAX")
+            break
+        else:
+            final_index = i
+    return points[0:final_index]
 
 def normalized_points(points, height=500, width=500):
     """
