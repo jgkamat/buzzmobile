@@ -12,7 +12,8 @@ HEIGHT = WIDTH = 500 # height and width of frames in pixels
 MAX_ANGLE = 1.0 # max angle steering can happen in radians
 TRAVEL_DISTANCE = 0.3 # travel distance between ack steps in meters
 NUM_POINTS = 50 # number of points per tentacle
-WHEEL_BASE = 3 # distance between front and back wheel axels in meters
+WHEEL_BASE = 1.8 # distance between front and back wheel axels in meters
+ANGLE_MULTIPLIER = 10 # this times max_angle is number of angles to span
 
 def turning_radius(steering_angle):
     """
@@ -86,7 +87,7 @@ def pick_tentacle(x_0, y_0, frame):
 
     # todo add branching
 
-    angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * 66)
+    angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * ANGLE_MULTIPLIER)
     color_frame = cv2.cvtColor(frame, cv2.cv.CV_GRAY2RGB)
 
     best_score = -1
@@ -94,37 +95,19 @@ def pick_tentacle(x_0, y_0, frame):
 
     for angle in angles:
         if angle == 0:
-            points = project_tentacle(x_0, y_0, -np.pi, angle, NUM_POINTS)
+            branches = [project_tentacle(x_0, y_0, -np.pi, angle, NUM_POINTS)]
+        else:
+            branches = [project_tentacle(x_0, y_0, -np.pi, angle, NUM_POINTS),
+                    project_tentacle(x_0, y_0, -np.pi, -angle, NUM_POINTS)]
 
+        for points in branches:
             score = score_tentacle(points, frame)
             color = score_to_color(score)
             draw_points(points, color_frame, color)
 
-            print score, '->', color
             if score > best_score:
                 best_score = score
                 best_points = points
-        else:
-            pos_points = project_tentacle(x_0, y_0, -np.pi, angle, NUM_POINTS)
-            neg_points = project_tentacle(x_0, y_0, -np.pi, -angle, NUM_POINTS)
-
-            pos_score = score_tentacle(pos_points, frame)
-            pos_color = score_to_color(pos_score)
-            draw_points(pos_points, color_frame, pos_color)
-
-            neg_score = score_tentacle(neg_points, frame)
-            neg_color = score_to_color(neg_score)
-            draw_points(neg_points, color_frame, neg_color)
-
-            print pos_score, '->', pos_color
-            print neg_score, '->', neg_color
-            if pos_score > best_score:
-                best_score = pos_score
-                best_points = pos_points
-
-            if neg_score > best_score:
-                best_score = neg_score
-                best_points = neg_points
 
     draw_points(best_points, color_frame, (255, 100, 100))
 
