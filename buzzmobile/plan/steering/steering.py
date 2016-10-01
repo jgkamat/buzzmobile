@@ -144,6 +144,7 @@ if __name__ == '__main__':
     frame1 = np.zeros((HEIGHT, WIDTH), np.uint8)
     cv2.line(frame1, (WIDTH//2, HEIGHT), (WIDTH//2, HEIGHT//2 + 150), 255, WIDTH//6)
     cv2.line(frame1, (WIDTH//2, HEIGHT//2 + 150), (WIDTH, HEIGHT//2 + 150), 255, WIDTH//6)
+    frame1 = cv2.GaussianBlur(frame1, (9, 9), 19)
 
     frame2 = np.zeros((HEIGHT, WIDTH), np.uint8)
     cv2.circle(frame2, (WIDTH//2, HEIGHT), int(WIDTH//2.5), 255, thickness=-1)
