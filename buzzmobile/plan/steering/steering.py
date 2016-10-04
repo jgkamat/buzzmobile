@@ -1,9 +1,10 @@
 from __future__ import division
-import cv2
 import colorsys
-import numpy as np
-import matplotlib.pyplot as plt
+import cv2
 import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import numpy as np
+import rospy
 
 
 # TODO: MODIFY THESE PARAMS
