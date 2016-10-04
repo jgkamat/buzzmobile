@@ -1,4 +1,5 @@
 from __future__ import division
+
 import colorsys
 import cv2
 import matplotlib.cm as cm
@@ -6,6 +7,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import rospy
 
+from cv_bridge import CvBridge, CvBridgeError
+from buzzmobile.msg import CarPose, Image
+
+
+### GLOBAL VARS ###
+bridge = CvBridge()
+pose_pub = rospy.Publisher('car_pose', CarPose)
+tentacle_pub = rospy.Publisher('tentacle_frame', Image)
 
 # TODO: MODIFY THESE PARAMS
 PIXELS_PER_METER = 15 # number of pixels per meter in each frame
@@ -15,6 +24,37 @@ TRAVEL_DISTANCE = 0.3 # travel distance between ack steps in meters
 NUM_POINTS = 50 # number of points per tentacle
 WHEEL_BASE = 1.8 # distance between front and back wheel axels in meters
 ANGLE_MULTIPLIER = 10 # this times max_angle is number of angles to span
+
+
+def steering_node():
+    rospy.init_node('steering', annonymous=True)
+    rospy.Subscriber('world_model', Image, steer)
+
+def steer(ros_world_model):
+    # convert RosImage to cv2
+    try:
+        world_frame = bridge.imgmsg_to_cv2(ros_world_model)
+    except CvBridgeError:
+        rospy.loginfo('Error converting world_model to cv2')
+
+    # pick tentacle
+    height, width = world_frame.shape[:2]
+    points, angle = pick_tentacle(width//2, height, world_frame)
+
+    # publish carpose
+    pose = CarPose()
+    pose.angle = angle
+    pose.velocity = 1.0
+    pose_pub.publish(pose)
+
+    # publish drawn tentacle
+    draw_points(points, world_frame, (255, 100, 100))
+    try:
+        tentacle_frame = bridge.cv2_to_imgmsg(world_frame)
+        tentacle_pub.publish(tentacle_frame)
+    except CvBridgeError:
+        rospy.loginfo('Error converting tentacle_frame to RosImage')
+
 
 def turning_radius(steering_angle):
     """
@@ -90,6 +130,7 @@ def pick_tentacle(x_0, y_0, frame):
 
     best_score = -1
     best_points = []
+    best_angle = -1
 
     for angle in angles:
         if angle == 0:
@@ -100,18 +141,21 @@ def pick_tentacle(x_0, y_0, frame):
 
         for points in branches:
             score = score_tentacle(points, frame)
-            color = score_to_color(score)
-            draw_points(points, color_frame, color)
+            #color = score_to_color(score)
+            #draw_points(points, color_frame, color)
 
             if score > best_score:
                 best_score = score
                 best_points = points
+                best_angle = angle
 
-    draw_points(best_points, color_frame, (255, 100, 100))
+    return best_points, best_angle
 
-    cv2.imshow('all tentacles', color_frame)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    #draw_points(best_points, color_frame, (255, 100, 100))
+
+    #cv2.imshow('all tentacles', color_frame)
+    #cv2.waitKey(0)
+    #cv2.destroyAllWindows()
 
 def score_to_color(score):
     score_to_h = lambda x: ((231 - 4) * x + 4) / 255
@@ -129,27 +173,28 @@ def draw_points(points, color_frame, color):
         cv2.line(color_frame, pt1, pt2, color, 1)
 
 
-if __name__ == '__main__':
-    def merge_frames(frames, weights):
-        total_weight = sum(weights)
+if __name__ == '__main__': steering_node()
 
-        height, width = frames[0].shape
-        merged = np.zeros((height, width), np.uint8)
+    #def merge_frames(frames, weights):
+        #total_weight = sum(weights)
 
-        for frame, weight in zip(frames, weights):
-            alpha = (weight / total_weight)
-            merged = merged + (frame * alpha).astype(np.uint8)
+        #height, width = frames[0].shape
+        #merged = np.zeros((height, width), np.uint8)
 
-        return merged
+        #for frame, weight in zip(frames, weights):
+            #alpha = (weight / total_weight)
+            #merged = merged + (frame * alpha).astype(np.uint8)
 
-    frame1 = np.zeros((HEIGHT, WIDTH), np.uint8)
-    cv2.line(frame1, (WIDTH//2, HEIGHT), (WIDTH//2, HEIGHT//2 + 150), 255, WIDTH//6)
-    cv2.line(frame1, (WIDTH//2, HEIGHT//2 + 150), (WIDTH, HEIGHT//2 + 150), 255, WIDTH//6)
-    frame1 = cv2.GaussianBlur(frame1, (9, 9), 19)
+        #return merged
 
-    frame2 = np.zeros((HEIGHT, WIDTH), np.uint8)
-    cv2.circle(frame2, (WIDTH//2, HEIGHT), int(WIDTH//2.5), 255, thickness=-1)
+    #frame1 = np.zeros((HEIGHT, WIDTH), np.uint8)
+    #cv2.line(frame1, (WIDTH//2, HEIGHT), (WIDTH//2, HEIGHT//2 + 150), 255, WIDTH//6)
+    #cv2.line(frame1, (WIDTH//2, HEIGHT//2 + 150), (WIDTH, HEIGHT//2 + 150), 255, WIDTH//6)
+    #frame1 = cv2.GaussianBlur(frame1, (9, 9), 19)
 
-    result_frame = merge_frames([frame1, frame2], [1.0, 1.0])
+    #frame2 = np.zeros((HEIGHT, WIDTH), np.uint8)
+    #cv2.circle(frame2, (WIDTH//2, HEIGHT), int(WIDTH//2.5), 255, thickness=-1)
 
-    pick_tentacle(WIDTH//2, HEIGHT, result_frame)
+    #result_frame = merge_frames([frame1, frame2], [1.0, 1.0])
+
+    #pick_tentacle(WIDTH//2, HEIGHT, result_frame)
