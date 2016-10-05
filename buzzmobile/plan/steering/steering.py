@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from __future__ import division
 
 import colorsys
@@ -7,14 +8,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import rospy
 
+from buzzmobile.msg import CarPose
 from cv_bridge import CvBridge, CvBridgeError
-from buzzmobile.msg import CarPose, Image
+from sensor_msgs.msg import Image
 
 
 ### GLOBAL VARS ###
 bridge = CvBridge()
-pose_pub = rospy.Publisher('car_pose', CarPose)
-tentacle_pub = rospy.Publisher('tentacle_frame', Image)
+pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=0)
+tentacle_pub = rospy.Publisher('tentacle_frame', Image, queue_size=0)
 
 # TODO: MODIFY THESE PARAMS
 PIXELS_PER_METER = 15 # number of pixels per meter in each frame
@@ -27,8 +29,9 @@ ANGLE_MULTIPLIER = 10 # this times max_angle is number of angles to span
 
 
 def steering_node():
-    rospy.init_node('steering', annonymous=True)
+    rospy.init_node('steering', anonymous=True)
     rospy.Subscriber('world_model', Image, steer)
+    rospy.spin()
 
 def steer(ros_world_model):
     # convert RosImage to cv2
@@ -126,7 +129,7 @@ def pick_tentacle(x_0, y_0, frame):
     # todo add branching
 
     angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * ANGLE_MULTIPLIER)
-    color_frame = cv2.cvtColor(frame, cv2.cv.CV_GRAY2RGB)
+    color_frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
 
     best_score = -1
     best_points = []
@@ -174,27 +177,3 @@ def draw_points(points, color_frame, color):
 
 
 if __name__ == '__main__': steering_node()
-
-    #def merge_frames(frames, weights):
-        #total_weight = sum(weights)
-
-        #height, width = frames[0].shape
-        #merged = np.zeros((height, width), np.uint8)
-
-        #for frame, weight in zip(frames, weights):
-            #alpha = (weight / total_weight)
-            #merged = merged + (frame * alpha).astype(np.uint8)
-
-        #return merged
-
-    #frame1 = np.zeros((HEIGHT, WIDTH), np.uint8)
-    #cv2.line(frame1, (WIDTH//2, HEIGHT), (WIDTH//2, HEIGHT//2 + 150), 255, WIDTH//6)
-    #cv2.line(frame1, (WIDTH//2, HEIGHT//2 + 150), (WIDTH, HEIGHT//2 + 150), 255, WIDTH//6)
-    #frame1 = cv2.GaussianBlur(frame1, (9, 9), 19)
-
-    #frame2 = np.zeros((HEIGHT, WIDTH), np.uint8)
-    #cv2.circle(frame2, (WIDTH//2, HEIGHT), int(WIDTH//2.5), 255, thickness=-1)
-
-    #result_frame = merge_frames([frame1, frame2], [1.0, 1.0])
-
-    #pick_tentacle(WIDTH//2, HEIGHT, result_frame)

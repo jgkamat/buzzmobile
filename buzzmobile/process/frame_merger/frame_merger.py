@@ -64,8 +64,7 @@ def merge_frames(frames, weights):
     for frame, weight in zip(frames, weights):
         alpha = (weight / total_weight)
 
-        frame *= alpha
-        merged += frame
+        merged += frame * alpha
 
     return merged
 
