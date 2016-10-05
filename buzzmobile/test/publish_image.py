@@ -12,7 +12,8 @@ def publish_image(image_filename):
     imgFile = cv2.imread(image_filename)
     imgMsg = bridge.cv2_to_imgmsg(imgFile, "bgr8")
 
-    pub = rospy.Publisher('test_image', Image, queue_size=0)
+    topic_name = sys.argv[1].split('/')[-1][:-4]
+    pub = rospy.Publisher(topic_name, Image, queue_size=0)
 
     rospy.init_node('image_publisher', anonymous=True)
 
@@ -22,7 +23,7 @@ def publish_image(image_filename):
         #rospy.loginfo(imgMsg)
         pub.publish(imgMsg)
         rate.sleep()
-    
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
