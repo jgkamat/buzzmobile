@@ -41,7 +41,7 @@ def steer(ros_world_model):
         rospy.loginfo('Error converting world_model to cv2')
 
     # pick tentacle
-    height, width = world_frame.shape[:2]
+    height, width = world_frame.shape
     points, angle = pick_tentacle(width//2, height, world_frame)
 
     # publish carpose
@@ -51,7 +51,7 @@ def steer(ros_world_model):
     pose_pub.publish(pose)
 
     # publish drawn tentacle
-    draw_points(points, world_frame, (255, 100, 100))
+    draw_points(points, world_frame, score_to_color(1.0))
     try:
         tentacle_frame = bridge.cv2_to_imgmsg(world_frame)
         tentacle_pub.publish(tentacle_frame)
@@ -126,8 +126,6 @@ def pick_tentacle(x_0, y_0, frame):
 
     # TODO add width
 
-    # todo add branching
-
     angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * ANGLE_MULTIPLIER)
     color_frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
 
@@ -144,8 +142,6 @@ def pick_tentacle(x_0, y_0, frame):
 
         for points in branches:
             score = score_tentacle(points, frame)
-            #color = score_to_color(score)
-            #draw_points(points, color_frame, color)
 
             if score > best_score:
                 best_score = score
@@ -153,12 +149,6 @@ def pick_tentacle(x_0, y_0, frame):
                 best_angle = angle
 
     return best_points, best_angle
-
-    #draw_points(best_points, color_frame, (255, 100, 100))
-
-    #cv2.imshow('all tentacles', color_frame)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
 
 def score_to_color(score):
     score_to_h = lambda x: ((231 - 4) * x + 4) / 255
