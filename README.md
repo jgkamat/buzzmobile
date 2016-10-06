@@ -75,6 +75,12 @@ rosrun image_view image_view image:=some_imgmsg
 In it, you can, for instance, create an 'image' instance, and set it to the
 value of the `/image_const` being broadcast. This will display the image.
 
+To load the buzzmobile mission control, simply run the node:
+
+```bash
+rosrun rqt_gui rqt_gui --perspective-file=buzzmobile/tools/mission_control/Default.perspective
+```
+
 
 Recording
 ---------
