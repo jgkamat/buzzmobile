@@ -58,10 +58,18 @@ Create new tabs for every node and run them as such:
 ```rosparam set usb_cam/pixel_format yuyv
 rosrun usb_cam usb_cam_node```
 
-If you want to visualize your nodes, you can run the ROS visualizer.
+Note that rospy nodes don't require `catkin_make`, but do require that the file be made executable, and the `.py` extension:
+
+```bash
+chmod +x path/to/rospy_node.py  # also make sure the file has the correct python shebang
+rosrun rospy_node.py
+```
+
+If you want to visualize your nodes, you can run the ROS visualizer or image_view.
 
 ```bash
 rosrun rviz rviz
+rosrun image_view image_view image:=some_imgmsg
 ```
 
 In it, you can, for instance, create an 'image' instance, and set it to the
