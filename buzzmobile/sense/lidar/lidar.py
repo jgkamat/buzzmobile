@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import constants
 
 import time
 
@@ -9,16 +10,30 @@ image_height_m = 8
 image_width_m = 8
 pixels_per_m = 100
 
+#convert to cartesian 
 
-# lidarPoints is a list of tuples. i.e. [(x0, y0), (x1, y1), ...]
-def genLidarImage(lidarPoints):
+lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=0)
+
+#
+def gen_lidar_image(laser_scan):
+    lidar_points = []
+    ranges = laser_scan.ranges
+    angle = laser_scan.angle_min
+    for i in range(len(ranges)):
+        lidar_points.append((cos(angle) * ranges[i] + constants.image_width / 2, constants.image_height - sin(angle) * ranges[i]))
+        angle += laser_scan.angle_increment
+    matrix = gen_point_image(lidar_points)
+    lidar_publisher.publish(matrix)
+
+# points is a list of tuples. i.e. [(x0, y0), (x1, y1), ...]
+def gen_point_image(points):
     # Generate matrix of all 0's to represent image
     matrix = np.zeros((image_height_px, image_width_px), np.uint8)
     matrix.fill(255)
  
     # Remap points to from lidar coordinates to image coordinates
     remappedPoints = []
-    for point in lidarPoints:
+    for point in points:
 	x = point[0] * pixels_per_m
         y = point[1] * pixels_per_m
 	newx = x + (image_width_px / 2)
@@ -45,9 +60,24 @@ def genLidarImage(lidarPoints):
 
     #cv2.fillConvexPoly(matrix, np.array(polyPoints, np.int32), 0)
     cv2.fillPoly(matrix, [np.array(polyPoints, np.int32)], 0)
-    cv2.imshow("yo", matrix)
+    '''cv2.imshow("yo", matrix)
     cv2.waitKey(0)
-    cv2.destroyAllWindows()    
+    cv2.destroyAllWindows()'''
+    return matrix
 
 
-genLidarImage([(1, 2.4), (2, 3.3), (1.5, 9), (3.5, 3.6)])
+#genLidarImage([(1, 2.4), (2, 3.3), (1.5, 9), (3.5, 3.6)])
+
+def lidar_node():
+    rospy.init_node('lidar_node', anonymous=True)
+    rospy.Subscribe('scan', LaserScan, gen_lidar_image, queue_size=0)
+    rospy.spin()
+
+if __name__ == '__main__': lidar_node()
+
+
+
+
+
+
+
