@@ -114,7 +114,11 @@ def score_tentacle(points, frame):
         pt2 = points[i+1]
         cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], 1)
 
-    normalizing_factor = WIDTH * 255 * 2
+    #  normalizing_factor = WIDTH * 255 * 2
+    #  normalizing_factor = cv2.countNonZero(tentacle_mask)
+    normalizing_factor = sum(sum(tentacle_mask))
+    if normalizing_factor == 0.0:
+        return 0.0
 
     tentacle_score_image = cv2.bitwise_and(frame, frame, mask=tentacle_mask)
     tentacle_score = sum(sum(tentacle_score_image)) / normalizing_factor
