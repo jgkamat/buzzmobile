@@ -18,16 +18,22 @@ lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=0)
 bridge = CvBridge()
 
 def gen_lidar_image(laser_scan):
+    """ Converts a LaserScan message to a cv image, then publishes it through 
+        a lidar_publisher """
     lidar_points = []
     ranges = laser_scan.ranges
     angle = laser_scan.angle_min
+    #convert points from polar to cartesian (LaserScan origin is at (width/2, height)
     for i in range(len(ranges)):
         lidar_points.append((cos(angle) * ranges[i] + constants.image_width / 2, constants.image_height - sin(angle) * ranges[i]))
         angle += laser_scan.angle_increment
+    #generate the image from the cartesian LaserScan points
     matrix = gen_point_image(lidar_points)
+    #publish the cv image as an imgmsg
     lidar_publisher.publish(get_lidar_image_message(matrix))
     
 def get_lidar_image_message(matrix):
+    """ Convert an opencv image (matrix) to an imgmsg """
     try:
         return bridge.cv2_to_imgmsg(result)
     except CvBridgeError as e:
