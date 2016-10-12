@@ -33,9 +33,15 @@ cd catkin_ws/src
 catkin_init_workspace
 ```
 
-Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzmobile` to install some dependencies, like [usb_cam].
+Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzmobile` to install some dependencies, like [usb_cam] and [nmea_navsat_driver].
 
 To use the google maps api, you need an api key. Put it under `buzzmobile/sense/gps/googlemapskey.py` like such:
+
+To use the gps node, you will need to do:
+
+```bash
+sudo usermod -aG dialout <YOUR USERNAME>
+```
 
 ```python
 googlemapskey='your_secret_api_key'
@@ -79,6 +85,12 @@ To load the buzzmobile mission control, simply run the node:
 
 ```bash
 rosrun rqt_gui rqt_gui --perspective-file=buzzmobile/tools/mission_control/Default.perspective
+```
+
+To run the gps node, do:
+
+```bash
+rosrun nmea_navsat_driver nmea_serial_driver _port:=/dev/ttyUSB0 _baud:=4800
 ```
 
 
