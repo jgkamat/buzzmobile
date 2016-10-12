@@ -29,19 +29,17 @@ def get_map_url(polyline, coords):
 def get_map(polyline, coords):
     url = get_map_url(polyline, coords)
     resp = requests.get(url)
-    image = cv2.imdecode(np.asarray(bytearray(resp.content), dtype='uint8'),
-                         cv2.IMREAD_COLOR)
+    image = cv2.imdecode(np.asarray(bytearray(resp.content)),
+                         cv2.IMREAD_ANYCOLOR)
     return image
 
 def publish_map():
     if route['polyline'] is not None and route['fix'] is not None:
-        rospy.loginfo('publishing')
-
         route['last_published'] = dt.datetime.now()
         polyline = route['polyline'].data
         coords = route['fix'].latitude, route['fix'].longitude
         route_map = get_map(polyline, coords)
-        route_msg = bridge.cv2_to_imgmsg(route_map)
+        route_msg = bridge.cv2_to_imgmsg(route_map, encoding='bgr8')
         pub.publish(route_msg)
 
 def update_polyline(new_poly):
