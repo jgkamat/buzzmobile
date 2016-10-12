@@ -3,7 +3,7 @@ import math
 import cv2
 import maps
 import random
-import rospy
+#import rospy
 
 def interpolate(points, sigma_x, sigma_y, height=500, width=500):
     """
@@ -68,7 +68,7 @@ def normalized_points(points, height=500, width=500):
         (y - top_left[1]) * height / y_range) 
         for (x, y) in points]
 
-def window(image, location, degree_heading, height=500, width=500):
+def window(image, location, angle, height=500, width=500):
     """
     Takes an image, a location, an angle in degrees, and optionally a height and width
     in order to return the angled rectangular region of the image of the specified size,
@@ -81,7 +81,6 @@ def window(image, location, degree_heading, height=500, width=500):
     height, width: dimensions of the output image in pixels
     ----------------------------------------------------------------------------
     """
-    angle = math.radians(degree_heading)
     parallel = (math.cos(angle), math.sin(angle))
     perpendicular = (-math.sin(angle), math.cos(angle))
     horizontal = location[0] - parallel[0] * (width/2) - perpendicular[0] * (height/1)
