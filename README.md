@@ -37,14 +37,14 @@ Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzm
 
 To use the google maps api, you need an api key. Put it under `buzzmobile/sense/gps/googlemapskey.py` like such:
 
+```python
+googlemapskey='your_secret_api_key'
+```
+
 To use the gps node, you will need to do:
 
 ```bash
 sudo usermod -aG dialout <YOUR USERNAME>
-```
-
-```python
-googlemapskey='your_secret_api_key'
 ```
 
 
