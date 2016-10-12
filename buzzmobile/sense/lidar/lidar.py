@@ -25,9 +25,9 @@ def gen_lidar_image(laser_scan):
         lidar_points.append((cos(angle) * ranges[i] + constants.image_width / 2, constants.image_height - sin(angle) * ranges[i]))
         angle += laser_scan.angle_increment
     matrix = gen_point_image(lidar_points)
-    lidar_publisher.publish(get_lidar_image(matrix))
+    lidar_publisher.publish(get_lidar_image_message(matrix))
     
-def get_lidar_image(matrix):
+def get_lidar_image_message(matrix):
     try:
         return bridge.cv2_to_imgmsg(result)
     except CvBridgeError as e:
