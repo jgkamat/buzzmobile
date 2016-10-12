@@ -1,11 +1,28 @@
 #!/usr/bin/env python
 
+import cv2
+import requests
 import rospy
 
+import datetime as dt
 import googlemapskey as gmpskey
+import numpy as np
 
+from cv_bridge import CvBridge, CvBridgeError
+from sensor_msgs.msg import NavSatFix, Image
 from std_msgs.msg import String
-from std_msgs.msg import NavSatFix
+
+
+class Route(object):
+    def __init__(self):
+        self.polyline = None
+        self.fix = None
+
+# GLOBAL VARS
+route = Route()
+pub = rospy.Publisher('route_map', Image, queue_size=0)
+last_published = dt.datetime(2012, 10, 23)
+bridge = CvBridge()
 
 
 def get_map_url(polyline, coords):
@@ -15,12 +32,38 @@ def get_map_url(polyline, coords):
             '&markers=icon:https://i.imgur.com/DD11yLv.png|color:blue%7Clabel:B%7C'+
             '{0},%20{1}'.format(*coords))
 
-
 def get_map(polyline, coords):
-    pass
+    url = get_map_url(polyline, coords)
+    resp = requests.get(url)
+    image = cv2.imdecode(np.asarray(bytearray(resp.content), dtype='uint8'),
+                         cv2.IMREAD_COLOR)
+    return image
 
+def publish_map():
+    if route.polyline is not None and route.fix is not None:
+        coords = route.fix.latitude, route.fix.longitude
+        route_map = get_map(route.polyline, coords)
+        route_msg = bridge.cv2_to_imgmsg(result)
+        pub.publish(route_msg)
 
-def main():
+def update_polyline(new_poly):
+    route.polyline = new_poly
+    publish_map()
+
+def update_location(new_fix):
+    route.fix = new_fix
+    if published_long_ago(): publish_map()
+
+def published_long_ago():
+    seconds_elapsed = (dt.datetime.now() - last_published).total_seconds()
+    return True if seconds_elapsed > 8 else False
+
+def route_mapper_node():
+    rospy.Subscriber('polyline', String, update_polyline)
+    rospy.Subscriber('fix', NavSatFix, update_location)
+    rospy.rospin()
+
+def test():
     polyline = ('ezynEhmupUsKbGwJ_JyGkHrAbCk|@~iAm~@lhDka@``Bwe@|r@{l@tn@sb@|V}M`[kJdg@el@bs@k}@hc@o}@zaA{a@hiA{m@b_@' +
         'wo@xo@}oAhf@ut@tz@kh@pZgY|Uim@fF{lA|TsnBt]ep@kHi~CfeDyhBpzA_{@`q@ilA~xAwpBbeBkn@fx@}b@tf@ks@`k@s_@ny' +
         'Aq`@bo@_ZhcAei@~r@qc@hMchBvcA}jD`{@s~Bz|@k}@bcAkt@xxAc^vUoa@fCodAxC}eAkL}j@nQwiApt@ew@hl@c~@tu@_y@dj' +
@@ -35,17 +78,7 @@ def main():
         '@ei@|d@af@z|@{p@nnA_{@vd@icArRigBhjAie@gU_TNmw@xd@_cAjoB_Vnu@gL|sAep@nbAkk@vrC}^fp@}WpdAmw@de@ce@dsB' +
         'mLt`AnCjj@mF~YtQt|Adj@`tGz_A|uAdsBx{BztA`rBz`@c@dCbZeJxmAeWuS')
     coords = (35.996230, -118.996203)
-    print(get_map_url(polyline, coords))
+    cv2.imshow('map', get_map(polyline, coords))
+    cv2.waitKey(0)
 
-def update_polyline(new_poly):
-    pass
-
-def update_location(new_fix):
-    pass
-
-def route_mapper_node():
-    rospy.Subscriber('polyline', String, update_polyline)
-    rospy.Subscriber('fix', NavSatFix, update_location)
-    rospy.rospin()
-
-if __name__ == '__main__': main()
+if __name__ == '__main__': route_mapper_node()
