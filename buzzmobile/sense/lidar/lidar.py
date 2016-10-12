@@ -1,10 +1,16 @@
 import cv2
 import numpy as np
-import constants
-
 import time
 
 from cv_bridge import CvBridge, CvBridgeError
+from sensor_msgs.msg import Image
+from sensor_msgs.msg import LaserScan
+import rospy
+
+import sys
+sys.path.append('../../include')
+import constants
+
 
 
 image_width_px = constants.image_height
@@ -85,10 +91,8 @@ def gen_point_image(points):
 #genLidarImage([(1, 2.4), (2, 3.3), (1.5, 9), (3.5, 3.6)])
 
 def lidar_node():
-    #only you can prevent null pointers
-    pub.publish('')
     rospy.init_node('lidar_node', anonymous=True)
-    rospy.Subscribe('scan', LaserScan, gen_lidar_image, queue_size=0)
+    rospy.Subscriber('scan', LaserScan, gen_lidar_image, queue_size=1)
     rospy.spin()
 
 if __name__ == '__main__': lidar_node()
