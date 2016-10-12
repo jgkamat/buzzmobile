@@ -83,6 +83,8 @@ def gen_point_image(points):
 #genLidarImage([(1, 2.4), (2, 3.3), (1.5, 9), (3.5, 3.6)])
 
 def lidar_node():
+    #only you can prevent null pointers
+    pub.publish('')
     rospy.init_node('lidar_node', anonymous=True)
     rospy.Subscribe('scan', LaserScan, gen_lidar_image, queue_size=0)
     rospy.spin()
