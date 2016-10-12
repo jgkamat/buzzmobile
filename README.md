@@ -46,7 +46,7 @@ To use the gps node, you will need to do:
 ```bash
 sudo usermod -aG dialout <YOUR USERNAME>
 ```
-
+You will then need to log in and out again. Simply starting a new terminal is not sufficient. The Linux kernel will not refresh groups until the user completely logs out and logs in again.
 
 Running
 -------
@@ -87,12 +87,11 @@ To load the buzzmobile mission control, simply run the node:
 rosrun rqt_gui rqt_gui --perspective-file=buzzmobile/tools/mission_control/Default.perspective
 ```
 
-To run the gps node, do:
+To run the GPS node, do:
 
 ```bash
 rosrun nmea_navsat_driver nmea_serial_driver _port:=/dev/ttyUSB0 _baud:=4800
 ```
-
 
 Recording
 ---------
