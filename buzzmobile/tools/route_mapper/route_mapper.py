@@ -13,15 +13,9 @@ from sensor_msgs.msg import NavSatFix, Image
 from std_msgs.msg import String
 
 
-class Route(object):
-    def __init__(self):
-        self.polyline = None
-        self.fix = None
-
 # GLOBAL VARS
-route = Route()
+route = {}
 pub = rospy.Publisher('route_map', Image, queue_size=0)
-last_published = dt.datetime(2012, 10, 23)
 bridge = CvBridge()
 
 
@@ -40,25 +34,33 @@ def get_map(polyline, coords):
     return image
 
 def publish_map():
-    if route.polyline is not None and route.fix is not None:
-        coords = route.fix.latitude, route.fix.longitude
-        route_map = get_map(route.polyline, coords)
-        route_msg = bridge.cv2_to_imgmsg(result)
+    if route['polyline'] is not None and route['fix'] is not None:
+        rospy.loginfo('publishing')
+
+        route['last_published'] = dt.datetime.now()
+        polyline = route['polyline'].data
+        coords = route['fix'].latitude, route['fix'].longitude
+        route_map = get_map(polyline, coords)
+        route_msg = bridge.cv2_to_imgmsg(route_map)
         pub.publish(route_msg)
 
 def update_polyline(new_poly):
-    route.polyline = new_poly
+    route['polyline'] = new_poly
     publish_map()
 
 def update_location(new_fix):
-    route.fix = new_fix
+    route['fix'] = new_fix
     if published_long_ago(): publish_map()
 
 def published_long_ago():
-    seconds_elapsed = (dt.datetime.now() - last_published).total_seconds()
+    seconds_elapsed = (dt.datetime.now() - route['last_published']).total_seconds()
     return True if seconds_elapsed > 8 else False
 
 def route_mapper_node():
+    route['last_published'] = dt.datetime(2012, 10, 23)
+    route['polyline'] = None
+    route['fix'] = None
+
     rospy.init_node('route_mapper')
     rospy.Subscriber('polyline', String, update_polyline)
     rospy.Subscriber('fix', NavSatFix, update_location)
