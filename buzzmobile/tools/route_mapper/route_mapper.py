@@ -59,9 +59,10 @@ def published_long_ago():
     return True if seconds_elapsed > 8 else False
 
 def route_mapper_node():
+    rospy.init_node('route_mapper')
     rospy.Subscriber('polyline', String, update_polyline)
     rospy.Subscriber('fix', NavSatFix, update_location)
-    rospy.rospin()
+    rospy.spin()
 
 def test():
     polyline = ('ezynEhmupUsKbGwJ_JyGkHrAbCk|@~iAm~@lhDka@``Bwe@|r@{l@tn@sb@|V}M`[kJdg@el@bs@k}@hc@o}@zaA{a@hiA{m@b_@' +
