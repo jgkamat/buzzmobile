@@ -6,11 +6,13 @@ import time
 
 from cv_bridge import CvBridge, CvBridgeError
 
-image_height_px = 800
-image_width_px = 800
-image_height_m = 8
-image_width_m = 8
-pixels_per_m = 100
+
+image_width_px = constants.image_height
+image_height_px = constants.image_height
+image_width_m = constants.image_width_m
+image_height_m = constants.image_height_m
+pixels_per_m = constants.pixels_per_m
+
 
 
 lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=0)
