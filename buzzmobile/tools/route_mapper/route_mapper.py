@@ -64,22 +64,4 @@ def route_mapper_node():
     rospy.Subscriber('fix', NavSatFix, update_location)
     rospy.spin()
 
-def test():
-    polyline = ('ezynEhmupUsKbGwJ_JyGkHrAbCk|@~iAm~@lhDka@``Bwe@|r@{l@tn@sb@|V}M`[kJdg@el@bs@k}@hc@o}@zaA{a@hiA{m@b_@' +
-        'wo@xo@}oAhf@ut@tz@kh@pZgY|Uim@fF{lA|TsnBt]ep@kHi~CfeDyhBpzA_{@`q@ilA~xAwpBbeBkn@fx@}b@tf@ks@`k@s_@ny' +
-        'Aq`@bo@_ZhcAei@~r@qc@hMchBvcA}jD`{@s~Bz|@k}@bcAkt@xxAc^vUoa@fCodAxC}eAkL}j@nQwiApt@ew@hl@c~@tu@_y@dj' +
-        '@{aAlm@kw@r_Aox@xg@if@p|@ay@ln@mYvx@kv@||@{x@vIw|ArAmyAjk@{b@~i@k^tl@uPpbAeWla@}[fMakAxRag@bg@cf@d\cTrq@gj@ff@e|A`' +
-        'bAkpAba@sbBrNexBaRo_BT}qAly@qrAzdCyc@zs@iLbkAiRxjCsl@by@s`@j^uU^ecA{}@wqAwfAezAb{@otAjdA_dAbiAqe@n]k' +
-        'hA|tB_UxQik@~GueA`B{t@iJ{mAxi@_cBpd@wpEdaAgpDrn@}nDn}Di}Wx`ZmlTf_Vw|B`kC_wCtlEywEfqHohXn{a@_iFteGwhI' +
-        '|}IqtEv_EqhAru@}nFjqDg_JfeG}_TjuNswE~wDiqF`kFutQr|QufAhsA}h@d`Amw@lvAkpB`hEyhEdqIwlB`oBetGh|FupGrtFs' +
-        'mItqE_`Jn}EkzAjaAcpCjbCmoHvnG}kStmQmnBtfB{tCd`Du~LloQs`D~tEyqB~{Ak|HjrFwkKb}GkgYraQaeChsB}cAfjAcxEd}' +
-        'F_vCz`DijB||AywE`nEg~EbwE_sAlpAkdEljDyaI`rEspEveCe_Fry@}mFd|@w|HdtAkpG`xAwtBlh@w_B`bAy|B~kAasDhhBgeB' +
-        'xpAk|A||A{sBpaCmjBfbCmmCbkDquLnxP{dCddE_cE~aIuvHzaOaeB`gCseAlqA{Kz]fEj{Adn@f_Ije@|h@tJjn@vp@blCsSdt@' +
-        'vCvqAfw@bwD~w@t{CjI`eEGbyBkDxhQs@bwDdKx~@vHxt@zDprDeQ~tCoShpAhI`lBs@xoAbHzg@ri@h{@vNfuBdC`cB^rnAgLn`' +
-        '@ei@|d@af@z|@{p@nnA_{@vd@icArRigBhjAie@gU_TNmw@xd@_cAjoB_Vnu@gL|sAep@nbAkk@vrC}^fp@}WpdAmw@de@ce@dsB' +
-        'mLt`AnCjj@mF~YtQt|Adj@`tGz_A|uAdsBx{BztA`rBz`@c@dCbZeJxmAeWuS')
-    coords = (35.996230, -118.996203)
-    cv2.imshow('map', get_map(polyline, coords))
-    cv2.waitKey(0)
-
 if __name__ == '__main__': route_mapper_node()
