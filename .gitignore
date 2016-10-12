@@ -3,6 +3,7 @@
 # No longer track the key file so people can update their keys
 # locally and not worry about them being pushed upstream
 buzzmobile/sense/gps/googlemapskey.py
+buzzmobile/tools/route_mapper/googlemapskey.py
 
 ### C++ ###
 # Prerequisites

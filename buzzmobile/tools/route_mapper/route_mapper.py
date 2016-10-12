@@ -1,8 +1,17 @@
+#!/usr/bin/env python
+
+import rospy
+
+import googlemapskey as gmpskey
+
+from std_msgs.msg import String
+from std_msgs.msg import NavSatFix
 
 
 def get_map_url(polyline, coords):
-    return ('https://maps.googleapis.com/maps/api/staticmap?size=400x400&path=weight:3%7Ccolor:blue%7Cenc:' +
-            polyline +
+    return ('https://maps.googleapis.com/maps/api/staticmap?size=400x400' +
+            '&key=' + gmpskey.googlemapskey +
+            '&path=weight:3%7Ccolor:blue%7Cenc:' + polyline +
             '&markers=icon:https://i.imgur.com/DD11yLv.png|color:blue%7Clabel:B%7C'+
             '{0},%20{1}'.format(*coords))
 
@@ -24,8 +33,19 @@ def main():
         'xpAk|A||A{sBpaCmjBfbCmmCbkDquLnxP{dCddE_cE~aIuvHzaOaeB`gCseAlqA{Kz]fEj{Adn@f_Ije@|h@tJjn@vp@blCsSdt@' +
         'vCvqAfw@bwD~w@t{CjI`eEGbyBkDxhQs@bwDdKx~@vHxt@zDprDeQ~tCoShpAhI`lBs@xoAbHzg@ri@h{@vNfuBdC`cB^rnAgLn`' +
         '@ei@|d@af@z|@{p@nnA_{@vd@icArRigBhjAie@gU_TNmw@xd@_cAjoB_Vnu@gL|sAep@nbAkk@vrC}^fp@}WpdAmw@de@ce@dsB' +
-        'mLt`AnCjj@mF~YtQt|Adj@`tGz_A|uAdsBx{BztA`rBz`@c@dCbZeJxmAeWuS&key=AIzaSyDF-CtL_mHkQg2OKRh6aS5tYELp1B1zWIw')
+        'mLt`AnCjj@mF~YtQt|Adj@`tGz_A|uAdsBx{BztA`rBz`@c@dCbZeJxmAeWuS')
     coords = (35.996230, -118.996203)
     print(get_map_url(polyline, coords))
+
+def update_polyline(new_poly):
+    pass
+
+def update_location(new_fix):
+    pass
+
+def route_mapper_node():
+    rospy.Subscriber('polyline', String, update_polyline)
+    rospy.Subscriber('fix', NavSatFix, update_location)
+    rospy.rospin()
 
 if __name__ == '__main__': main()
