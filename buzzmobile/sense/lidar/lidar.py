@@ -4,17 +4,19 @@ import constants
 
 import time
 
+from cv_bridge import CvBridge, CvBridgeError
+
 image_height_px = 800
 image_width_px = 800
 image_height_m = 8
 image_width_m = 8
 pixels_per_m = 100
 
-#convert to cartesian 
 
 lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=0)
 
-#
+bridge = CvBridge()
+
 def gen_lidar_image(laser_scan):
     lidar_points = []
     ranges = laser_scan.ranges
@@ -23,7 +25,13 @@ def gen_lidar_image(laser_scan):
         lidar_points.append((cos(angle) * ranges[i] + constants.image_width / 2, constants.image_height - sin(angle) * ranges[i]))
         angle += laser_scan.angle_increment
     matrix = gen_point_image(lidar_points)
-    lidar_publisher.publish(matrix)
+    lidar_publisher.publish(get_lidar_image(matrix))
+    
+def get_lidar_image(matrix):
+    try:
+        return bridge.cv2_to_imgmsg(result)
+    except CvBridgeError as e:
+        rospy.loginfo("Error converting lidar image to imgmsg")
 
 # points is a list of tuples. i.e. [(x0, y0), (x1, y1), ...]
 def gen_point_image(points):
