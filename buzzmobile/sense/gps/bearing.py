@@ -5,6 +5,7 @@ from std_msgs.msg import Float64
 
 #Global Variables
 last_fix = None
+last_bearing = 0
 bearing_pub = rospy.Publisher('bearing', Float64, queue_size=0)
 
 def bearing(fix):
@@ -15,9 +16,10 @@ def bearing(fix):
         lon2 = math.radians(fix.longitude)
         y = math.sin(lon2 - lon1) * math.cos(lat2)
         x = math.cos(lat1)*math.sin(lat2) - math.cos(lat1)*math.sin(lat2)*math.cos(lon2 - lon1)
-        bearing_pub.publish(math.atan2(y, x))
+        shift = math.atan2(y, x)
+        return shift
     else:
-        bearing_pub.publish(0)
+        bearing_pub.publish(last_bearing)
 
 def compute_bearing():
     rospy.init_node('compute_bearing', anonymous=True)

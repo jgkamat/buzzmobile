@@ -3,7 +3,6 @@ import math
 import cv2
 import maps
 import random
-#import rospy
 
 def interpolate(points, sigma_x, sigma_y, height=500, width=500):
     """
@@ -108,8 +107,9 @@ def main():
     top_left = (min(x_vals), max(y_vals))
     bottom_right = (max(x_vals), min(y_vals))
     y_scale, x_scale = dimensions(points) # this gives the size of our full image
-    normalized = normalized_points(points, int(x_scale), int(y_scale)) # let's normalize the points to full image size
-    angles = [random.randint(-3, 3) for n in normalized] # generating some random angles because i'm lazy
+    print(y_scale, x_scale)
+    normalized = normalized_points(points, int(y_scale), int(x_scale)) # let's normalize the points to full image size
+    angles = [random.uniform(0, 0.131) for n in normalized] # generating some random angles because i'm lazy
     full = interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(x_scale), int(y_scale)) # pretend this doesn't look gross
     i = 0
     for n in normalized: # we're iterating through all the points in the line to simulate movement

@@ -1,3 +1,5 @@
+#!/usr/bin/env/python
+
 import rospy
 import math
 import polyline as pl
@@ -20,29 +22,32 @@ class Frames(object):
 bridge = CvBridge()
 frames = Frames()
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=0)
-x_scale, y_scale = 2000
+x_scale, y_scale = 5000
 
 def set_points(polyline_string):
-    points = pl.decode(polyline_string)
-    frames.points = points
-    normalized = interpolate.normalized_points(points, int(x_scale), int(y_scale))
-    frames.full = interpolate.interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(x_scale), int(y_scale))
+    if polyline_string is not None:
+        points = pl.decode(polyline_string)
+        frames.points = points
+        y_range, x_range = interpolate.dimensions(frames.points)
+        y_range *= y_scale
+        x_range *= x_scale
+        normalized = interpolate.normalized_points(points, int(x_range), int(y_range))
+        frames.full = interpolate.interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(x_range), int(y_range))
 
-def update_image(result):
-    if frames.location is not None:
+def update_image():
+    if frames.full is not None:
+        result = window(frames.full, frames.location, frames.bearing)
         result_msg = bridge.cv2_to_imgmsg(result)
         gps_model_pub.publish(result_msg)
 
 def set_bearing(angle):
     frames.bearing = angle
-    if frames.full is not None:
-        result = window(frames.full, frames.location, frames.bearing)
-        update_image(result)
+    if frames.location is not None:
+        update_image()
 
 def set_location(fix_location):
     frames.location = fix_location
     if frames.bearing is not None:
-        result = window(frames.full, frames.location, frames.bearing)
         update_image(result)
 
 def construct_gps_model():
