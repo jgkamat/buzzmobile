@@ -22,7 +22,7 @@ class Frames(object):
 bridge = CvBridge()
 frames = Frames()
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=0)
-x_scale, y_scale = 5000
+x_scale = y_scale = 5000
 
 def set_points(polyline_string):
     if polyline_string is not None:
@@ -54,7 +54,7 @@ def construct_gps_model():
     rospy.init_node('construct_gps_model', anonymous=True)
     rospy.Subscriber('polyline', String, set_points)
     rospy.Subscriber('bearing', Float64, set_bearing)
-    rospy.Subscriber('gps_location', NavSatFix, set_location)
+    rospy.Subscriber('fix', NavSatFix, set_location)
     rospy.spin()
 
 if __name__=='__main__': construct_gps_model()
