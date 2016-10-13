@@ -1,4 +1,4 @@
-#!/usr/bin/env/python
+#!/usr/bin/env python
 
 import rospy
 import math
@@ -56,3 +56,5 @@ def construct_gps_model():
     rospy.Subscriber('bearing', Float64, set_bearing)
     rospy.Subscriber('gps_location', NavSatFix, set_location)
     rospy.spin()
+
+if __name__=='__main__': construct_gps_model()
