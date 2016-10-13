@@ -19,11 +19,13 @@ def bearing(fix):
         y = math.sin(lon2 - lon1) * math.cos(lat2)
         x = math.cos(lat1)*math.sin(lat2) - math.cos(lat1)*math.sin(lat2)*math.cos(lon2 - lon1)
         shift = math.atan2(y, x)
-        return shift
+        bearing_pub.publish(shift)
     else:
         bearing_pub.publish(last_bearing)
 
-def compute_bearing():
+def compute_bearing_node():
     rospy.init_node('compute_bearing', anonymous=True)
     rospy.Subscriber('fix', NavSatFix, bearing)
     rospy.spin()
+
+if __name__=='__main__': compute_bearing_node()

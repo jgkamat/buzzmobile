@@ -67,6 +67,10 @@ def normalized_points(points, height=500, width=500):
         (y - top_left[1]) * height / y_range) 
         for (x, y) in points]
 
+def normalize_single_point(y_range, x_range, height, width, point):
+    return ((x - top_left[0]) * width / x_range, (y - top_left[1]) * height / y_range)
+
+
 def window(image, location, angle, height=500, width=500):
     """
     Takes an image, a location, an angle in degrees, and optionally a height and width
