@@ -68,7 +68,7 @@ Note that rospy nodes don't require `catkin_make`, but do require that the file 
 
 ```bash
 chmod +x path/to/rospy_node.py  # also make sure the file has the correct python shebang
-rosrun rospy_node.py
+rosrun buzzmobile rospy_node.py
 ```
 
 If you want to visualize your nodes, you can run the ROS visualizer or image_view.
