@@ -41,7 +41,7 @@ To use the google maps api, you need an api key. Put it under `buzzmobile/sense/
 googlemapskey='your_secret_api_key'
 ```
 
-To use the gps node, you will need to do:
+To use the gps and the lidar nodes, you will need user permissions to directly access the usb ports for gps and lidar. For that, do:
 
 ```bash
 sudo usermod -aG dialout <YOUR USERNAME>
@@ -91,6 +91,19 @@ To run the GPS node, do:
 
 ```bash
 rosrun nmea_navsat_driver nmea_serial_driver _port:=/dev/ttyUSB0 _baud:=4800
+```
+
+For lidar node, do:
+
+```bash
+rosrun hokuyo_node hokuyo_node port:=/dev/ttyACM0
+```
+
+Note that `/dev/ttyUSB0` and `/dev/ttyACM0` are the default serial ports for GPS and Lidar respectively. These may or may not be different. Here are some useful commands for debugging if things aren't set up correctly:
+
+```bash
+ls -l /dev/ttyACM0  # List permissions. Will output failure if /dev/ttyACM0 is not set.
+sudo chmod a+rw /dev/ttyACM0  # Sets read/write permissions for all users, not recommended.
 ```
 
 Recording
