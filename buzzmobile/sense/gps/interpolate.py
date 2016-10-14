@@ -67,8 +67,8 @@ def normalized_points(points, height=500, width=500):
         (y - top_left[1]) * height / y_range) 
         for (x, y) in points]
 
-def normalize_single_point(y_range, x_range, height, width, point):
-    return ((x - top_left[0]) * width / x_range, (y - top_left[1]) * height / y_range)
+def normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point):
+    return ((point[0] - top_left[0]) * width / x_range, (point[1] - top_left[1]) * height / y_range)
 
 
 def window(image, location, angle, height=500, width=500):
@@ -101,7 +101,7 @@ def dimensions(points):
     bottom_right = (max(x_vals), max(y_vals))
     x_range = maps.haversine(top_left[0], top_left[1], bottom_right[0], top_left[1])
     y_range = maps.haversine(top_left[0], top_left[1], top_left[0], bottom_right[1])
-    return y_range, x_range
+    return y_range, x_range, top_left, bottom_right
 
 def main():
     # this is just for testing
@@ -110,7 +110,7 @@ def main():
     y_vals = [y for (x, y) in points]
     top_left = (min(x_vals), max(y_vals))
     bottom_right = (max(x_vals), min(y_vals))
-    y_scale, x_scale = dimensions(points) # this gives the size of our full image
+    y_scale, x_scale, top_left, bottom_right = dimensions(points) # this gives the size of our full image
     print(y_scale, x_scale)
     normalized = normalized_points(points, int(y_scale), int(x_scale)) # let's normalize the points to full image size
     angles = [random.uniform(0, 0.131) for n in normalized] # generating some random angles because i'm lazy

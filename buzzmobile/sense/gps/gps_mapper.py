@@ -28,7 +28,7 @@ def set_points(polyline):
     if polyline is not None:
         points = pl.decode(polyline.data)
         frames.points = points
-        y_range, x_range = interpolate.dimensions(frames.points)
+        y_range, x_range, top_left, bottom_right = interpolate.dimensions(frames.points)
         y_range *= y_scale
         x_range *= x_scale
         normalized = interpolate.normalized_points(points, int(x_range), int(y_range))
@@ -36,13 +36,13 @@ def set_points(polyline):
 
 def update_image():
     if hasattr(frames, 'full'):
-        y_range, x_range = interpolate.dimensions(frames.points)
+        y_range, x_range, top_left, bottom_right = interpolate.dimensions(frames.points)
         height = y_scale * y_range
         width = x_scale * x_range
         lat = x_scale * frames.location[0]
         lon = y_scale * frames.location[1]
         point = (lat, lon)
-        point = interpolate.normalize_single_point(y_range, x_range, height, width, point)
+        point = interpolate.normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point)
         result = interpolate.window(frames.full, point, frames.bearing)
         result_msg = bridge.cv2_to_imgmsg(result)
         gps_model_pub.publish(result_msg)
