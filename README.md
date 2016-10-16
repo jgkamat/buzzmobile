@@ -41,7 +41,7 @@ To use the google maps api, you'll need two api keys. Put one under `buzzmobile/
 googlemapskey='your_secret_api_key'
 ```
 
-To use the gps node, you will need to do:
+To use the gps and the lidar nodes, you will need user permissions to directly access the usb ports for gps and lidar. For that, do:
 
 ```bash
 sudo usermod -aG dialout <YOUR USERNAME>
@@ -68,7 +68,7 @@ Note that rospy nodes don't require `catkin_make`, but do require that the file 
 
 ```bash
 chmod +x path/to/rospy_node.py  # also make sure the file has the correct python shebang
-rosrun rospy_node.py
+rosrun buzzmobile rospy_node.py
 ```
 
 If you want to visualize your nodes, you can run the ROS visualizer or image_view.
@@ -99,6 +99,12 @@ To run the Lidar node, do:
 rosrun hokuyo_node hokuyo_node port:=/dev/ttyACM0
 ```
 
+Note that `/dev/ttyUSB0` and `/dev/ttyACM0` are the default serial ports for GPS and Lidar respectively. These may or may not be different. Here are some useful commands for debugging if things aren't set up correctly:
+
+```bash
+ls -l /dev/ttyACM0  # List permissions. Will output failure if /dev/ttyACM0 is not set.
+sudo chmod a+rw /dev/ttyACM0  # Sets read/write permissions for all users, not recommended.
+```
 
 Recording
 ---------
