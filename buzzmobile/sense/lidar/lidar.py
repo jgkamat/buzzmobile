@@ -10,19 +10,11 @@ from sensor_msgs.msg import LaserScan
 from math import sin, cos, pi, atan2
 import rospy
 
-
-
-#import buzzmobile.include.constants as c
-
-class Dum(object):
-    def __init__(self): pass
-
-c = Dum()
-c.image_width = 800
-c.image_height = 800
-c.pixels_per_m = 100
-c.image_width_m = c.image_width / c.pixels_per_m
-c.image_height_m = c.image_height / c.pixels_per_m
+image_width = rospy.get_param("image_width")
+image_height = rospy.get_param("image_height")
+pixels_per_m = rospy.get_param("pixels_per_m")
+image_width_m = rospy.get_param("image_width_m")
+image_height_m = rospy.get_param("image_height_m")
 
 
 
@@ -57,14 +49,14 @@ def get_lidar_image_message(matrix):
 # points is a list of tuples. i.e. [(x0, y0), (x1, y1), ...]
 def gen_point_image(points):
     # Generate matrix of all 0's to represent image
-    matrix = np.zeros((c.image_height, c.image_width), np.uint8)
+    matrix = np.zeros((image_height, image_width), np.uint8)
     matrix.fill(255)
  
     # Remap points to from lidar coordinates to image coordinates
     remappedPoints = []
     for point in points:
-        x = point[0] * c.pixels_per_m + (c.image_width / 2)
-        y = c.image_height - (point[1] * c.pixels_per_m)
+        x = point[0] * pixels_per_m + (image_width / 2)
+        y = image_height - (point[1] * pixels_per_m)
         remappedPoints.append((x, y))
 
     minPoint = remappedPoints[0]
@@ -72,8 +64,8 @@ def gen_point_image(points):
     
     remappedPoints.insert(0, (0,0))
     remappedPoints.insert(1, (0, minPoint[1]))
-    remappedPoints.append((c.image_width, maxPoint[1]))
-    remappedPoints.append((c.image_width, 0))
+    remappedPoints.append((image_width, maxPoint[1]))
+    remappedPoints.append((image_width, 0))
 
     #remappedPoints = sorted(remappedPoints, key=lambda xy: atan2(xy[0], xy[1]))
     
