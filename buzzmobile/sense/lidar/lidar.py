@@ -21,69 +21,55 @@ image_height_m = rospy.get_param("image_height_m")
 lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=0)
 bridge = CvBridge()
 
+
 def gen_lidar_image(laser_scan):
     """ Converts a LaserScan message to a cv image, then publishes it through 
         a lidar_publisher """
     lidar_points = []
     ranges = laser_scan.ranges
+    #effectively rotate the input data by 90 degrees counterclockwise
     angle = laser_scan.angle_min + pi / 2
-    #convert points from polar to cartesian (LaserScan origin is at (width/2, height)
+    #convert points from polar to cartesian (origin at (width/2, height))
     for i in range(len(ranges)):
-        lidar_points.append((cos(angle) * ranges[i], sin(angle) * ranges[i]))
+        lidar_points.append(
+            (cos(angle) * ranges[i] * pixels_per_m + (image_width / 2), 
+             image_height - (sin(angle) * ranges[i] * pixels_per_m))
+        )
         angle += laser_scan.angle_increment
-    #print lidar_points
     #generate the image from the cartesian LaserScan points
-    matrix = gen_point_image(lidar_points)
+    lidar_image = gen_point_image(lidar_points)
     #publish the cv image as an imgmsg
-    lidar_publisher.publish(get_lidar_image_message(matrix))
-    #rospy.loginfo('publishing')
+    lidar_publisher.publish(get_lidar_image_message(lidar_image))
     
-def get_lidar_image_message(matrix):
+    
+def get_lidar_image_message(lidar_image):
     """ Convert an opencv image (matrix) to an imgmsg """
     try:
-        colorMatrix = cv2.cvtColor(matrix, cv2.COLOR_GRAY2BGR)
-        return bridge.cv2_to_imgmsg(colorMatrix, encoding="bgr8")
+        color_image = cv2.cvtColor(lidar_image, cv2.COLOR_GRAY2BGR)
+        return bridge.cv2_to_imgmsg(color_image, encoding="bgr8")
     except CvBridgeError as e:
         rospy.loginfo("Error converting lidar image to imgmsg")
 
-# points is a list of tuples. i.e. [(x0, y0), (x1, y1), ...]
+
 def gen_point_image(points):
+    """ Generate a cv image from a list of tuple (x, y) coordinates """
     # Generate matrix of all 0's to represent image
     matrix = np.zeros((image_height, image_width), np.uint8)
     matrix.fill(255)
  
-    # Remap points to from lidar coordinates to image coordinates
-    remappedPoints = []
-    for point in points:
-        x = point[0] * pixels_per_m + (image_width / 2)
-        y = image_height - (point[1] * pixels_per_m)
-        remappedPoints.append((x, y))
-
-    minPoint = remappedPoints[0]
-    maxPoint = remappedPoints[len(remappedPoints) - 1]
+    #get the points at ~pi and ~0
+    min_point = points[0]
+    max_point = points[len(points) - 1]
+ 
+    #add boundary points for line drawing
+    points.insert(0, (0,0))
+    points.insert(1, (0, min_point[1]))
+    points.append((image_width, max_point[1]))
+    points.append((image_width, 0))
     
-    remappedPoints.insert(0, (0,0))
-    remappedPoints.insert(1, (0, minPoint[1]))
-    remappedPoints.append((image_width, maxPoint[1]))
-    remappedPoints.append((image_width, 0))
-
-    #remappedPoints = sorted(remappedPoints, key=lambda xy: atan2(xy[0], xy[1]))
-    
-    polyPoints = []
-    for pt in remappedPoints:
-        polyPoints.append([pt[0], pt[1]])
-    
-    #print polyPoints
-
-    #cv2.fillConvexPoly(matrix, np.array(polyPoints, np.int32), 0)
-    cv2.fillPoly(matrix, [np.array(polyPoints, np.int32)], 0)
-    #cv2.imshow("yo", matrix)
-    #cv2.waitKey(0)
-    #cv2.destroyAllWindows()
+    #fill the undrivable portion of the image with black
+    cv2.fillPoly(matrix, [np.array(points, np.int32)], 0)
     return matrix
-
-
-#gen_point_image([(1, 2.4), (2, 3.3), (1.5, 9), (3.5, 3.6)])
 
 def lidar_node():
     rospy.init_node('lidar_node', anonymous=True)
@@ -91,10 +77,3 @@ def lidar_node():
     rospy.spin()
 
 if __name__ == '__main__': lidar_node()
-
-
-
-
-
-
-
