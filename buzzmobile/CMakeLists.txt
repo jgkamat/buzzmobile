@@ -14,6 +14,7 @@ find_package(OpenCV REQUIRED)
 add_message_files(
   FILES
   CarPose.msg
+  CarState.msg
 )
 
 generate_messages(
