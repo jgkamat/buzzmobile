@@ -42,7 +42,7 @@ def gen_lidar_image(laser_scan):
     
     
 def get_lidar_image_message(lidar_image):
-    """ Convert an opencv image (matrix) to an imgmsg """
+    """ Convert an opencv image (image) to an imgmsg """
     try:
         color_image = cv2.cvtColor(lidar_image, cv2.COLOR_GRAY2BGR)
         return bridge.cv2_to_imgmsg(color_image, encoding="bgr8")
@@ -52,9 +52,9 @@ def get_lidar_image_message(lidar_image):
 
 def gen_point_image(points):
     """ Generate a cv image from a list of tuple (x, y) coordinates """
-    # Generate matrix of all 0's to represent image
-    matrix = np.zeros((image_height, image_width), np.uint8)
-    matrix.fill(255)
+    # Generate image of all 0's to represent image
+    image = np.zeros((image_height, image_width), np.uint8)
+    image.fill(255)
  
     #get the points at ~pi and ~0
     min_point = points[0]
@@ -67,8 +67,8 @@ def gen_point_image(points):
     points.append((image_width, 0))
     
     #fill the undrivable portion of the image with black
-    cv2.fillPoly(matrix, [np.array(points, np.int32)], 0)
-    return matrix
+    cv2.fillPoly(image, [np.array(points, np.int32)], 0)
+    return image
 
 def lidar_node():
     rospy.init_node('lidar_node', anonymous=True)
