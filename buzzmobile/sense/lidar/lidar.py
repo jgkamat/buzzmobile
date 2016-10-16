@@ -2,12 +2,11 @@
 
 import cv2
 import numpy as np
-import time
 
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import LaserScan
-from math import sin, cos, pi, atan2
+from math import sin, cos, pi
 import rospy
 
 image_width = rospy.get_param("image_width")
