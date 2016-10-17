@@ -32,8 +32,8 @@ def set_points(polyline):
         y_range, x_range, top_left, bottom_right = interpolate.dimensions(frames.points)
         frames.points = [(y, -x) for (x, y) in points]
         _, _, top_left, bottom_right = interpolate.dimensions(frames.points)
-        height *= y_scale
-        width *= x_scale
+        height = y_range * y_scale
+        width = x_range * x_scale
         normalized = interpolate.normalized_points(frames.points, int(width), int(height))
         frames.full = interpolate.interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(width), int(height))
 
@@ -42,10 +42,11 @@ def update_image():
         _, _, top_left, bottom_right = interpolate.dimensions(frames.points)
         height = y_range * y_scale
         width = x_range * x_scale
-        point = (lon, -lat)
-        point = interpolate.normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point)
+        point = (frames.location[0], -frames.location[1])
+        if y_range is not 0:
+            point = interpolate.normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point)
         result = interpolate.window(frames.full, point, frames.bearing)
-        result_msg = bridge.cv2_to_imgmsg(result)
+        result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         gps_model_pub.publish(result_msg)
 
 def set_bearing(angle):
