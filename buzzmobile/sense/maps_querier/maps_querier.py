@@ -22,21 +22,18 @@ target = {
 
 
 def update_destination(new_destination):
-    target['destination'] = new_destination
+    target['destination'] = new_destination.data
     target['published'] = False
-    if hasattr(target, 'fix') and target['fix'] is not None:
+    if target['fix'] is not None:
         publish_polyline()
 
 def update_fix(new_fix):
-    target['fix'] = new_fix
-    if (hasattr(target, 'destination')
-            and target['destination'] is not None
-            and not target['published']):
+    target['fix'] = new_fix.latitude, new_fix.longitude
+    if (target['destination'] is not None and not target['published']):
         publish_polyline()
 
 def publish_polyline():
-    coords = target['fix'].latitude, target['fix'].longitude
-    pub.publish(get_polyline(coords, target['destination']))
+    pub.publish(get_polyline(target['fix'], target['destination']))
     target['published'] = True
 
 def get_polyline(start, destination):
