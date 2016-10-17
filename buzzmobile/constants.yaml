@@ -1,6 +1,6 @@
-image_width: 1200
-image_height: 1200
-pixels_per_m: 200
+image_width: 1200 # width of each world/gps/lidar model frame image
+image_height: 1200 # height of each world/gps/lidar model frame image
+pixels_per_m: 200 # number of pixels representing 1 meter in the frame images.
 travel_distance: 0.3 # distance between ackerman's steps in meters
 wheel_circumference: 2.198
 num_points_in_tentacle: 50
