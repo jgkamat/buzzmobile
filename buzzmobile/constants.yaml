@@ -1,5 +1,9 @@
-image_width: 1200
-image_height: 1200
-pixels_per_m: 200
-image_width_m: 6 #image_width / pixels_per_m
-image_height_m: 6 #image_height / pixels_per_m
+image_width: 1200 # width of each world/gps/lidar model frame image
+image_height: 1200 # height of each world/gps/lidar model frame image
+pixels_per_m: 200 # number of pixels representing 1 meter in the frame images.
+travel_distance: 0.3 # distance between ackerman's steps in meters
+wheel_circumference: 2.198
+num_points_in_tentacle: 50
+wheel_base: 1.8 # distance between front and back axels in meters
+max_steering_angle: 1.0 # radians
+angle_multiplier: 10 # this * max_angle is number of angles to span
