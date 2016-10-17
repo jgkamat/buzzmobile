@@ -48,6 +48,13 @@ sudo usermod -aG dialout <YOUR USERNAME>
 ```
 You will then need to log in and out again. Simply starting a new terminal is not sufficient. The Linux kernel will not refresh groups until the user completely logs out and logs in again.
 
+To use a PS4 controller you will need to install the driver and ros joy message. For that, do:
+
+```bash
+sudo pip install ds4drv
+sudo apt-get install ros-indigo-joy
+```
+
 Running
 -------
 
