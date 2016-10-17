@@ -111,6 +111,8 @@ def main():
     top_left = (min(x_vals), max(y_vals))
     bottom_right = (max(x_vals), min(y_vals))
     y_scale, x_scale, top_left, bottom_right = dimensions(points) # this gives the size of our full image
+    y_scale *= 5000
+    x_scale *= 5000
     print(y_scale, x_scale)
     normalized = normalized_points(points, int(y_scale), int(x_scale)) # let's normalize the points to full image size
     angles = [random.uniform(0, 0.131) for n in normalized] # generating some random angles because i'm lazy

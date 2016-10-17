@@ -23,25 +23,26 @@ bridge = CvBridge()
 frames = Frames()
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=0)
 x_scale = y_scale = 5000
+y_range = x_range = 0
 
 def set_points(polyline):
     if polyline is not None:
         points = pl.decode(polyline.data)
         frames.points = points
         y_range, x_range, top_left, bottom_right = interpolate.dimensions(frames.points)
-        y_range *= y_scale
-        x_range *= x_scale
-        normalized = interpolate.normalized_points(points, int(x_range), int(y_range))
-        frames.full = interpolate.interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(x_range), int(y_range))
+        frames.points = [(y, -x) for (x, y) in points]
+        _, _, top_left, bottom_right = interpolate.dimensions(frames.points)
+        height *= y_scale
+        width *= x_scale
+        normalized = interpolate.normalized_points(frames.points, int(width), int(height))
+        frames.full = interpolate.interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(width), int(height))
 
 def update_image():
     if hasattr(frames, 'full'):
-        y_range, x_range, top_left, bottom_right = interpolate.dimensions(frames.points)
-        height = y_scale * y_range
-        width = x_scale * x_range
-        lat = x_scale * frames.location[0]
-        lon = y_scale * frames.location[1]
-        point = (lat, lon)
+        _, _, top_left, bottom_right = interpolate.dimensions(frames.points)
+        height = y_range * y_scale
+        width = x_range * x_scale
+        point = (lon, -lat)
         point = interpolate.normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point)
         result = interpolate.window(frames.full, point, frames.bearing)
         result_msg = bridge.cv2_to_imgmsg(result)
