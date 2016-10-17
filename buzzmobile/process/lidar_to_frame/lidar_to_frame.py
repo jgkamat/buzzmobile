@@ -2,19 +2,18 @@
 
 import cv2
 import numpy as np
+import rospy
 
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import LaserScan
 from math import sin, cos, pi
-import rospy
 
 image_width = rospy.get_param("image_width")
 image_height = rospy.get_param("image_height")
 pixels_per_m = rospy.get_param("pixels_per_m")
 image_width_m = rospy.get_param("image_width_m")
 image_height_m = rospy.get_param("image_height_m")
-
 
 
 lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=0)
@@ -24,6 +23,16 @@ bridge = CvBridge()
 def gen_lidar_image(laser_scan):
     """ Converts a LaserScan message to a cv image, then publishes it through 
         a lidar_publisher """
+    #convert points from polar to cartesian (origin at (width/2, height))
+    lidar_points = laser_scan_to_cartesian(laser_scan)
+    #generate the image from the cartesian LaserScan points
+    lidar_image = gen_point_image(lidar_points)
+    #publish the cv image as an imgmsg
+    lidar_publisher.publish(get_lidar_image_message(lidar_image))
+
+def laser_scan_to_cartesian(laser_scan):
+    """ Generates a list of cartesian coordinates from LaserScan range and angle
+        data. Uses (width/2, height/2) as the origin. """
     lidar_points = []
     ranges = laser_scan.ranges
     #effectively rotate the input data by 90 degrees counterclockwise
@@ -35,11 +44,7 @@ def gen_lidar_image(laser_scan):
              image_height - (sin(angle) * ranges[i] * pixels_per_m))
         )
         angle += laser_scan.angle_increment
-    #generate the image from the cartesian LaserScan points
-    lidar_image = gen_point_image(lidar_points)
-    #publish the cv image as an imgmsg
-    lidar_publisher.publish(get_lidar_image_message(lidar_image))
-    
+    return lidar_points
     
 def get_lidar_image_message(lidar_image):
     """ Convert an opencv image (image) to an imgmsg """
