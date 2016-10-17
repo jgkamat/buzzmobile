@@ -29,8 +29,7 @@ bool obstacleFlag = false;
 float lastSpeed = 0;
 float lastAngle = 0;
 bool lastHorn = 0;
-uint8_t lastAuto = 0;
-uint8_t lastManual = 1; // Start the car in manual mode
+uint8_t lastState = buzzmobile::CarState::MANUAL; // Start the car in manual mode
 
 unsigned int state;
 bool manualToggle = true; //start up with manual toggle = true
@@ -48,16 +47,14 @@ void handleState(const sensor_msgs::Joy::ConstPtr& joy);
 
 void honkHorn(); 
 void sendMotionCommand();
+void sendStateCommand();
 void sendBrakeCommand();
 
 void keepAliveCallback(const ros::TimerEvent&) {
   // To keep alive, just resend the motion command
   sendMotionCommand();
+  sendStateCommand();
 }
-
-//void stateCallback(const buzzmobile::CarState::ConstPtr& stateMsg) {
-//    state = stateMsg->state;
-//}
 
 void joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 //  Always publish the message
@@ -77,11 +74,11 @@ void sendMotionCommand() {
 
 void sendStateCommand() {
     buzzmobile::CarState msg;
-//    msg.AUTO = lastAuto;
-//    msg.MANUAL = lastManual;
+    msg.state = lastState;
     state_pub.publish(msg);
 }
 
+//TODO implement brake
 void sendBrakeCommand() {
   std_msgs::Bool msg;
   msg.data = manualToggle;
@@ -89,7 +86,13 @@ void sendBrakeCommand() {
 }
 
 void handleState(const sensor_msgs::Joy::ConstPtr& joy) {
-    //if (joy->
+    if (joy->toggle_auto_button) { // If home button is pressed
+        if (lastState == buzzmobile::CarState::AUTO) {
+            lastState = buzzmobile::CarState::MANUAL;
+        } else { // In manual mode
+            lastState = buzzmobile::CarState::AUTO;
+        }
+    }
 }
 
 void handleDrive(const sensor_msgs::Joy::ConstPtr& joy) {
@@ -186,9 +189,6 @@ int main(int argc, char** argv) {
 
   // Initialize the latched topic
   ros::Subscriber sub = n.subscribe<sensor_msgs::Joy>("joy", 1000, joyCallback);
-    
-  //TODO implement state
-  //ros::Subscriber sub2 = n.subscribe<core_msgs::State>("state", 1000, stateCallback);
   
   //ros::Rate r(pubFreq); // Not sure what this is
 
