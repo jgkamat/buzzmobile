@@ -35,7 +35,7 @@ catkin_init_workspace
 
 Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzmobile` to install some dependencies, like [usb_cam] and [nmea_navsat_driver].
 
-To use the google maps api, you'll need two api keys. Put one under `buzzmobile/sense/gps/googlemapskey.py` and one under `buzzmobile/tools/route_mapper/googlemapskey.py` as shown below. Note that the keys need to have proper permissions set in the (Google API Console)[https://console.developers.google.com/], for use of the Google Maps API and the Google Maps Static API, respectively.
+To use the google maps api, you'll need two api keys. Put one under `buzzmobile/sense/maps_querier/googlemapskey.py` and one under `buzzmobile/tools/route_mapper/googlemapskey.py` as shown below. Note that the keys need to have proper permissions set in the (Google API Console)[https://console.developers.google.com/], for use of the Google Maps API and the Google Maps Static API, respectively.
 
 ```python
 googlemapskey='your_secret_api_key'
