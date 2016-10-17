@@ -71,6 +71,12 @@ chmod +x path/to/rospy_node.py  # also make sure the file has the correct python
 rosrun buzzmobile rospy_node.py
 ```
 
+Some nodes require parameters that are defined in the `buzzmobile/constants.yaml` file. To load those constants as `rosparam`s, do:
+
+```bash
+rosparam load buzzmobile/buzzmobile/constants.yaml
+```
+
 If you want to visualize your nodes, you can run the ROS visualizer or image_view.
 
 ```bash
