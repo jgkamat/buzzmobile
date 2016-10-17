@@ -15,6 +15,9 @@ int main(int argc, char** argv) {
   ros::Subscriber s = n.subscribe("/usb_cam/image_raw", 1, imageCallback);
   pub = it.advertise("/image_projected", 1);
 
+  ros::param::get("image_width", image_transform::persp_transform_width);
+  ros::param::get("image_height", image_transform::persp_transform_height);
+
   ros::spin();
 }
 
