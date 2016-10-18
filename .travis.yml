@@ -20,7 +20,6 @@ before_install:
     - sudo apt-get install -qq ros-indigo-opencv3
     - sudo rosdep init
     - rosdep update
-    - rosdep install buzzmobile # Install dependencies for buzzmobile
 
 install:
    - cd ../
@@ -29,6 +28,7 @@ install:
    - cd ~/catkin_ws
 
 before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
-  - source /opt/ros/$ROS_DISTRO/setup.bash  
+  - source /opt/ros/$ROS_DISTRO/setup.bash
+  - rosdep install buzzmobile # Install dependencies for buzzmobile
 script: # All commands must exit with code 0 on success. Anything else is considered failure.
   - catkin_make -j2
