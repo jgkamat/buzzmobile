@@ -20,6 +20,7 @@ before_install:
     - sudo apt-get install -qq ros-indigo-opencv3
     - sudo rosdep init
     - rosdep update
+    - rosdep install buzzmobile # Install dependencies for buzzmobile
 
 install:
    - cd ../
