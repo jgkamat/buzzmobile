@@ -32,6 +32,7 @@ include_directories(
                     ${catkin_INCLUDE_DIRS}
                     ${OPENCV_INCLUDE_DIRS}
 )
+
 add_subdirectory(process/projector)
 add_subdirectory(process/lane_detector)
 add_subdirectory(sense/image_const)

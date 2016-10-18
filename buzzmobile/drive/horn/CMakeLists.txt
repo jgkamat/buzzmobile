@@ -31,3 +31,4 @@
 #target_link_libraries(example ${PROJECT_NAME})
 add_executable(horn_node src/horn_node.cpp)
 target_link_libraries(horn_node ${catkin_LIBRARIES} ${OpenCV_LIBS})
+add_dependencies(horn_node ${catkin_EXPORTED_TARGETS}) 
