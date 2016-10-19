@@ -104,6 +104,7 @@ void loop() {
       speedController.setDesiredValue(Serial.parseFloat());
       steerController.setDesiredValue(Serial.parseFloat());
       digitalWrite(horn_pin, Serial.parseInt());
+      
       lastCmdTime = millis();
       retMsg[0] = STX;
       sprintf(retMsg+1, "%05i%05.4f", count, getSteeringAngle());
@@ -116,7 +117,7 @@ void loop() {
    * This prevents the controllers ramping up while the
    * vehicle is estopped, creating a dangerous situation.
    */
-  if(digitalRead(estop_pin) == HIGH) {
+  //if(digitalRead(estop_pin) == HIGH) {
     speedController.update(getSpeed());
     motor.write(speedController.getOutput());
     
@@ -137,10 +138,10 @@ void loop() {
     } else {
       digitalWrite(red_led, LOW);
     }
-  } else {
+  //} else {
     // If estop is triggered, go ahead and reset the controllers.
-    stopAll();
-  }
+  //  stopAll();
+  //}
   
   delay(50);
 }
@@ -154,3 +155,4 @@ void onEncChange() {
     count++;
   }
 }
+

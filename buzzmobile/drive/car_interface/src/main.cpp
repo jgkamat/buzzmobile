@@ -35,7 +35,8 @@ int main(int argc, char **argv) {
 
   ros::init(argc, argv, "car_interface");
 
-  arduino.open("/dev/arduino_motor_controller", 9600);
+  //arduino.open("/dev/arduino_motor_controller", 9600);
+  arduino.open("/dev/ttyACM0", 9600);
   //arduino.setOdometryCallback(odometry_callback);
 
   ros::NodeHandle node_handle;
@@ -44,7 +45,7 @@ int main(int argc, char **argv) {
 
   //encoder_pub = node_handle.advertise<core_msgs::Odom>("encoder_odom", 1000);
 
-  command_sub = node_handle.subscribe("motion_command", 1, command_callback);
+  command_sub = node_handle.subscribe("car_pose", 1, command_callback);
   
   horn_sub = node_handle.subscribe("car_horn", 1, horn_callback);
 
