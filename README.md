@@ -1,6 +1,13 @@
 # buzzmobile
 An autonomous parade float/vehicle
 
+Architecture
+------------
+
+A list of available nodes and an overview of the architecture is available [here](https://docs.google.com/drawings/d/1Lryui91lSutyC1TQhDmWI3JqDfefNB9E9RoSaBPHhcE/edit?usp=sharing).
+
+![architecture](/architecture.png?raw=true)
+
 
 Environment
 -----------
