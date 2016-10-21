@@ -37,7 +37,7 @@ def set_car_state(car_state):
     publish()
 
 def mux_node():
-    rospy.init_node('car_pos_mux', anonymous=True)
+    rospy.init_node('car_pose_mux', anonymous=True)
     rospy.Subscriber('manual_car_pose', CarPose, set_manual_car_pose)
     rospy.Subscriber('auto_car_pose', CarPose, set_auto_car_pose)
     rospy.Subscriber('car_state', CarState, set_car_state)
