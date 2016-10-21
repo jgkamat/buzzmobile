@@ -116,8 +116,6 @@ def score_tentacle(points, frame):
         pt2 = points[i+1]
         cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], BUZZMOBILE_WIDTH * PIXELS_PER_METER)
 
-    #  normalizing_factor = WIDTH * 255 * 2
-    #  normalizing_factor = cv2.countNonZero(tentacle_mask)
     normalizing_factor = sum(sum(tentacle_mask))
     if normalizing_factor == 0.0:
         return 0.0
@@ -127,8 +125,6 @@ def score_tentacle(points, frame):
     return tentacle_score
 
 def pick_tentacle(x_0, y_0, frame):
-    # TODO add width
-
     angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * ANGLE_MULTIPLIER)
     color_frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
 
