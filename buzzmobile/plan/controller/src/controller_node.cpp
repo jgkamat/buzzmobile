@@ -173,11 +173,11 @@ void handleHorn(const sensor_msgs::Joy::ConstPtr& joy) {
 //}
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "teleop_joy");
+    ros::init(argc, argv, "controller_node");
   
     ros::NodeHandle n;
  
-    motion_pub = n.advertise<buzzmobile::CarPose>("car_pose", 0);
+    motion_pub = n.advertise<buzzmobile::CarPose>("controller_car_pose", 0);
     state_pub = n.advertise<buzzmobile::CarState>("car_state", 0);
 
     // Initialize the latched topic
