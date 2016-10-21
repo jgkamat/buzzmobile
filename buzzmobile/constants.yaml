@@ -11,7 +11,7 @@ pixels_per_m: 200
 # Used for tentacle projection, travel distance is the step between each 
 # tentacle point, and num_points is the length of each tentacle, if using
 # liner, and not tentacle projection, ignore
-travel_distance: 0.3 
+travel_distance: 0.061
 num_points_in_tentacle: 50
 
 # Hardware values dealing with the car to define Ackerman parameters
