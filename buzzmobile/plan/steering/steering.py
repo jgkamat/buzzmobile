@@ -17,6 +17,10 @@ from sensor_msgs.msg import Image
 bridge = CvBridge()
 pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=0)
 tentacle_pub = rospy.Publisher('tentacle_frame', Image, queue_size=0)
+# this gets modified on steering_node init
+immediate_future_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
+saved_models = {
+        'lidar_model': None}
 
 PIXELS_PER_METER = rospy.get_param('pixels_per_m')
 HEIGHT = rospy.get_param('image_height')
@@ -27,12 +31,15 @@ NUM_POINTS = rospy.get_param('num_points_in_tentacle')
 WHEEL_BASE = rospy.get_param('wheel_base')
 ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
 BUZZMOBILE_WIDTH = rospy.get_param('buzzmobile_width')
-BREAKING_DISTANCE = rospy.get_param('breaking_distance')
+BRAKING_DISTANCE = rospy.get_param('braking_distance')
+THRESHHOLD = rospy.get_param('braking_score_threshhold')
 
 
 def steering_node():
+    create_immediate_future_mask()
     rospy.init_node('steering', anonymous=True)
     rospy.Subscriber('world_model', Image, steer)
+    rospy.Subscriber('lidar_model', Image, set_lidar_model)
     rospy.spin()
 
 def steer(ros_world_model):
@@ -46,10 +53,16 @@ def steer(ros_world_model):
     height, width = world_frame.shape
     points, angle = pick_tentacle(width//2, height, world_frame)
 
-    # publish carpose
     pose = CarPose()
-    pose.angle = angle
-    pose.velocity = 1.0
+
+    # check our path for obstacles
+    if should_brake(points, saved_models['lidar_model'], world_frame):
+        pose.brake = True
+    else:
+        pose.angle = angle
+        pose.velocity = 1.0
+
+    # publish carpose
     pose_pub.publish(pose)
 
     # publish drawn tentacle
@@ -60,6 +73,26 @@ def steer(ros_world_model):
     except CvBridgeError:
         rospy.loginfo('Error converting tentacle_frame to RosImage')
 
+
+def create_immediate_future_mask():
+    cv2.circle(immediate_future_mask, (HEIGHT, WIDTH//2),
+            BRAKING_DISTANCE * PIXELS_PER_METER, [255, 255, 255])
+
+def set_lidar_model(new_lidar_model):
+    saved_models['lidar_model'] = new_lidar_model
+
+def should_brake(points, lidar_model, world_frame):
+    if lidar_model is None:
+        rospy.loginfo('braking because no lidar image received.')
+        return True
+
+    tentacle_mask = create_tentacle_mask(points)
+    immediate_path_mask = cv2.bitwise_and(lidar_model, tentacle_mask)
+    world_frame_path = cv2.bitwise_and(world_frame, world_frame, mask=immediate_path_mask)
+
+    score = sum(sum(world_frame_path)) / float(sum(sum(immediate_path_mask)))
+
+    return True if score < THRESHHOLD else False
 
 def turning_radius(steering_angle):
     """
@@ -104,17 +137,21 @@ def project_tentacle(x_0, y_0, heading, steering_angle,
     return [(int(round(x)), int(round(y)))] + project_tentacle(x, y,
             heading, steering_angle, num_points - 1)
 
+def create_tentacle_mask(points):
+    tentacle_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
+    for i in range(len(points) - 1):
+        pt1 = points[i]
+        pt2 = points[i+1]
+        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], BUZZMOBILE_WIDTH * PIXELS_PER_METER)
+    return tentacle_mask
+
 def score_tentacle(points, frame):
     """
     Returns the score per tentacle by masking the frame with the tentacle's
     points, then summing the values of the result and normalizing by the sum of
     the values of the mask.
     """
-    tentacle_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
-    for i in range(len(points) - 1):
-        pt1 = points[i]
-        pt2 = points[i+1]
-        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], BUZZMOBILE_WIDTH * PIXELS_PER_METER)
+    tentacle_mask = create_tentacle_mask(points)
 
     normalizing_factor = sum(sum(tentacle_mask))
     if normalizing_factor == 0.0:
