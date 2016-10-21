@@ -32,4 +32,4 @@ buzzmobile_width: 1.5
 braking_distance: 3.0
 
 # Threshold for score in braking calculation in steering.py
-braking_score_threshold = 0.4
+braking_score_threshhold: 0.4

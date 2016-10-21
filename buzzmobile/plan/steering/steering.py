@@ -17,10 +17,6 @@ from sensor_msgs.msg import Image
 bridge = CvBridge()
 pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=0)
 tentacle_pub = rospy.Publisher('tentacle_frame', Image, queue_size=0)
-# this gets modified on steering_node init
-immediate_future_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
-saved_models = {
-        'lidar_model': None}
 
 PIXELS_PER_METER = rospy.get_param('pixels_per_m')
 HEIGHT = rospy.get_param('image_height')
@@ -33,6 +29,10 @@ ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
 BUZZMOBILE_WIDTH = rospy.get_param('buzzmobile_width')
 BRAKING_DISTANCE = rospy.get_param('braking_distance')
 THRESHHOLD = rospy.get_param('braking_score_threshhold')
+
+# this gets modified on steering_node init
+immediate_future_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
+saved_models = {'lidar_model': None}
 
 
 def steering_node():
@@ -66,7 +66,8 @@ def steer(ros_world_model):
     pose_pub.publish(pose)
 
     # publish drawn tentacle
-    draw_points(points, world_frame, score_to_color(1.0))
+    if not pose.brake:
+        draw_points(points, world_frame, score_to_color(1.0))
     try:
         tentacle_frame = bridge.cv2_to_imgmsg(world_frame)
         tentacle_pub.publish(tentacle_frame)
@@ -76,10 +77,14 @@ def steer(ros_world_model):
 
 def create_immediate_future_mask():
     cv2.circle(immediate_future_mask, (HEIGHT, WIDTH//2),
-            BRAKING_DISTANCE * PIXELS_PER_METER, [255, 255, 255])
+            int(BRAKING_DISTANCE * PIXELS_PER_METER), [255, 255, 255])
 
 def set_lidar_model(new_lidar_model):
-    saved_models['lidar_model'] = new_lidar_model
+    try:
+        lidar_model = bridge.imgmsg_to_cv2(new_lidar_model, 'mono8')
+    except CvBridgeError:
+        rospy.loginfo('Error converting world_model to cv2 in set_lidar_model')
+    saved_models['lidar_model'] = lidar_model
 
 def should_brake(points, lidar_model, world_frame):
     if lidar_model is None:
@@ -142,7 +147,7 @@ def create_tentacle_mask(points):
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
-        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], BUZZMOBILE_WIDTH * PIXELS_PER_METER)
+        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], int(BUZZMOBILE_WIDTH * PIXELS_PER_METER))
     return tentacle_mask
 
 def score_tentacle(points, frame):
