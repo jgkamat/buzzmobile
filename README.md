@@ -1,6 +1,13 @@
 # buzzmobile
 An autonomous parade float/vehicle
 
+Architecture
+------------
+
+A list of available nodes and an overview of the architecture is available [here](https://docs.google.com/drawings/d/1Lryui91lSutyC1TQhDmWI3JqDfefNB9E9RoSaBPHhcE/edit?usp=sharing).
+
+![architecture](/architecture.png?raw=true)
+
 
 Environment
 -----------
@@ -18,12 +25,6 @@ rosinit     # put these in your .bashrc too so they run everytime
 rosdevel    # you open a new terminal window/tab.
 ```
 
-We recommend using OpenCV 3. You can install it with:
-
-```bash
-sudo apt-get install ros-indigo-opencv3
-```
-
 To set up this repo, do:
 
 ```bash
@@ -35,7 +36,7 @@ catkin_init_workspace
 
 Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzmobile` to install some dependencies, like [usb_cam] and [nmea_navsat_driver].
 
-To use the google maps api, you'll need two api keys. Put one under `buzzmobile/sense/gps/googlemapskey.py` and one under `buzzmobile/tools/route_mapper/googlemapskey.py` as shown below. Note that the keys need to have proper permissions set in the (Google API Console)[https://console.developers.google.com/], for use of the Google Maps API and the Google Maps Static API, respectively.
+To use the google maps api, you'll need two api keys. Put one under `buzzmobile/sense/maps_querier/googlemapskey.py` and one under `buzzmobile/tools/route_mapper/googlemapskey.py` as shown below. Note that the keys need to have proper permissions set in the [Google API Console](https://console.developers.google.com/), for use of the Google Maps API and the Google Maps Static API, respectively.
 
 ```python
 googlemapskey='your_secret_api_key'
@@ -75,6 +76,12 @@ Note that rospy nodes don't require `catkin_make`, but do require that the file 
 ```bash
 chmod +x path/to/rospy_node.py  # also make sure the file has the correct python shebang
 rosrun buzzmobile rospy_node.py
+```
+
+Some nodes require parameters that are defined in the `buzzmobile/constants.yaml` file. To load those constants as `rosparam`s, do:
+
+```bash
+rosparam load buzzmobile/buzzmobile/constants.yaml
 ```
 
 If you want to visualize your nodes, you can run the ROS visualizer or image_view.

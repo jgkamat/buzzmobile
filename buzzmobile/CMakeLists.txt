@@ -34,8 +34,6 @@ include_directories(
 )
 
 add_subdirectory(process/projector)
-add_subdirectory(process/lane_detector)
-add_subdirectory(sense/image_const)
 add_subdirectory(plan/controller)
 add_subdirectory(drive/horn)
 add_subdirectory(drive/car_interface)

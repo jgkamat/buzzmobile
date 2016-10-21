@@ -18,14 +18,14 @@ bridge = CvBridge()
 pose_pub = rospy.Publisher('auto_car_pose', CarPose, queue_size=0)
 tentacle_pub = rospy.Publisher('tentacle_frame', Image, queue_size=0)
 
-# TODO: MODIFY THESE PARAMS
-PIXELS_PER_METER = 15 # number of pixels per meter in each frame
-HEIGHT = WIDTH = 500 # height and width of frames in pixels
-MAX_ANGLE = 1.0 # max angle steering can happen in radians
-TRAVEL_DISTANCE = 0.3 # travel distance between ack steps in meters
-NUM_POINTS = 50 # number of points per tentacle
-WHEEL_BASE = 1.8 # distance between front and back wheel axels in meters
-ANGLE_MULTIPLIER = 10 # this times max_angle is number of angles to span
+PIXELS_PER_METER = rospy.get_param('pixels_per_m')
+HEIGHT = rospy.get_param('image_height')
+WIDTH = rospy.get_param('image_width')
+MAX_ANGLE = rospy.get_param('max_steering_angle')
+TRAVEL_DISTANCE = rospy.get_param('travel_distance')
+NUM_POINTS = rospy.get_param('num_points_in_tentacle')
+WHEEL_BASE = rospy.get_param('wheel_base')
+ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
 
 
 def steering_node():

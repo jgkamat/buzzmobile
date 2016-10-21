@@ -8,9 +8,10 @@ namespace image_transform {
 
 // The width and height of the final image. Will depend on the size of the
 // initial image.
-// TODO: modify to fit the car's image dimensions.
-int persp_transform_width = 480;
-int persp_transform_height = 640;
+// int persp_transform_width = 480;
+// int persp_transform_height = 640;
+int persp_transform_width;
+int persp_transform_height;
 
 // The coords of the edges of a chessboard lying on the ground,
 // in a training image.
@@ -25,6 +26,7 @@ cv::Point2f persp_transform_src_pts[4] = {
 
 // The points where each of the above will be projected onto.
 // In our case, in the middle wrt x, and close to bottom wrt y.
+// TODO: use pixels_per_m param to figure out exact dimensions of the chess board in the image
 cv::Point2f persp_transform_dst_pts[4] = {
   cv::Point2f(-10+(persp_transform_width/2),persp_transform_height-20-30),
   cv::Point2f(10+(persp_transform_width/2),persp_transform_height-20-30),
