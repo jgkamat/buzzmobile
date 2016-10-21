@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import rospy
+
 from std_msgs.msg import String
+
 
 def input_node():
     pub = rospy.Publisher('destination', String, queue_size=0)
@@ -11,7 +13,4 @@ def input_node():
         new_dst = raw_input("Dest >> ")
         pub.publish(new_dst)
 
-if __name__ == '__main__':
-    input_node()
-
-
+if __name__ == '__main__': input_node()
