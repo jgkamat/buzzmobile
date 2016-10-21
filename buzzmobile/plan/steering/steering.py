@@ -26,6 +26,8 @@ TRAVEL_DISTANCE = rospy.get_param('travel_distance')
 NUM_POINTS = rospy.get_param('num_points_in_tentacle')
 WHEEL_BASE = rospy.get_param('wheel_base')
 ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
+BUZZMOBILE_WIDTH = rospy.get_param('buzzmobile_width')
+BREAKING_DISTANCE = rospy.get_param('breaking_distance')
 
 
 def steering_node():
@@ -112,7 +114,7 @@ def score_tentacle(points, frame):
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
-        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], 1)
+        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], BUZZMOBILE_WIDTH * PIXELS_PER_METER)
 
     #  normalizing_factor = WIDTH * 255 * 2
     #  normalizing_factor = cv2.countNonZero(tentacle_mask)
@@ -125,9 +127,6 @@ def score_tentacle(points, frame):
     return tentacle_score
 
 def pick_tentacle(x_0, y_0, frame):
-    ###### TODO: if two tentacles are same score, pick one that goes least away
-    # from current heading.
-
     # TODO add width
 
     angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * ANGLE_MULTIPLIER)

@@ -24,3 +24,9 @@ max_steering_angle: 1.0 # radians
 # Resolution of potential paths, that is to say, the higher this number, the
 # more tentacles/linear paths will be judged
 angle_multiplier: 10 # this * max_angle is number of angles to span
+
+# Hardware defined car width, used to score projected tentacles in steering.
+buzzmobile_width: 1.5
+
+# Temporary max distance an obstacle can be for breaking to start. See issue #54
+breaking_distance: 3.0
