@@ -1,4 +1,4 @@
-# buzzmobile
+# buzzmobile [![Build Status](https://travis-ci.org/gtagency/buzzmobile.svg?branch=master)](https://travis-ci.org/gtagency/buzzmobile)
 An autonomous parade float/vehicle
 
 Architecture
