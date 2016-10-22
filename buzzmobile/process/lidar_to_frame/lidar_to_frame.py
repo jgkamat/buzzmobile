@@ -69,10 +69,12 @@ def gen_point_image(points):
     max_point = points[len(points) - 1]
 
     #add boundary points for line drawing
-    points.insert(0, (0,0))
-    points.insert(1, (0, min_point[1]))
-    points.append((image_width, max_point[1]))
-    points.append((image_width, 0))
+    points.insert(0, (image_width, 0))
+    points.insert(1, (image_width, image_height + 1))
+    points.insert(2, (min_point[0], image_height))
+    points.append((max_point[0], image_height))
+    points.append((0, image_height + 1))
+    points.append((0, 0))
 
     #fill the undrivable portion of the image with black
     cv2.fillPoly(image, [np.array(points, np.int32)], 0)
