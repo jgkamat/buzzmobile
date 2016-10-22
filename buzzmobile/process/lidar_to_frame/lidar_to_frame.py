@@ -39,9 +39,12 @@ def laser_scan_to_cartesian(laser_scan):
     angle = laser_scan.angle_min + pi / 2
     #convert points from polar to cartesian (origin at (width/2, height))
     for i in range(len(ranges)):
+        distance_to_point = (
+                ranges[i] if ranges[i] != float('inf')
+                else image_width + image_height)
         lidar_points.append(
-            (cos(angle) * ranges[i] * pixels_per_m + (image_width / 2),
-             image_height - (sin(angle) * ranges[i] * pixels_per_m))
+            (cos(angle) * distance_to_point * pixels_per_m + (image_width / 2),
+             image_height - (sin(angle) * distance_to_point * pixels_per_m))
         )
         angle += laser_scan.angle_increment
     return lidar_points
@@ -66,10 +69,12 @@ def gen_point_image(points):
     max_point = points[len(points) - 1]
 
     #add boundary points for line drawing
-    points.insert(0, (0,0))
-    points.insert(1, (0, min_point[1]))
-    points.append((image_width, max_point[1]))
-    points.append((image_width, 0))
+    points.insert(0, (image_width, 0))
+    points.insert(1, (image_width, image_height + 1))
+    points.insert(2, (min_point[0], image_height))
+    points.append((max_point[0], image_height))
+    points.append((0, image_height + 1))
+    points.append((0, 0))
 
     #fill the undrivable portion of the image with black
     cv2.fillPoly(image, [np.array(points, np.int32)], 0)
