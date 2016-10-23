@@ -26,7 +26,6 @@ TRAVEL_DISTANCE = rospy.get_param('travel_distance')
 NUM_POINTS = rospy.get_param('num_points_in_tentacle')
 WHEEL_BASE = rospy.get_param('wheel_base')
 ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
-BUZZMOBILE_WIDTH = rospy.get_param('buzzmobile_width')
 BRAKING_DISTANCE = rospy.get_param('braking_distance')
 THRESHHOLD = rospy.get_param('braking_score_threshhold')
 
@@ -147,7 +146,7 @@ def create_tentacle_mask(points):
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
-        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], int(BUZZMOBILE_WIDTH * PIXELS_PER_METER))
+        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], 1)
     return tentacle_mask
 
 def score_tentacle(points, frame):
