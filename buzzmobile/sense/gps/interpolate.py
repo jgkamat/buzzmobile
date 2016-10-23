@@ -1,31 +1,32 @@
 import numpy as np
+import math
 import cv2
 import maps
-#import rospy
+import random
 
 def interpolate(points, sigma_x, sigma_y, height=500, width=500):
     """
     Takes a list of points, connects them with a line,
     and Gaussian blurs the line.
     ----------------------------------------------------------------------------
-    height, width: dimensions of the output image in pixels
     points: list of tuples, i.e. (x, y) points that will be plotted on the image
     sigma_x, sigma_y: gaussian kernel paramters (higher = more blurry)
+    height, width: dimensions of the output image in pixels
     ----------------------------------------------------------------------------
     """
     output = np.zeros((height, width), np.uint8)
-    x = [x for (x, y) in points]
-    y = [y for (x, y) in points]
+    x_vals = [x for (x, y) in points]
+    y_vals = [y for (x, y) in points]
+    left = min(x_vals)
+    bottom = max(y_vals)
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
         cv2.line(output, pt1, pt2, [255, 255, 255], 4)
     output = cv2.GaussianBlur(output, (sigma_x, sigma_y), 0)
     return output
-    pub = rospy.Publisher('gps_image', Image, queue_size = 10)
-    rospy.init_node('gps', anonymous=True)
-    #cv2.imshow("line", output)
-    #cv2.waitKey(0)
+    #pub = rospy.Publisher('gps_image', Image, queue_size = 10)
+    #rospy.init_node('gps', anonymous=True)
 
 def nearest_point_index(location, points_array):
     """
@@ -63,45 +64,67 @@ def normalized_points(points, height=500, width=500):
     x_range = abs(top_left[0] - bottom_right[0])
     y_range = abs(top_left[1] - bottom_right[1])
     return [((x - top_left[0]) * width / x_range, 
-             (y - top_left[1]) * height / y_range) 
-             for (x, y) in points]
+        (y - top_left[1]) * height / y_range) 
+        for (x, y) in points]
 
-def centered_normalized_points(points, height=500, width=500):
+def normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point):
+    return ((point[0] - top_left[0]) * width / x_range, (point[1] - top_left[1]) * height / y_range)
+
+
+def window(image, location, angle, height=500, width=500):
     """
-    Takes a list of points (tuples of x, y coordinates) and an output image size
-    and returns a transformed list of points that fit in the output image such that
-    the bottom-most point is centered with respect to the output width.
+    Takes an image, a location, an angle in degrees, and optionally a height and width
+    in order to return the angled rectangular region of the image of the specified size,
+    with the location specifying the bottom middle point of the image.
+    ----------------------------------------------------------------------------
+    image: 2D array (NumPy/OpenCV) representing the path (should be normalized already)
+    location: tuple of (x, y) representing the current location to center the bottom of
+              the window at in pixels
+    degree_heading: angle in degrees to rotate rectangular region by (counterclockwise)
+    height, width: dimensions of the output image in pixels
+    ----------------------------------------------------------------------------
+    """
+    parallel = (math.cos(angle), math.sin(angle))
+    perpendicular = (-math.sin(angle), math.cos(angle))
+    horizontal = location[0] - parallel[0] * (width/2) - perpendicular[0] * (height/1)
+    vertical = location[1] - parallel[1] * (width/2) - perpendicular[1] * (height/1)
+    rotation_matrix = np.array([[parallel[0], perpendicular[0], horizontal], [parallel[1], perpendicular[1], vertical]])
+    return cv2.warpAffine(image, rotation_matrix, (width, height), flags=cv2.WARP_INVERSE_MAP)
+
+def dimensions(points):
+    """
+    Takes a set of latitude and longitude points and returns the width and height in kilometers.
     """
     x_vals = [x for (x, y) in points]
     y_vals = [y for (x, y) in points]
     top_left = (min(x_vals), min(y_vals))
     bottom_right = (max(x_vals), max(y_vals))
-    first = points[0]
-    x_range = abs(top_left[0] - bottom_right[0])
-    y_range = abs(top_left[1] - bottom_right[1])
-    y_vals = [(y - top_left[1]) * height / y_range for (x, y) in points]
-    x_vals = [((x - first[0]) * (width / (2 * x_range)) + width / 2) for (x, y) in points]
-    return [(x_vals[i], y_vals[i]) for i in range(len(points))]
+    x_range = maps.haversine(top_left[0], top_left[1], bottom_right[0], top_left[1])
+    y_range = maps.haversine(top_left[0], top_left[1], top_left[0], bottom_right[1])
+    return y_range, x_range, top_left, bottom_right
 
 def main():
     # this is just for testing
-    # get points from Google Maps and also make a numpy array
-    points = [(y, -x) for (x, y) in maps.get_points("Mexico City, MX", "New York, NY")]
-    points_array = np.asarray(points)
-    start_index = 0 # index of closest point to current location
-    current_index = 0 # we're simulating our current location by iterating through points
-    window = close_points(points[start_index:], 100000) # initial sliding window from the first point to some max distance
-    # we'll have to tweak the exact numbers later
-    while len(window) > 1 and window[-1] != points[-1] and current_index < len(points):
-        # call interpolate function on rounded point values after normalizing and centering the points
-        # pretty sure we don't actually want to normalize in this way but we use it for now just to have centered points
-        frame = interpolate([(int(round(x)), int(round(y))) for (x,y) in centered_normalized_points(window)], 3, 3)
-        cv2.imshow("line", frame)
-        cv2.waitKey(100)
-        current_index += 1
-        # update the index of the closest point to the new simulated current location
-        start_index = nearest_point_index(points[current_index], points_array)
-        window = close_points(points[start_index:], 100000)
-    cv2.waitKey(0)
+    points = [(y, -x) for (x, y) in maps.get_points("Mexico City, MX", "New York, NY")] # get google maps lat/longs
+    x_vals = [x for (x, y) in points]
+    y_vals = [y for (x, y) in points]
+    top_left = (min(x_vals), max(y_vals))
+    bottom_right = (max(x_vals), min(y_vals))
+    y_scale, x_scale, top_left, bottom_right = dimensions(points) # this gives the size of our full image
+    y_scale *= 5000
+    x_scale *= 5000
+    print(y_scale, x_scale)
+    normalized = normalized_points(points, int(y_scale), int(x_scale)) # let's normalize the points to full image size
+    angles = [random.uniform(0, 0.131) for n in normalized] # generating some random angles because i'm lazy
+    full = interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(x_scale), int(y_scale)) # pretend this doesn't look gross
+    i = 0
+    for n in normalized: # we're iterating through all the points in the line to simulate movement
+        current = (int(round(n[0])), int(round(n[1])))
+        # swap the two lines below to see what happens with/without angling the image
+        rot = window(full, (current[0], current[1]), angles[i], 500, 500)
+        #rot = window(full, (current[0], current[1]), 0, 500, 500)
+        i += 1
+        cv2.imshow("line", rot)
+        cv2.waitKey(30) # cinematic
 
 if __name__ == '__main__': main()
