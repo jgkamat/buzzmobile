@@ -29,13 +29,13 @@ ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
 BRAKING_DISTANCE = rospy.get_param('braking_distance')
 THRESHHOLD = rospy.get_param('braking_score_threshhold')
 
-# this gets modified on steering_node init
 immediate_future_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
+cv2.circle(immediate_future_mask, (WIDTH//2, HEIGHT),
+        int(BRAKING_DISTANCE * PIXELS_PER_METER), [255, 255, 255], -1)
 saved_models = {'lidar_model': None}
 
 
 def steering_node():
-    create_immediate_future_mask()
     rospy.init_node('steering', anonymous=True)
     rospy.Subscriber('world_model', Image, steer)
     rospy.Subscriber('lidar_model', Image, set_lidar_model)
@@ -55,7 +55,7 @@ def steer(ros_world_model):
     pose = CarPose()
 
     # check our path for obstacles
-    if should_brake(points, saved_models['lidar_model'], world_frame):
+    if should_brake(points, saved_models['lidar_model']):
         pose.brake = True
     else:
         pose.angle = angle
@@ -65,7 +65,12 @@ def steer(ros_world_model):
     pose_pub.publish(pose)
 
     # publish drawn tentacle
-    if not pose.brake:
+    if pose.brake:
+        cv2.circle(world_frame, (WIDTH//2, HEIGHT),
+                int(BRAKING_DISTANCE * PIXELS_PER_METER), score_to_color(1.0), 1)
+    else:
+        cv2.circle(world_frame, (WIDTH//2, HEIGHT),
+                int(BRAKING_DISTANCE * PIXELS_PER_METER), score_to_color(0.0), 1)
         draw_points(points, world_frame, score_to_color(1.0))
     try:
         tentacle_frame = bridge.cv2_to_imgmsg(world_frame)
@@ -74,10 +79,6 @@ def steer(ros_world_model):
         rospy.loginfo('Error converting tentacle_frame to RosImage')
 
 
-def create_immediate_future_mask():
-    cv2.circle(immediate_future_mask, (HEIGHT, WIDTH//2),
-            int(BRAKING_DISTANCE * PIXELS_PER_METER), [255, 255, 255])
-
 def set_lidar_model(new_lidar_model):
     try:
         lidar_model = bridge.imgmsg_to_cv2(new_lidar_model, 'mono8')
@@ -85,16 +86,22 @@ def set_lidar_model(new_lidar_model):
         rospy.loginfo('Error converting world_model to cv2 in set_lidar_model')
     saved_models['lidar_model'] = lidar_model
 
-def should_brake(points, lidar_model, world_frame):
+def should_brake(points, lidar_model):
     if lidar_model is None:
         rospy.loginfo('braking because no lidar image received.')
         return True
 
     tentacle_mask = create_tentacle_mask(points)
-    immediate_path_mask = cv2.bitwise_and(lidar_model, tentacle_mask)
-    world_frame_path = cv2.bitwise_and(world_frame, world_frame, mask=immediate_path_mask)
+    immediate_path_mask = cv2.bitwise_and(immediate_future_mask, tentacle_mask)
+    lidar_model_path = cv2.bitwise_and(lidar_model, lidar_model, mask=immediate_path_mask)
 
-    score = sum(sum(world_frame_path)) / float(sum(sum(immediate_path_mask)))
+    score = sum(sum(lidar_model_path)) / float(sum(sum(immediate_path_mask)))
+    # TODO: fix
+    #  rospy.loginfo('lidar: ' + str(sum(sum(lidar_model_path))))
+    #  rospy.loginfo('future: ' + str(sum(sum(immediate_path_mask))))
+    #  rospy.loginfo('score: ' + str(score))
+    #  cv2.imwrite('fuck_lidar.jpg', lidar_model_path)
+    #  cv2.imwrite('fuck_future.jpg', immediate_path_mask)
 
     return True if score < THRESHHOLD else False
 
