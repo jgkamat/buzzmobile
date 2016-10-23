@@ -4,6 +4,7 @@
 # locally and not worry about them being pushed upstream
 buzzmobile/sense/maps_querier/googlemapskey.py
 buzzmobile/tools/route_mapper/googlemapskey.py
+buzzmobile/sense/gps/googlemapskey.py
 
 ### C++ ###
 # Prerequisites
