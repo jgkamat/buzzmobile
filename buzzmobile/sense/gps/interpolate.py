@@ -73,14 +73,14 @@ def normalize_single_point(y_range, x_range, height, width, top_left, bottom_rig
 
 def window(image, location, angle, height=500, width=500):
     """
-    Takes an image, a location, an angle in degrees, and optionally a height and width
+    Takes an image, a location, an angle in radians, and optionally a height and width
     in order to return the angled rectangular region of the image of the specified size,
     with the location specifying the bottom middle point of the image.
     ----------------------------------------------------------------------------
     image: 2D array (NumPy/OpenCV) representing the path (should be normalized already)
     location: tuple of (x, y) representing the current location to center the bottom of
               the window at in pixels
-    degree_heading: angle in degrees to rotate rectangular region by (counterclockwise)
+    angle: angle in radians to rotate rectangular region by (counterclockwise)
     height, width: dimensions of the output image in pixels
     ----------------------------------------------------------------------------
     """
@@ -91,14 +91,28 @@ def window(image, location, angle, height=500, width=500):
     rotation_matrix = np.array([[parallel[0], perpendicular[0], horizontal], [parallel[1], perpendicular[1], vertical]])
     return cv2.warpAffine(image, rotation_matrix, (width, height), flags=cv2.WARP_INVERSE_MAP)
 
+def xwindow(points, y_range, x_range, location, angle, height=500, width=500):
+    out = []
+    parallel = (math.cos(angle), math.sin(angle))
+    perpendicular = (-math.sin(angle), math.cos(angle))
+    horizontal = location[0] - parallel[0] * (width/2) - perpendicular[0] * (height/1)
+    vertical = location[1] - parallel[1] * (width/2) - perpendicular[1] * (height/1)
+    for (x, y) in points:
+        x_ = -1 * x * (parallel[0] + perpendicular[0] + horizontal)
+        y_ = y * (parallel[1] + perpendicular[1] + vertical)
+        out.append((x_, y_))
+    normalized = normalized_points(out, x_range, y_range)
+    return interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, x_range, y_range)
+
+
 def dimensions(points):
     """
     Takes a set of latitude and longitude points and returns the width and height in kilometers.
     """
     x_vals = [x for (x, y) in points]
     y_vals = [y for (x, y) in points]
-    top_left = (min(x_vals), min(y_vals))
-    bottom_right = (max(x_vals), max(y_vals))
+    top_left = (min(x_vals), max(y_vals))
+    bottom_right = (max(x_vals), min(y_vals))
     x_range = maps.haversine(top_left[0], top_left[1], bottom_right[0], top_left[1])
     y_range = maps.haversine(top_left[0], top_left[1], top_left[0], bottom_right[1])
     return y_range, x_range, top_left, bottom_right
@@ -106,18 +120,23 @@ def dimensions(points):
 def main():
     # this is just for testing
     points = [(y, -x) for (x, y) in maps.get_points("Mexico City, MX", "New York, NY")] # get google maps lat/longs
+    y_scale, x_scale, top_left, bottom_right = dimensions(points) # this gives the size of our full image
     x_vals = [x for (x, y) in points]
     y_vals = [y for (x, y) in points]
     top_left = (min(x_vals), max(y_vals))
     bottom_right = (max(x_vals), min(y_vals))
-    y_scale, x_scale, top_left, bottom_right = dimensions(points) # this gives the size of our full image
-    y_scale *= 5000
-    x_scale *= 5000
     print(y_scale, x_scale)
-    normalized = normalized_points(points, int(y_scale), int(x_scale)) # let's normalize the points to full image size
+    normalized = normalized_points(points, int(x_scale), int(y_scale)) # let's normalize the points to full image size
     angles = [random.uniform(0, 0.131) for n in normalized] # generating some random angles because i'm lazy
     full = interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(x_scale), int(y_scale)) # pretend this doesn't look gross
     i = 0
+    current = (int(round(normalized[0][0])), int(round(normalized[0][1])))
+    old = window(full, (current[0], current[1]), 0.5, 500, 500)
+    new = xwindow(normalized, y_scale, x_scale, (current[0], current[1]), 0, 500, 500)
+    cv2.imshow("old", old)
+    cv2.imshow("new", new)
+    cv2.waitKey(0)
+    """
     for n in normalized: # we're iterating through all the points in the line to simulate movement
         current = (int(round(n[0])), int(round(n[1])))
         # swap the two lines below to see what happens with/without angling the image
@@ -126,5 +145,6 @@ def main():
         i += 1
         cv2.imshow("line", rot)
         cv2.waitKey(30) # cinematic
+    """
 
 if __name__ == '__main__': main()
