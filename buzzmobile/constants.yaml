@@ -1,5 +1,26 @@
-image_width: 1200
-image_height: 1200
-pixels_per_m: 200
-image_width_m: 6 #image_width / pixels_per_m
-image_height_m: 6 #image_height / pixels_per_m
+# Various constants for use throughout the project
+
+# These all relate to the shape of the interal representation of the world,
+# which is essentially a numpy array (or image) of `image_width` by 
+# `image_height` with a scale factor of `pixels_per_m`, corresponding to the
+# number of pixels per each real-world meter
+image_width: 600
+image_height: 800
+pixels_per_m: 80
+
+# Used for tentacle projection, travel distance is the step between each 
+# tentacle point, and num_points is the length of each tentacle, if using
+# liner, and not tentacle projection, ignore
+travel_distance: 0.3 
+num_points_in_tentacle: 50
+
+# Hardware values dealing with the car to define Ackerman parameters
+wheel_circumference: 2.198  # in meters, measured
+wheel_base: 1.8 # distance between front and back axels in meters
+
+# Hardware defined maximal steering angle to not break the vehicle
+max_steering_angle: 1.0 # radians
+
+# Resolution of potential paths, that is to say, the higher this number, the
+# more tentacles/linear paths will be judged
+angle_multiplier: 10 # this * max_angle is number of angles to span

@@ -1,5 +1,12 @@
-# buzzmobile
+# buzzmobile [![Build Status](https://travis-ci.org/gtagency/buzzmobile.svg?branch=master)](https://travis-ci.org/gtagency/buzzmobile)
 An autonomous parade float/vehicle
+
+Architecture
+------------
+
+A list of available nodes and an overview of the architecture is available [here](https://docs.google.com/drawings/d/1Lryui91lSutyC1TQhDmWI3JqDfefNB9E9RoSaBPHhcE/edit?usp=sharing).
+
+![architecture](/architecture.png?raw=true)
 
 
 Environment
@@ -33,14 +40,20 @@ cd catkin_ws/src
 catkin_init_workspace
 ```
 
-Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzmobile` to install some dependencies, like [usb_cam].
+Now you can clone this repo into `~/catkin_ws/src` and run `rosdep install buzzmobile` to install some dependencies, like [usb_cam] and [nmea_navsat_driver].
 
-To use the google maps api, you need an api key. Put it under `buzzmobile/sense/gps/googlemapskey.py` like such:
+To use the google maps api, you'll need two api keys. Put one under `buzzmobile/sense/maps_querier/googlemapskey.py` and one under `buzzmobile/tools/route_mapper/googlemapskey.py` as shown below. Note that the keys need to have proper permissions set in the [Google API Console](https://console.developers.google.com/), for use of the Google Maps API and the Google Maps Static API, respectively.
 
 ```python
 googlemapskey='your_secret_api_key'
 ```
 
+To use the gps and the lidar nodes, you will need user permissions to directly access the usb ports for gps and lidar. For that, do:
+
+```bash
+sudo usermod -aG dialout <YOUR USERNAME>
+```
+You will then need to log in and out again. Simply starting a new terminal is not sufficient. The Linux kernel will not refresh groups until the user completely logs out and logs in again.
 
 Running
 -------
@@ -62,7 +75,13 @@ Note that rospy nodes don't require `catkin_make`, but do require that the file 
 
 ```bash
 chmod +x path/to/rospy_node.py  # also make sure the file has the correct python shebang
-rosrun rospy_node.py
+rosrun buzzmobile rospy_node.py
+```
+
+Some nodes require parameters that are defined in the `buzzmobile/constants.yaml` file. To load those constants as `rosparam`s, do:
+
+```bash
+rosparam load buzzmobile/buzzmobile/constants.yaml
 ```
 
 If you want to visualize your nodes, you can run the ROS visualizer or image_view.
@@ -81,6 +100,24 @@ To load the buzzmobile mission control, simply run the node:
 rosrun rqt_gui rqt_gui --perspective-file=buzzmobile/tools/mission_control/Default.perspective
 ```
 
+To run the GPS node, do:
+
+```bash
+rosrun nmea_navsat_driver nmea_serial_driver _port:=/dev/ttyUSB0 _baud:=4800
+```
+
+To run the Lidar node, do:
+
+```bash
+rosrun hokuyo_node hokuyo_node port:=/dev/ttyACM0
+```
+
+Note that `/dev/ttyUSB0` and `/dev/ttyACM0` are the default serial ports for GPS and Lidar respectively. These may or may not be different. Here are some useful commands for debugging if things aren't set up correctly:
+
+```bash
+ls -l /dev/ttyACM0  # List permissions. Will output failure if /dev/ttyACM0 is not set.
+sudo chmod a+rw /dev/ttyACM0  # Sets read/write permissions for all users, not recommended.
+```
 
 Recording
 ---------
