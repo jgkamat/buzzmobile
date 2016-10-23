@@ -4,9 +4,9 @@
 # which is essentially a numpy array (or image) of `image_width` by 
 # `image_height` with a scale factor of `pixels_per_m`, corresponding to the
 # number of pixels per each real-world meter
-image_width: 1200
-image_height: 1200
-pixels_per_m: 200
+image_width: 600
+image_height: 800
+pixels_per_m: 80
 
 # Used for tentacle projection, travel distance is the step between each 
 # tentacle point, and num_points is the length of each tentacle, if using
