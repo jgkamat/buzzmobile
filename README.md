@@ -1,4 +1,4 @@
-# buzzmobile
+# buzzmobile [![Build Status](https://travis-ci.org/gtagency/buzzmobile.svg?branch=master)](https://travis-ci.org/gtagency/buzzmobile)
 An autonomous parade float/vehicle
 
 Architecture
@@ -23,6 +23,12 @@ alias rosdevel='source ~/catkin_ws/devel/setup.bash' # needed for autocompletion
 
 rosinit     # put these in your .bashrc too so they run everytime
 rosdevel    # you open a new terminal window/tab.
+```
+
+We recommend using OpenCV 3. You can install it with:
+
+```bash
+sudo apt-get install ros-indigo-opencv3
 ```
 
 To set up this repo, do:
