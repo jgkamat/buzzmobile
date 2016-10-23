@@ -28,6 +28,7 @@ WHEEL_BASE = rospy.get_param('wheel_base')
 ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
 BRAKING_DISTANCE = rospy.get_param('braking_distance')
 THRESHHOLD = rospy.get_param('braking_score_threshhold')
+BUZZMOBILE_WIDTH = rospy.get_param('buzzmobile_width')
 
 immediate_future_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
 cv2.circle(immediate_future_mask, (WIDTH//2, HEIGHT),
@@ -67,11 +68,12 @@ def steer(ros_world_model):
     # publish drawn tentacle
     if pose.brake:
         cv2.circle(world_frame, (WIDTH//2, HEIGHT),
-                int(BRAKING_DISTANCE * PIXELS_PER_METER), score_to_color(1.0), 1)
+                int(BRAKING_DISTANCE * PIXELS_PER_METER), score_to_color(1.0), 2)
+        draw_points(points, world_frame, score_to_color(0.0), thickness=1)
     else:
         cv2.circle(world_frame, (WIDTH//2, HEIGHT),
                 int(BRAKING_DISTANCE * PIXELS_PER_METER), score_to_color(0.0), 1)
-        draw_points(points, world_frame, score_to_color(1.0))
+        draw_points(points, world_frame, score_to_color(1.0), thickness=2)
     try:
         tentacle_frame = bridge.cv2_to_imgmsg(world_frame)
         tentacle_pub.publish(tentacle_frame)
@@ -95,13 +97,8 @@ def should_brake(points, lidar_model):
     immediate_path_mask = cv2.bitwise_and(immediate_future_mask, tentacle_mask)
     lidar_model_path = cv2.bitwise_and(lidar_model, lidar_model, mask=immediate_path_mask)
 
-    score = sum(sum(lidar_model_path)) / float(sum(sum(immediate_path_mask)))
-    # TODO: fix
-    #  rospy.loginfo('lidar: ' + str(sum(sum(lidar_model_path))))
-    #  rospy.loginfo('future: ' + str(sum(sum(immediate_path_mask))))
-    #  rospy.loginfo('score: ' + str(score))
-    #  cv2.imwrite('fuck_lidar.jpg', lidar_model_path)
-    #  cv2.imwrite('fuck_future.jpg', immediate_path_mask)
+    # must use np.sum because cv2 uses ints to store pixels. So sum(sum()) overflows.
+    score = np.sum(np.sum(lidar_model_path)) / float(np.sum(np.sum(immediate_path_mask)))
 
     return True if score < THRESHHOLD else False
 
@@ -153,7 +150,8 @@ def create_tentacle_mask(points):
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
-        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255], 1)
+        cv2.line(tentacle_mask, pt1, pt2, [255, 255, 255],
+                int(BUZZMOBILE_WIDTH * PIXELS_PER_METER))
     return tentacle_mask
 
 def score_tentacle(points, frame):
@@ -164,12 +162,14 @@ def score_tentacle(points, frame):
     """
     tentacle_mask = create_tentacle_mask(points)
 
-    normalizing_factor = sum(sum(tentacle_mask))
+    # must use np.sum because cv2 uses ints to store pixels. So sum(sum()) overflows.
+    normalizing_factor = np.sum(np.sum(tentacle_mask))
     if normalizing_factor == 0.0:
         return 0.0
 
     tentacle_score_image = cv2.bitwise_and(frame, frame, mask=tentacle_mask)
-    tentacle_score = sum(sum(tentacle_score_image)) / normalizing_factor
+    # must use np.sum because cv2 uses ints to store pixels. So sum(sum()) overflows.
+    tentacle_score = np.sum(np.sum(tentacle_score_image)) / normalizing_factor
     return tentacle_score
 
 def pick_tentacle(x_0, y_0, frame):
@@ -206,11 +206,12 @@ def score_to_color(score):
         score_to_h(score), score_to_s(score), score_to_v(score))]
 
 
-def draw_points(points, color_frame, color):
+def draw_points(points, color_frame, color, thickness=None):
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
-        cv2.line(color_frame, pt1, pt2, color, 1)
+        cv2.line(color_frame, pt1, pt2, color,
+                thickness if thickness is not None else 1)
 
 
 if __name__ == '__main__': steering_node()
