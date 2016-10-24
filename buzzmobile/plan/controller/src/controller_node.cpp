@@ -32,7 +32,7 @@ float lastSpeed = 0;
 float lastAngle = 0;
 bool lastBrake = false;
 bool lastHorn = 0;
-uint8_t lastState = buzzmobile::CarState::MANUAL; // Start the car in manual mode
+uint8_t lastState = buzzmobile::CarState::START; // Start the car in manual mode
 
 unsigned int state;
 bool manualToggle = true; //start up with manual toggle = true
@@ -81,9 +81,10 @@ void sendStateCommand() {
 
 void handleState(const sensor_msgs::Joy::ConstPtr& joy) {
     if (joy->toggle_auto_button) { // If home button is pressed
-        if (lastState == buzzmobile::CarState::AUTO) {
+        if (lastState == buzzmobile::CarState::AUTO
+                || lastState == buzzmobile::CarState::START) {
             lastState = buzzmobile::CarState::MANUAL;
-        } else { // In manual mode
+        } else {
             lastState = buzzmobile::CarState::AUTO;
         }
     }

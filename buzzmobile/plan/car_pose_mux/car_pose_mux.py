@@ -9,14 +9,14 @@ from buzzmobile.msg import CarState
 state = {
         'manual_car_pose': None,
         'auto_car_pose': None,
-        'curr_car_state': None}
+        'curr_car_state': CarState.START}
 
 car_pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=0)
 
 def mux(car_state):
-    if car_state == None: return None
-    elif car_state.state == CarState.AUTO: return state['auto_car_pose']
-    elif car_state.state == CarState.MANUAL: return state['manual_car_pose']
+    if car_state == CarState.START: return None
+    elif car_state == CarState.AUTO: return state['auto_car_pose']
+    elif car_state == CarState.MANUAL: return state['manual_car_pose']
 
 def publish():
     car_pose = mux(state['curr_car_state'])
@@ -32,10 +32,9 @@ def set_auto_car_pose(car_pose):
     publish()
 
 def set_car_state(car_state):
-    state['curr_car_state'] = car_state
-    if (car_state != None):
-        rospy.loginfo("Car in " + (
-            "AUTO" if car_state.state == CarState.AUTO else "MANUAL") + " mode.")
+    state['curr_car_state'] = car_state.state
+    rospy.loginfo("Car in " + (
+        "AUTO" if car_state.state == CarState.AUTO else "MANUAL") + " mode.")
     publish()
 
 def mux_node():
