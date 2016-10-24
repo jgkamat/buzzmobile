@@ -142,6 +142,16 @@ To play the data (and publish those messages), do `rosbag play test.bag`
 
 To see your video (if you recorded camera data), do `rqt_image_view` (rqt comes with ROS if your download the desktop version), play the data if it isn't already playing, hit the refresh button at the top, and then search for the topic your .bag file is publishing to. Your camera data will play in that window.
 
+Starting Car
+------------
+
+To start car and prepare it for driving, perform the following steps.
+1. Connect the battery
+2. Flip the switch inside to turn the car on
+3. Ensure all e-stops are disabled. (Red buttons on front and back in out position and enabled via remote)
+4. Press the green button to start the motors (Car is now live)
+5. See Controller for details on how to drive the car once enabled.
+
 Controller
 ----------
 
