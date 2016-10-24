@@ -10,7 +10,7 @@ pixels_per_m: 80
 
 # Used for tentacle projection, travel distance is the step between each 
 # tentacle point, and num_points is the length of each tentacle, if using
-# liner, and not tentacle projection, ignore
+# linear, and not tentacle projection, ignore
 travel_distance: 0.061
 num_points_in_tentacle: 50
 
@@ -32,4 +32,6 @@ buzzmobile_width: 1.5
 braking_distance: 2.5
 
 # Threshold for score in braking calculation in steering.py
+# If, in the immediate future path, there exists a lidar obstacle taking over
+# (1 - braking_score_threshhold) percent of the pixels, then we brake.
 braking_score_threshhold: 0.85
