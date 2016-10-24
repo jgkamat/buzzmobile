@@ -4,10 +4,10 @@
         <param name="hokuyo_node/port" value="/dev/ttyACM0"/>
         <node pkg="buzzmobile" name="lidar_model" type="lidar_to_frame.py"/>
         <node pkg="buzzmobile" name="frame_merger" type="frame_merger.py"/>
-        <node pkg="hokuyo_node" name="lidar" type="hokuyo_node"/>
+        <!--<node pkg="hokuyo_node" name="lidar" type="hokuyo_node"/>-->
         <node pkg="buzzmobile" name="steering" type="steering.py"/>
         <node pkg="rqt_gui" name="rqt_gui" type="rqt_gui"/>
-        <node pkg="buzzmobile" name="image_const" type="image_const.py" args="buzzmobile/tools/image_const/gps_model.png"/>
+        <node pkg="buzzmobile" name="image_const" type="image_const.py" args="$(find buzzmobile)/tools/image_const/gps_model.png"/>
     </group>
 </launch>
 
