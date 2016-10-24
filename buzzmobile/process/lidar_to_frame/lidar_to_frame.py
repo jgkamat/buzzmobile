@@ -76,7 +76,7 @@ def gen_point_image(points):
 
 def lidar_node():
     rospy.init_node('lidar_to_frame', anonymous=True)
-    rospy.Subscriber('scan', LaserScan, gen_lidar_image, queue_size=1)
+    rospy.Subscriber('/scan', LaserScan, gen_lidar_image, queue_size=1)
     rospy.spin()
 
 if __name__ == '__main__': lidar_node()

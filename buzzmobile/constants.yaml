@@ -29,7 +29,7 @@ angle_multiplier: 10 # this * max_angle is number of angles to span
 buzzmobile_width: 1.5
 
 # Temporary max distance an obstacle can be for breaking to start. See issue #54
-braking_distance: 3.0
+braking_distance: 2.5
 
 # Threshold for score in braking calculation in steering.py
 braking_score_threshhold: 0.85
