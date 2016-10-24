@@ -181,7 +181,7 @@ int main(int argc, char** argv) {
     state_pub = n.advertise<buzzmobile::CarState>("car_state", 0);
 
     // Initialize the latched topic
-    ros::Subscriber sub = n.subscribe<sensor_msgs::Joy>("joy", 1000, joyCallback);
+    ros::Subscriber sub = n.subscribe<sensor_msgs::Joy>("/joy", 100, joyCallback);
   
     //ros::Rate r(pubFreq); // Not sure what this is
 
