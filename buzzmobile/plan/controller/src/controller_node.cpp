@@ -177,7 +177,7 @@ int main(int argc, char** argv) {
   
     ros::NodeHandle n;
  
-    motion_pub = n.advertise<buzzmobile::CarPose>("controller_car_pose", 0);
+    motion_pub = n.advertise<buzzmobile::CarPose>("manual_car_pose", 0);
     state_pub = n.advertise<buzzmobile::CarState>("car_state", 0);
 
     // Initialize the latched topic

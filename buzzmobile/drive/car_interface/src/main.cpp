@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 
   command_sub = node_handle.subscribe("car_pose", 1, command_callback);
   
-  horn_sub = node_handle.subscribe("car_horn", 1, horn_callback);
+  //horn_sub = node_handle.subscribe("car_horn", 1, horn_callback);
 
   ros::Timer keepAliveTimer = node_handle.createTimer(keep_alive_frequency, keep_alive_callback);
   ros::spin();
@@ -78,10 +78,11 @@ void command_callback(buzzmobile::CarPose::ConstPtr cmd) {
   //arduino.setSpeed(cmd->speed);
   arduino.setSpeed(cmd->velocity);
   arduino.setSteering(cmd->angle);
+  arduino.setHorn(cmd->horn);
   last_command_time = cmd->header.stamp;
 }
 
-void horn_callback(std_msgs::Bool::ConstPtr msg) {
-  ROS_INFO("Turning %s horn.", (msg->data ? "on" : "off"));
-  arduino.setHorn(msg->data);
-}
+//void horn_callback(std_msgs::Bool::ConstPtr msg) {
+  //ROS_INFO("Turning %s horn.", (msg->data ? "on" : "off"));
+  //arduino.setHorn(msg->data);
+//}
