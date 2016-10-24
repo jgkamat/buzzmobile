@@ -4,7 +4,6 @@ import rospy
 import math
 import polyline as pl
 import interpolate
-import maps
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import NavSatFix
 from sensor_msgs.msg import Image
@@ -16,7 +15,6 @@ class Frames(object):
         bearing = None
         points = None
         location = None
-        full = None
 
 #Global Variables
 bridge = CvBridge()
@@ -28,24 +26,22 @@ y_range = x_range = 0
 def set_points(polyline):
     if polyline is not None:
         points = pl.decode(polyline.data)
-        frames.points = points
         y_range, x_range, top_left, bottom_right = interpolate.dimensions(frames.points)
         frames.points = [(y, -x) for (x, y) in points]
         _, _, top_left, bottom_right = interpolate.dimensions(frames.points)
         height = y_range * y_scale
         width = x_range * x_scale
-        normalized = interpolate.normalized_points(frames.points, int(width), int(height))
-        frames.full = interpolate.interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(width), int(height))
+        frames.points = interpolate.normalized_points(frames.points, int(round(width)), int(round(height)))
 
 def update_image():
-    if hasattr(frames, 'full'):
+    if hasattr(frames, 'points'):
         _, _, top_left, bottom_right = interpolate.dimensions(frames.points)
-        height = y_range * y_scale
-        width = x_range * x_scale
+        height = int(round(y_range * y_scale))
+        width = int(round(x_range * x_scale))
         point = (frames.location[0], -frames.location[1])
         if y_range is not 0:
             point = interpolate.normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point)
-        result = interpolate.window(frames.full, point, frames.bearing)
+        result = interpolate.xwindow(frames.points, point, frames.bearing)
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         gps_model_pub.publish(result_msg)
 
@@ -60,7 +56,7 @@ def set_location(fix_location):
         update_image()
 
 def gps_model_node():
-    rospy.init_node('gps_mapper', anonymous=True)
+    rospy.init_node('gps_mapper_node', anonymous=True)
     rospy.Subscriber('polyline', String, set_points)
     rospy.Subscriber('bearing', Float64, set_bearing)
     rospy.Subscriber('fix', NavSatFix, set_location)
