@@ -194,10 +194,10 @@ def pick_tentacle(x_0, y_0, frame):
         for points in branches:
             score = score_tentacle(points, frame)
 
-            if score > best_score or (score == best_score and abs(angle) < best_angle):
+            if score > best_score or (score == best_score and abs(angle) < abs(best_angle)):
                 best_score = score
                 best_points = points
-                best_angle = abs(angle)
+                best_angle = angle
 		
 
     return best_points, best_angle
