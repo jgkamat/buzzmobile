@@ -151,15 +151,16 @@ To start car and prepare it for driving, perform the following steps:
 2. Flip the switch inside to turn the car on
 3. Ensure all e-stops are disabled. (Red buttons on front and back in out position and enabled via remote)
 4. Press the green button to start the motors (Car is now live)
-5. See Controller for details on how to drive the car once enabled.
+5. The car starts in START mode where it receives no information. It must be switched to MANUAL or AUTO for it to drive. 
+6. See "Manual Mode Controls" for details on switching modes and operating the car.
 
-Controller
-----------
+Manual Mode Controls
+--------------------
 
-The controller_node node outputs a CarPose message and a CarState message determined by input from a PS4 controller. To control these messages and operate the car manually using the controller, use the following controls:
+The 'controller_node' node outputs a CarPose message and a CarState message determined by input from a PS4 controller. To control these messages and operate the car manually using the controller, use the following controls:
 
 - Left Joystick: Change steering angle
 - R2 (Right Trigger): Change velocity
 - Square: Enable reverse. When this is held down, velocity is negated meaning the car will accelerate backwards.
 - X: Honk the horn
-- Home Button: Switch the car between auto and manual modes.
+- Home Button: Switch the car between AUTO and MANUAL modes. The car starts in START mode. When pressed it will switch to MANUAL mode. Every subsequent press toggles between AUTO and MANUAL mode.
