@@ -61,7 +61,7 @@ def route_mapper_node():
 
     rospy.init_node('route_mapper')
     rospy.Subscriber('polyline', String, update_polyline)
-    rospy.Subscriber('fix', NavSatFix, update_location)
+    rospy.Subscriber('/fix', NavSatFix, update_location)
     rospy.spin()
 
 if __name__ == '__main__': route_mapper_node()

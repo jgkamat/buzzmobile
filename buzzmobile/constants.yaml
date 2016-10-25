@@ -4,14 +4,14 @@
 # which is essentially a numpy array (or image) of `image_width` by 
 # `image_height` with a scale factor of `pixels_per_m`, corresponding to the
 # number of pixels per each real-world meter
-image_width: 1200
-image_height: 1200
-pixels_per_m: 200
+image_width: 600
+image_height: 800
+pixels_per_m: 80
 
 # Used for tentacle projection, travel distance is the step between each 
 # tentacle point, and num_points is the length of each tentacle, if using
-# liner, and not tentacle projection, ignore
-travel_distance: 0.3 
+# linear, and not tentacle projection, ignore
+travel_distance: 0.061
 num_points_in_tentacle: 50
 
 # Hardware values dealing with the car to define Ackerman parameters
@@ -24,3 +24,14 @@ max_steering_angle: 1.0 # radians
 # Resolution of potential paths, that is to say, the higher this number, the
 # more tentacles/linear paths will be judged
 angle_multiplier: 10 # this * max_angle is number of angles to span
+
+# Hardware defined car width, used to score projected tentacles in steering.
+buzzmobile_width: 1.5
+
+# Temporary max distance an obstacle can be for breaking to start. See issue #54
+braking_distance: 2.5
+
+# Threshold for score in braking calculation in steering.py
+# If, in the immediate future path, there exists a lidar obstacle taking over
+# (1 - braking_score_threshhold) percent of the pixels, then we brake.
+braking_score_threshhold: 0.85

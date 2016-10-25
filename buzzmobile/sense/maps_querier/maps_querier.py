@@ -62,7 +62,7 @@ def get_directions(start, destination):
 
 def maps_querier_node():
     rospy.init_node('maps_querier')
-    rospy.Subscriber('fix', NavSatFix, update_fix)
+    rospy.Subscriber('/fix', NavSatFix, update_fix)
     rospy.Subscriber('destination', String, update_destination)
     rospy.spin()
 
