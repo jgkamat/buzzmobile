@@ -100,7 +100,7 @@ def should_brake(points, lidar_model):
     # must use np.sum because cv2 uses ints to store pixels. So sum(sum()) overflows.
     score = np.sum(np.sum(lidar_model_path)) / float(np.sum(np.sum(immediate_path_mask)))
 
-    return True if score < THRESHHOLD else False
+    return score < THRESHHOLD
 
 def turning_radius(steering_angle):
     """
@@ -215,3 +215,4 @@ def draw_points(points, color_frame, color, thickness=None):
 
 
 if __name__ == '__main__': steering_node()
+
