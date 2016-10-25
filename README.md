@@ -157,10 +157,12 @@ To start car and prepare it for driving, perform the following steps:
 Manual Mode Controls
 --------------------
 
-The 'controller_node' node outputs a CarPose message and a CarState message determined by input from a PS4 controller. To control these messages and operate the car manually using the controller, use the following controls:
+The `controller_node` node outputs a CarPose message and a CarState message determined by input from a PS4 controller. To control these messages and operate the car manually using the controller, use the following controls:
 
 - Left Joystick: Change steering angle
 - R2 (Right Trigger): Change velocity
 - Square: Enable reverse. When this is held down, velocity is negated meaning the car will accelerate backwards.
 - X: Honk the horn
-- Home Button: Switch the car between AUTO and MANUAL modes. The car starts in START mode. When pressed it will switch to MANUAL mode. Every subsequent press toggles between AUTO and MANUAL mode.
+- Home Button: Switch the car between AUTO and MANUAL modes.
+
+The car starts in START mode. When pressed it will switch to MANUAL mode. Every subsequent press toggles between AUTO and MANUAL mode.
