@@ -52,9 +52,9 @@ def bearing(fix):
     if fix is not None:
         last_fix = fix
 
-def compute_bearing_node():
-    rospy.init_node('compute_bearing', anonymous=True)
-    rospy.Subscriber('fix', NavSatFix, bearing)
+def bearing_node():
+    rospy.init_node('bearing', anonymous=True)
+    rospy.Subscriber('/fix', NavSatFix, bearing)
     rospy.spin()
 
 if __name__=='__main__': compute_bearing_node()

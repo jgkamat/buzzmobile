@@ -20,7 +20,7 @@ class Frames(object):
 bridge = CvBridge()
 frames = Frames()
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=0)
-x_scale = y_scale = 5000
+x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
 y_range = x_range = 0
 
 def set_points(polyline):
@@ -41,7 +41,7 @@ def update_image():
         point = (frames.location[0], -frames.location[1])
         if y_range is not 0:
             point = interpolate.normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point)
-        result = interpolate.xwindow(frames.points, point, frames.bearing)
+        result = interpolate.xwindow(frames.points, point, frames.bearing, rospy.get_param('image_height'), rospy.get_param('image_width'))
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         gps_model_pub.publish(result_msg)
 
@@ -55,11 +55,11 @@ def set_location(fix_location):
     if hasattr(frames, 'bearing'):
         update_image()
 
-def gps_model_node():
-    rospy.init_node('gps_mapper_node', anonymous=True)
+def gps_mapper_node():
+    rospy.init_node('gps_mapper', anonymous=True)
     rospy.Subscriber('polyline', String, set_points)
     rospy.Subscriber('bearing', Float64, set_bearing)
-    rospy.Subscriber('fix', NavSatFix, set_location)
+    rospy.Subscriber('/fix', NavSatFix, set_location)
     rospy.spin()
 
-if __name__=='__main__': gps_model_node()
+if __name__=='__main__': gps_mapper_node()
