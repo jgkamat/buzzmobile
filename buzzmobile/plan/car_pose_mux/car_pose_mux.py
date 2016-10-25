@@ -33,6 +33,11 @@ def set_auto_car_pose(car_pose):
 
 def set_car_state(car_state):
     state['curr_car_state'] = car_state.state
+    mode = log_car_state(car_state)
+    rospy.loginfo("Car in " + mode + " mode.")
+    publish()
+
+def log_car_state(car_state):
     mode = ""
     if car_state.state == CarState.AUTO:
         mode = "AUTO"
@@ -40,8 +45,7 @@ def set_car_state(car_state):
         mode = "MANUAL"
     else:
         mode = "START"
-    rospy.loginfo("Car in " + mode + " mode.")
-    publish()
+    return mode
 
 def mux_node():
     rospy.init_node('car_pose_mux', anonymous=True)
