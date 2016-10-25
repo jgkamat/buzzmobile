@@ -15,7 +15,7 @@ from sensor_msgs.msg import Image
 
 ### GLOBAL VARS ###
 bridge = CvBridge()
-pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=0)
+pose_pub = rospy.Publisher('auto_car_pose', CarPose, queue_size=0)
 tentacle_pub = rospy.Publisher('tentacle_frame', Image, queue_size=0)
 
 PIXELS_PER_METER = rospy.get_param('pixels_per_m')
