@@ -35,5 +35,4 @@ include_directories(
 
 add_subdirectory(process/projector)
 add_subdirectory(plan/controller)
-add_subdirectory(drive/horn)
 add_subdirectory(drive/car_interface)
