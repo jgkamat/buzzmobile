@@ -8,7 +8,6 @@ A list of available nodes and an overview of the architecture is available [here
 
 ![architecture](/architecture.png?raw=true)
 
-
 Environment
 -----------
 
