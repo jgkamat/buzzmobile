@@ -15,7 +15,7 @@ class Frames(object):
 
 # Global Variables
 bridge = CvBridge()
-world_pub = rospy.Publisher('world_model', Image, queue_size=0)
+world_pub = rospy.Publisher('world_model', Image, queue_size=1)
 frames = Frames()
 
 def merge_and_publish():

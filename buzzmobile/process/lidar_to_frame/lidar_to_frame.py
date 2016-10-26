@@ -9,6 +9,8 @@ from sensor_msgs.msg import Image
 from sensor_msgs.msg import LaserScan
 from math import sin, cos, pi, isnan
 
+import gc
+
 image_width = rospy.get_param("image_width")
 image_height = rospy.get_param("image_height")
 pixels_per_m = rospy.get_param("pixels_per_m")
@@ -16,7 +18,8 @@ image_width_m = image_width / pixels_per_m
 image_height_m = image_height / pixels_per_m
 
 
-lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=0)
+
+lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=1)
 bridge = CvBridge()
 
 
@@ -76,7 +79,7 @@ def gen_point_image(points):
 
 def lidar_node():
     rospy.init_node('lidar_to_frame', anonymous=True)
-    rospy.Subscriber('scan', LaserScan, gen_lidar_image, queue_size=1)
+    rospy.Subscriber('/scan', LaserScan, gen_lidar_image, queue_size=1)
     rospy.spin()
 
 if __name__ == '__main__': lidar_node()
