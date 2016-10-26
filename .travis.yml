@@ -20,7 +20,8 @@ before_install:
     - sudo apt-get install -qq ros-indigo-opencv3
     - sudo rosdep init
     - rosdep update
-
+    # install and run pylint
+    #- sudo apt-get install pylint
 install:
    - cd ../
    - mkdir -p ~/catkin_ws/src
