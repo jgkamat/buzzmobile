@@ -1,4 +1,5 @@
-Drive
-=====
+Actuators
+================
 
-Thins that drive the vehicle, ROS nodes that interface with hardware that actuates the vehicle or otherwise converts pose into machine commands
+This folder is for any node that controls physical or logical actuators, such as motors, servos, gearboxes, switches, turrets, cannons, etc.
+
