@@ -2,7 +2,6 @@
 import cv2
 import numpy as np
 
-import datetime as dt
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
@@ -15,7 +14,7 @@ class Frames(object):
 
 # Global Variables
 bridge = CvBridge()
-world_pub = rospy.Publisher('world_model', Image, queue_size=0)
+world_pub = rospy.Publisher('world_model', Image, queue_size=1)
 frames = Frames()
 
 def merge_and_publish():

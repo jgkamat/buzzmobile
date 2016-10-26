@@ -31,5 +31,6 @@ before_script: # Use this to prepare your build for testing e.g. copy database c
   - source /opt/ros/$ROS_DISTRO/setup.bash  
 script: # All commands must exit with code 0 on success. Anything else is considered failure.
   - catkin_make -j2
-  - source ~/catkin_ws/devel/setup.bash # Allow installing dependencies (recognizing buzzmobile)
-  - rosdep install buzzmobile # Install dependencies for buzzmobile
+  - sudo pip install -e src/buzzmobile/buzzmobile/
+  - source ~/catkin_ws/devel/setup.bash # Allow installing ros dependencies (recognizing buzzmobile)
+  - rosdep install buzzmobile # Install ros dependencies for buzzmobile
