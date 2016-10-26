@@ -19,6 +19,7 @@ frames['bearing'] = frames['points'] = frames['location'] = None
 frames['y_range'] = frames['x_range'] = 0
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
+line_width = int(round(rospy.get_param('pixels_per_m') * rospy.get_param('road_width')))
 
 def set_points(polyline):
     if polyline is not None:
@@ -39,8 +40,11 @@ def update_image():
         width = int(round(frames['x_range'] * x_scale))
         point = (frames['location'][0], -frames['location'][1])
         if frames['y_range'] is not 0:
-            point = interpolate.normalize_single_point(frames['y_range'], frames['x_range'], height, width, top_left, bottom_right, point)
-        result = interpolate.xwindow(frames['points'], point, frames['bearing'], rospy.get_param('image_height'), rospy.get_param('image_width'))
+            point = interpolate.normalize_single_point(frames['y_range'], frames['x_range'],
+                                                       height, width, top_left, bottom_right, point)
+        result = interpolate.xwindow(frames['points'], point, frames['bearing'], line_width,
+                                     rospy.get_param('sigma_x'), rospy.get_param('sigma_y'),
+                                     rospy.get_param('image_height'), rospy.get_param('image_width'))
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         gps_model_pub.publish(result_msg)
 

@@ -2,7 +2,7 @@ import numpy as np
 import math
 import cv2
 
-def interpolate(points, sigma_x, sigma_y, height, width):
+def interpolate(points, line_width, sigma_x, sigma_y, height, width):
     """
     Takes a list of points, connects them with a line,
     and Gaussian blurs the line.
@@ -20,7 +20,7 @@ def interpolate(points, sigma_x, sigma_y, height, width):
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
-        cv2.line(output, pt1, pt2, [255, 255, 255], 4)
+        cv2.line(output, pt1, pt2, [255, 255, 255], line_width)
     output = cv2.GaussianBlur(output, (sigma_x, sigma_y), 0)
     return output
 
