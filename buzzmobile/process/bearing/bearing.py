@@ -49,15 +49,14 @@ def bearing(fix):
         lon2 = math.radians(fix.longitude)
 
         distance = get_distance(lat1, lon1, lat2, lon2)
+        computedBearing = get_forward_angle(lat1, lon1, lat2, lon2)
+        bearings['med_filter'].add(computedBearing)
+        bearing_pub.publish(bearings['med_filter'].median())
 
         if distance >= MIN_FIX_DISTANCE:
-            computedBearing = get_forward_angle(lat1, lon1, lat2, lon2)
+            last_fix = fix
 
-            bearings['med_filter'].add(computedBearing)
-
-            bearing_pub.publish(bearings['med_filter'].median())
-
-    if fix is not None:
+    if fix is not None
         last_fix = fix
 
 
@@ -72,7 +71,6 @@ def get_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return EARTH_RADIUS * c
 
-
 def get_forward_angle(lat1, lon1, lat2, lon2):
     """
     Calculates forward azimuth between two positions in radians
@@ -83,7 +81,6 @@ def get_forward_angle(lat1, lon1, lat2, lon2):
          - math.sin(lat1) * math.cos(lat2) * math.cos(lon2 - lon1))
     angle = math.atan2(y, x)
     return (angle + 2 * math.pi) % (2 * math.pi)
-
 
 def bearing_node():
     rospy.init_node('bearing', anonymous=True)
