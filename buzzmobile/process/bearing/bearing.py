@@ -44,7 +44,7 @@ def bearing(fix):
         y = math.sin(lon2 - lon1) * math.cos(lat2)
         x = math.cos(lat1)*math.sin(lat2) - math.sin(lat1)*math.cos(lat2)*math.cos(lon2 - lon1)
         angle = math.atan2(y, x)
-        computedBearing = (math.degrees(angle) + 360) % 360
+        computedBearing = (angle + 2*math.pi) % 2*math.pi
         med_filter.add(computedBearing)
 
         bearing_pub.publish(med_filter.median())
