@@ -41,8 +41,6 @@ def bearing(fix):
     position, and if so adds the new bearing to the median filter and
     publishes the new median.
     """
-    global last_fix
-    global med_filter
 
     if bearings['last_fix'] is not None:
         lat1 = math.radians(bearings['last_fix'].latitude)
@@ -50,7 +48,7 @@ def bearing(fix):
         lat2 = math.radians(fix.latitude)
         lon2 = math.radians(fix.longitude)
 
-        #Calculates great-circle distance between positions
+        #Calculates great-circle distance between positions in meters
         a = (math.pow(math.sin(lat2 - lat1), 2)
              + math.cos(lat1) * math.cos(lat2)
              * math.pow(math.sin((lon2 - lon1) / 2), 2))
@@ -58,7 +56,7 @@ def bearing(fix):
         distance = EARTH_RADIUS * c
 
         if distance >= MIN_FIX_DISTANCE:
-            #Calculates forward azimuth between positions
+            #Calculates forward azimuth between positions in radians
             y = math.sin(lon2 - lon1) * math.cos(lat2)
             x = (math.cos(lat1) * math.sin(lat2)
                  - math.sin(lat1) * math.cos(lat2) * math.cos(lon2 - lon1))
