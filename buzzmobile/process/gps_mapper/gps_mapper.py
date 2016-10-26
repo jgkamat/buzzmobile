@@ -12,15 +12,19 @@ from std_msgs.msg import Float64
 from std_msgs.msg import String
 
 #Global Variables
-bridge = CvBridge()
 frames = {}
 frames['bearing'] = frames['points'] = frames['location'] = None
 # These ranges are km dimensions of the path. We initialize them to 0.
 frames['y_range'] = frames['x_range'] = 0
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
+bridge = CvBridge()
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
 line_width = int(round(rospy.get_param('pixels_per_m')
                        * rospy.get_param('road_width')))
+sigma_x = rospy.get_param('sigma_x')
+sigma_y = rospy.get_param('sigma_y')
+image_width = rospy.get_param('image_width')
+image_height = rospy.get_param('image_height')
 
 def set_points(polyline):
     if polyline is not None:
@@ -51,10 +55,10 @@ def update_image():
                                                        point)
         result = interpolate.xwindow(frames['points'], point, frames['bearing'],
                                      line_width,
-                                     rospy.get_param('sigma_x'),
-                                     rospy.get_param('sigma_y'),
-                                     rospy.get_param('image_height'),
-                                     rospy.get_param('image_width'))
+                                     sigma_x,
+                                     sigma_y,
+                                     image_height,
+                                     image_width)
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         gps_model_pub.publish(result_msg)
 
