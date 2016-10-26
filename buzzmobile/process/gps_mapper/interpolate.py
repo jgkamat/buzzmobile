@@ -77,7 +77,7 @@ def window(image, location, angle, height, width):
     rotation_matrix = np.array([[parallel[0], perpendicular[0], horizontal], [parallel[1], perpendicular[1], vertical]])
     return cv2.warpAffine(image, rotation_matrix, (width, height), flags=cv2.WARP_INVERSE_MAP)
 
-def xwindow(points, location, angle, height, width):
+def xwindow(points, location, angle, line_width, sigma_x, sigma_y, height, width):
     """
     Takes a list of points, a location, an angle in radians, and optionally a height and width
     in order to return the angled rectangular region of the image of the specified size,
@@ -89,6 +89,8 @@ def xwindow(points, location, angle, height, width):
     location: tuple of (x, y) representing the current location to center the bottom of
               the window at in pixels
     angle: angle in radians to rotate rectangular region by (counterclockwise)
+    line_width: line width in pixels to interpolate between points
+    sigma_x, sigma_y: Gaussian kernel parameters
     height, width: dimensions of the output image in pixels
     ----------------------------------------------------------------------------
     """
@@ -100,7 +102,7 @@ def xwindow(points, location, angle, height, width):
         y_ = x * perpendicular[0] + y * perpendicular[1] + location[1] - location[0] * perpendicular[0] - location[1] * perpendicular[1]
         # when adding the points back, translate them to the proper location for the final image
         out.append((x_ + (width/2 - location[0]), y_ + (height - location[1])))
-    return interpolate([(int(round(x)), int(round(y))) for (x, y) in out], 3, 3, width, height)
+    return interpolate([(int(round(x)), int(round(y))) for (x, y) in out], line_width, sigma_x, sigma_y, width, height)
 
 def dimensions(points):
     """
