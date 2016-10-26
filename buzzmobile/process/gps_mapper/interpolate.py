@@ -1,10 +1,8 @@
 import numpy as np
 import math
 import cv2
-import maps
-import random
 
-def interpolate(points, sigma_x, sigma_y, height=500, width=500):
+def interpolate(points, sigma_x, sigma_y, height, width):
     """
     Takes a list of points, connects them with a line,
     and Gaussian blurs the line.
@@ -25,36 +23,22 @@ def interpolate(points, sigma_x, sigma_y, height=500, width=500):
         cv2.line(output, pt1, pt2, [255, 255, 255], 4)
     output = cv2.GaussianBlur(output, (sigma_x, sigma_y), 0)
     return output
-    #pub = rospy.Publisher('gps_image', Image, queue_size = 10)
-    #rospy.init_node('gps', anonymous=True)
 
-def nearest_point_index(location, points_array):
+def haversine(lat1, lon1, lat2, lon2):
     """
-    Returns the index of the point in the given numpy array of points
-    that is closest to the specified location.
+    Calculates the distance between two lat-lon points in kilometers.
     """
-    deltas = points_array - location
-    distances = np.einsum('ij,ij->i', deltas, deltas)
-    return np.argmin(distances)
+    delta_lat = math.radians(lat2 - lat1)
+    delta_lon = math.radians(lon2 - lon1)
+    lat1 = math.radians(lat1)
+    lat2 = math.radians(lat2)
+    a = math.sin(delta_lat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(delta_lon/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    R = 6371
+    d = R * c
+    return d
 
-
-def close_points(points, max_distance):
-    """
-    Returns a slice of the input list of points such that the slice ends at
-    the given maximum distance from the first point in the list of points.
-    """
-    start = points[0]
-    x, y = start
-    final_index = 0
-    for i in range(len(points)):
-        distance = maps.haversine(x, y, points[i][0], points[i][1])
-        if distance > max_distance:
-            break
-        else:
-            final_index = i
-    return points[0:final_index]
-
-def normalized_points(points, height=500, width=500):
+def normalized_points(points, height, width):
     """
     Takes a list of points (tuples of x, y coordinates) and an output image size
     and returns a transformed list of points that fit in the output image.
@@ -66,21 +50,23 @@ def normalized_points(points, height=500, width=500):
     return [((x - top_left[0]) * width / x_range, 
         (y - top_left[1]) * height / y_range) 
         for (x, y) in points]
-
+    
 def normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point):
     return ((point[0] - top_left[0]) * width / x_range, (point[1] - top_left[1]) * height / y_range)
 
 
-def window(image, location, angle, height=500, width=500):
+def window(image, location, angle, height, width):
     """
-    Takes an image, a location, an angle in degrees, and optionally a height and width
+    DO NOT USE THIS. USE THE FOLLOWING FUNCTION INSTEAD, WHICH TAKES ONLY POINTS INSTEAD OF
+    A FULL IMAGE. THE FOLLOWING FUNCTION IS LESS MEMORY INTENSIVE.
+    Takes an image, a location, an angle in radians, and optionally a height and width
     in order to return the angled rectangular region of the image of the specified size,
     with the location specifying the bottom middle point of the image.
     ----------------------------------------------------------------------------
     image: 2D array (NumPy/OpenCV) representing the path (should be normalized already)
     location: tuple of (x, y) representing the current location to center the bottom of
               the window at in pixels
-    degree_heading: angle in degrees to rotate rectangular region by (counterclockwise)
+    angle: angle in radians to rotate rectangular region by (counterclockwise)
     height, width: dimensions of the output image in pixels
     ----------------------------------------------------------------------------
     """
@@ -91,40 +77,39 @@ def window(image, location, angle, height=500, width=500):
     rotation_matrix = np.array([[parallel[0], perpendicular[0], horizontal], [parallel[1], perpendicular[1], vertical]])
     return cv2.warpAffine(image, rotation_matrix, (width, height), flags=cv2.WARP_INVERSE_MAP)
 
+def xwindow(points, location, angle, height, width):
+    """
+    Takes a list of points, a location, an angle in radians, and optionally a height and width
+    in order to return the angled rectangular region of the image of the specified size,
+    with the location specifying the bottom middle point of the image. The image itself is
+    the blurred interpolation of all the points (we only construct the relevant portion of the
+    rotated image).
+    ----------------------------------------------------------------------------
+    points: list of (x, y) tuples representing points
+    location: tuple of (x, y) representing the current location to center the bottom of
+              the window at in pixels
+    angle: angle in radians to rotate rectangular region by (counterclockwise)
+    height, width: dimensions of the output image in pixels
+    ----------------------------------------------------------------------------
+    """
+    out = []
+    parallel = (math.cos(angle), -math.sin(angle))
+    perpendicular = (math.sin(angle), math.cos(angle))
+    for (x, y) in points:
+        x_ = x * parallel[0] + y * parallel[1] + location[0] - location[0] * parallel[0] - location[1] * parallel[1]
+        y_ = x * perpendicular[0] + y * perpendicular[1] + location[1] - location[0] * perpendicular[0] - location[1] * perpendicular[1]
+        # when adding the points back, translate them to the proper location for the final image
+        out.append((x_ + (width/2 - location[0]), y_ + (height - location[1])))
+    return interpolate([(int(round(x)), int(round(y))) for (x, y) in out], 3, 3, width, height)
+
 def dimensions(points):
     """
     Takes a set of latitude and longitude points and returns the width and height in kilometers.
     """
     x_vals = [x for (x, y) in points]
     y_vals = [y for (x, y) in points]
-    top_left = (min(x_vals), min(y_vals))
-    bottom_right = (max(x_vals), max(y_vals))
-    x_range = maps.haversine(top_left[0], top_left[1], bottom_right[0], top_left[1])
-    y_range = maps.haversine(top_left[0], top_left[1], top_left[0], bottom_right[1])
-    return y_range, x_range, top_left, bottom_right
-
-def main():
-    # this is just for testing
-    points = [(y, -x) for (x, y) in maps.get_points("Mexico City, MX", "New York, NY")] # get google maps lat/longs
-    x_vals = [x for (x, y) in points]
-    y_vals = [y for (x, y) in points]
     top_left = (min(x_vals), max(y_vals))
     bottom_right = (max(x_vals), min(y_vals))
-    y_scale, x_scale, top_left, bottom_right = dimensions(points) # this gives the size of our full image
-    y_scale *= 5000
-    x_scale *= 5000
-    print(y_scale, x_scale)
-    normalized = normalized_points(points, int(y_scale), int(x_scale)) # let's normalize the points to full image size
-    angles = [random.uniform(0, 0.131) for n in normalized] # generating some random angles because i'm lazy
-    full = interpolate([(int(round(x)), int(round(y))) for (x, y) in normalized], 3, 3, int(x_scale), int(y_scale)) # pretend this doesn't look gross
-    i = 0
-    for n in normalized: # we're iterating through all the points in the line to simulate movement
-        current = (int(round(n[0])), int(round(n[1])))
-        # swap the two lines below to see what happens with/without angling the image
-        rot = window(full, (current[0], current[1]), angles[i], 500, 500)
-        #rot = window(full, (current[0], current[1]), 0, 500, 500)
-        i += 1
-        cv2.imshow("line", rot)
-        cv2.waitKey(30) # cinematic
-
-if __name__ == '__main__': main()
+    x_range = haversine(top_left[0], top_left[1], bottom_right[0], top_left[1])
+    y_range = haversine(top_left[0], top_left[1], top_left[0], bottom_right[1])
+    return y_range, x_range, top_left, bottom_right
