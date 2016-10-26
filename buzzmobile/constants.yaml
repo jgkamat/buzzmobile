@@ -7,6 +7,7 @@
 image_width: 600
 image_height: 800
 pixels_per_m: 80
+median_filter_size: 5
 
 # Used for tentacle projection, travel distance is the step between each 
 # tentacle point, and num_points is the length of each tentacle, if using
