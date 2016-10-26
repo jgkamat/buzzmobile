@@ -1,12 +1,14 @@
 #!/usr/bin/env python
-
 import sys
 import rospy
 import cv2
+
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 
+
 bridge = CvBridge()
+
 
 def publish_image(image_filename):
     imgFile = cv2.imread(image_filename)
@@ -15,12 +17,11 @@ def publish_image(image_filename):
     topic_name = sys.argv[1].split('/')[-1][:-4]
     pub = rospy.Publisher(topic_name, Image, queue_size=0)
 
-    rospy.init_node('image_publisher', anonymous=True)
+    rospy.init_node('image_const', anonymous=True)
 
     rate = rospy.Rate(1) # 1hz
 
     while not rospy.is_shutdown():
-        #rospy.loginfo(imgMsg)
         pub.publish(imgMsg)
         rate.sleep()
 

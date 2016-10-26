@@ -14,6 +14,7 @@ find_package(OpenCV REQUIRED)
 add_message_files(
   FILES
   CarPose.msg
+  CarState.msg
 )
 
 generate_messages(
@@ -31,6 +32,7 @@ include_directories(
                     ${catkin_INCLUDE_DIRS}
                     ${OPENCV_INCLUDE_DIRS}
 )
+
 add_subdirectory(process/projector)
-add_subdirectory(process/lane_detector)
-add_subdirectory(sense/image_const)
+add_subdirectory(plan/controller)
+add_subdirectory(drive/car_interface)
