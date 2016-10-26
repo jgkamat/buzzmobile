@@ -11,7 +11,7 @@ state = {
         'auto_car_pose': None,
         'curr_car_state': CarState.START}
 
-car_pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=0)
+car_pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=1)
 
 def mux(car_state):
     if car_state == CarState.START: return None
