@@ -15,28 +15,31 @@ from std_msgs.msg import String
 bridge = CvBridge()
 frames = {}
 frames['bearing'] = frames['points'] = frames['location'] = None
+# These ranges are km dimensions of the path. We initialize them to 0.
+frames['y_range'] = frames['x_range'] = 0
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
-y_range = x_range = 0
 
 def set_points(polyline):
     if polyline is not None:
         points = pl.decode(polyline.data)
         y_range, x_range, top_left, bottom_right = interpolate.dimensions(frames['points'])
+        frames['y_range'] = y_range
+        frames['x_range'] = x_range
         frames['points'] = [(y, -x) for (x, y) in points]
         _, _, top_left, bottom_right = interpolate.dimensions(frames['points'])
-        height = y_range * y_scale
-        width = x_range * x_scale
+        height = frames['y_range'] * y_scale
+        width = frames['x_range'] * x_scale
         frames['points'] = interpolate.normalized_points(frames['points'], int(round(width)), int(round(height)))
 
 def update_image():
     if frames['points'] is not None:
         _, _, top_left, bottom_right = interpolate.dimensions(frames['points'])
-        height = int(round(y_range * y_scale))
-        width = int(round(x_range * x_scale))
+        height = int(round(frames['y_range'] * y_scale))
+        width = int(round(frames['x_range'] * x_scale))
         point = (frames['location'][0], -frames['location'][1])
-        if y_range is not 0:
-            point = interpolate.normalize_single_point(y_range, x_range, height, width, top_left, bottom_right, point)
+        if frames['y_range'] is not 0:
+            point = interpolate.normalize_single_point(frames['y_range'], frames['x_range'], height, width, top_left, bottom_right, point)
         result = interpolate.xwindow(frames['points'], point, frames['bearing'], rospy.get_param('image_height'), rospy.get_param('image_width'))
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         gps_model_pub.publish(result_msg)
