@@ -15,7 +15,7 @@ from std_msgs.msg import String
 
 # GLOBAL VARS
 route = {}
-pub = rospy.Publisher('route_map', Image, queue_size=0)
+pub = rospy.Publisher('route_map', Image, queue_size=1)
 bridge = CvBridge()
 
 

@@ -14,7 +14,7 @@ from std_msgs.msg import String
 
 # GLOBALS
 gmaps = googlemaps.Client(key=gmpskey.googlemapskey)
-pub = rospy.Publisher('polyline', String, queue_size=0)
+pub = rospy.Publisher('polyline', String, queue_size=1)
 target = {
         'destination': None,
         'published': False,
