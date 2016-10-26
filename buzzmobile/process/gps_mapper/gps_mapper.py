@@ -15,7 +15,7 @@ from std_msgs.msg import String
 bridge = CvBridge()
 frames = {}
 frames['bearing'] = frames['points'] = frames['location'] = None
-gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=0)
+gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
 y_range = x_range = 0
 

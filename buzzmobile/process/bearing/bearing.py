@@ -30,7 +30,7 @@ class MedianFilter:
 #Global Variables
 last_fix = None
 med_filter = MedianFilter(rospy.get_param('median_filter_size'))
-bearing_pub = rospy.Publisher('bearing', Float64, queue_size=0)
+bearing_pub = rospy.Publisher('bearing', Float64, queue_size=1)
 
 def bearing(fix):
     global last_fix
