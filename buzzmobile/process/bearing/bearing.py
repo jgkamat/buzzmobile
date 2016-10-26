@@ -25,10 +25,9 @@ class MedianFilter:
             return (sortedArray[index] + sortedArray[index + 1]) / 2.0
 
 
-#Global Variables
-bearings = {}
-bearings['last_fix'] = None
-bearings['med_filter'] = MedianFilter(rospy.get_param('median_filter_size'))
+# Global variables
+last_fix = None
+med_filter = MedianFilter(rospy.get_param('median_filter_size'))
 bearing_pub = rospy.Publisher('bearing', Float64, queue_size=1)
 
 MIN_FIX_DISTANCE = rospy.get_param('min_fix_distance')
@@ -39,30 +38,30 @@ def bearing(fix):
     """
     Adds the latest computed bearing to the meadian filter, publishes
     the current median bearing, and sets last_fix to the given fix
-    if the given fix is >= MIN_FIX_DISTANCE from last_fix
+    if the given fix is >= MIN_FIX_DISTANCE from last_fix or there is
+    currently no last_fix
     """
 
     if fix is not None:
-        if bearings['last_fix'] is not None:
-            lat1 = math.radians(bearings['last_fix'].latitude)
-            lon1 = math.radians(bearings['last_fix'].longitude)
-            lat2 = math.radians(fix.latitude)
-            lon2 = math.radians(fix.longitude)
-
-            distance = get_distance(lat1, lon1, lat2, lon2)
-            computedBearing = get_forward_angle(lat1, lon1, lat2, lon2)
-            bearings['med_filter'].add(computedBearing)
-            bearing_pub.publish(bearings['med_filter'].median())
-
+        if last_fix is not None:
+            distance = get_distance(last_fix, fix)
+            bearing = get_forward_angle(last_fix, fix)
+            med_filter.add(bearing)
+            bearing_pub.publish(med_filter.median())
             if distance >= MIN_FIX_DISTANCE:
                 last_fix = fix
         else:
             last_fix = fix
 
-def get_distance(lat1, lon1, lat2, lon2):
+def get_distance(fix1, fix2):
     """
     Calculates great-circle distance between two positions in meters
     """
+
+    lat1 = math.radians(fix1.latitude)
+    lon1 = math.radians(fix1.longitude)
+    lat2 = math.radians(fix2.latitude)
+    lon2 = math.radians(fix2.longitude)
 
     a = (math.pow(math.sin(lat2 - lat1), 2)
          + math.cos(lat1) * math.cos(lat2)
@@ -70,10 +69,15 @@ def get_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return EARTH_RADIUS * c
 
-def get_forward_angle(lat1, lon1, lat2, lon2):
+def get_forward_angle(fix1, fix2):
     """
     Calculates forward azimuth between two positions in radians
     """
+
+    lat1 = math.radians(fix1.latitude)
+    lon1 = math.radians(fix1.longitude)
+    lat2 = math.radians(fix2.latitude)
+    lon2 = math.radians(fix2.longitude)
 
     y = math.sin(lon2 - lon1) * math.cos(lat2)
     x = (math.cos(lat1) * math.sin(lat2)
