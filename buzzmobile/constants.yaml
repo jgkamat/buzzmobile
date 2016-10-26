@@ -8,8 +8,9 @@ image_width: 600
 image_height: 800
 pixels_per_m: 80
 
-# This is the number of lat-lon points (NavSatFixes) that are kept track of
-# to take a median in order to improve bearing calculation accuracy.
+# This is the number of bearings (angle from north in radians) that
+# are kept track of to take a median in order to improve
+# bearing calculation accuracy.
 median_filter_size: 5
 
 # Used for tentacle projection, travel distance is the step between each 
