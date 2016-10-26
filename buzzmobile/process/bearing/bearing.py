@@ -37,28 +37,27 @@ EARTH_RADIUS = 6.3710088e6
 
 def bearing(fix):
     """
-    Determines if the latest position is >= MIN_FIX_DISTANCE from the last
-    position, and if so adds the new bearing to the median filter and
-    publishes the new median.
+    Adds the latest computed bearing to the meadian filter, publishes
+    the current median bearing, and sets last_fix to the given fix
+    if the given fix is >= MIN_FIX_DISTANCE from last_fix
     """
 
-    if bearings['last_fix'] is not None:
-        lat1 = math.radians(bearings['last_fix'].latitude)
-        lon1 = math.radians(bearings['last_fix'].longitude)
-        lat2 = math.radians(fix.latitude)
-        lon2 = math.radians(fix.longitude)
+    if fix is not None:
+        if bearings['last_fix'] is not None:
+            lat1 = math.radians(bearings['last_fix'].latitude)
+            lon1 = math.radians(bearings['last_fix'].longitude)
+            lat2 = math.radians(fix.latitude)
+            lon2 = math.radians(fix.longitude)
 
-        distance = get_distance(lat1, lon1, lat2, lon2)
-        computedBearing = get_forward_angle(lat1, lon1, lat2, lon2)
-        bearings['med_filter'].add(computedBearing)
-        bearing_pub.publish(bearings['med_filter'].median())
+            distance = get_distance(lat1, lon1, lat2, lon2)
+            computedBearing = get_forward_angle(lat1, lon1, lat2, lon2)
+            bearings['med_filter'].add(computedBearing)
+            bearing_pub.publish(bearings['med_filter'].median())
 
-        if distance >= MIN_FIX_DISTANCE:
+            if distance >= MIN_FIX_DISTANCE:
+                last_fix = fix
+        else:
             last_fix = fix
-
-    if fix is not None
-        last_fix = fix
-
 
 def get_distance(lat1, lon1, lat2, lon2):
     """
