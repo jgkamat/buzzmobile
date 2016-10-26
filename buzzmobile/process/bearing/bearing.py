@@ -51,18 +51,19 @@ def bearing(fix):
         lon2 = math.radians(fix.longitude)
 
         #Calculates great-circle distance between positions
-        a = math.pow(math.sin(lat2 - lat1), 2)
-            + math.cos(lat1)*math.cos(lat2)*math.pow(math.sin((lon2 - lon1)/2), 2)
-        c = 2*math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        a = (math.pow(math.sin(lat2 - lat1), 2)
+             + math.cos(lat1) * math.cos(lat2)
+             * math.pow(math.sin((lon2 - lon1) / 2), 2))
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         distance = EARTH_RADIUS * c
 
         if distance >= MIN_FIX_DISTANCE:
             #Calculates forward azimuth between positions
             y = math.sin(lon2 - lon1) * math.cos(lat2)
-            x = math.cos(lat1)*math.sin(lat2)
-                - math.sin(lat1)*math.cos(lat2)*math.cos(lon2 - lon1)
+            x = (math.cos(lat1) * math.sin(lat2)
+                 - math.sin(lat1) * math.cos(lat2) * math.cos(lon2 - lon1))
             angle = math.atan2(y, x)
-            computedBearing = (angle + 2*math.pi) % 2*math.pi
+            computedBearing = (angle + 2 * math.pi) % (2 * math.pi)
 
             bearings['med_filter'].add(computedBearing)
 
