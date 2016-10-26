@@ -2,7 +2,6 @@
 import cv2
 import numpy as np
 
-import datetime as dt
 import rospy
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image

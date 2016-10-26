@@ -9,8 +9,6 @@ from sensor_msgs.msg import Image
 from sensor_msgs.msg import LaserScan
 from math import sin, cos, pi, isnan
 
-import gc
-
 image_width = rospy.get_param("image_width")
 image_height = rospy.get_param("image_height")
 pixels_per_m = rospy.get_param("pixels_per_m")
