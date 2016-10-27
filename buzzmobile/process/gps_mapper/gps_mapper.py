@@ -18,8 +18,8 @@ frames = {}
 # (normalized to some size based on pixels_per_m).
 # 'location' is our lat-lon position (unmodified) from our GPS.
 frames['bearing'] = frames['points'] = frames['location'] = None
-# These ranges are km dimensions of the path. We initialize them to 0.
-# The scaled width and height of the points are also initialized to 0.
+# These ranges are km dimensions of the path. Initialize them to 0.
+# Also initialize the scaled width and height of the points to 0.
 frames['y_range'] = frames['x_range'] = frames['height'] = frames['width'] = 0
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
 bridge = CvBridge()
@@ -32,7 +32,7 @@ image_width = rospy.get_param('image_width')
 image_height = rospy.get_param('image_height')
 
 def set_points(polyline):
-    """Given a polyline as a ROS message, we normalize and store the points."""
+    """Given a polyline as a ROS message, normalize and store the points."""
     if polyline is not None:
         points = pl.decode(polyline.data)
         # Calculate the y and x ranges (in kilometers).
@@ -54,13 +54,12 @@ def set_points(polyline):
         # Based on the accurate y and x ranges, calculate a height and width
         # that will scale our final image to our specified pixels_per_m
         # (pixels per meter) parameter.
-        
         # Note that this is distinct from `image_height` and `image_width`,
         # which are the height and width of the current window that will be
         # passed to the frame merger!
         frames['height'] = int(round(frames['y_range'] * y_scale))
         frames['width'] = int(round(frames['x_range'] * x_scale))
-        # We store the normalized points.
+        # Store the normalized points.
         frames['points'] = interpolate.normalized_points(frames['points'],
                                                          frames['width'],
                                                          frames['height'])
