@@ -13,6 +13,10 @@ from std_msgs.msg import String
 
 #Global Variables
 frames = {}
+# 'bearing' is counter-clockwise angle from north in radians.
+# 'points' will contain the polyline list of lat-lon points
+# (normalized to some size based on pixels_per_m).
+# 'location' is our lat-lon position (unmodified) from our GPS.
 frames['bearing'] = frames['points'] = frames['location'] = None
 # These ranges are km dimensions of the path. We initialize them to 0.
 frames['y_range'] = frames['x_range'] = 0
@@ -27,21 +31,40 @@ image_width = rospy.get_param('image_width')
 image_height = rospy.get_param('image_height')
 
 def set_points(polyline):
+    """Given a polyline as a ROS message, we normalize and store the points."""
     if polyline is not None:
         points = pl.decode(polyline.data)
+        # We calculate the y and x ranges here (in kilometers).
+        # This is because we must later flip the polyline points
+        # (this is the result of the structure of a polyline), which
+        # makes the y and x range calculations invalid later on.
         (y_range, x_range,
-         top_left, bottom_right) = interpolate.dimensions(frames['points'])
+         top_left, bottom_right) = interpolate.dimensions(points)
+        # These y and x ranges are now stored.
         frames['y_range'] = y_range
         frames['x_range'] = x_range
+        # Now, we flip the points because we want the top of the image
+        # to represent north.
         frames['points'] = [(y, -x) for (x, y) in points]
+        # Because we must flip the points, we can't calculate the y and x
+        # ranges accurately in one step. This is why we do not reset the 
+        # y and x ranges here. However, we do still need the top left and
+        # bottom right coordinates.
         _, _, top_left, bottom_right = interpolate.dimensions(frames['points'])
-        height = frames['y_range'] * y_scale
-        width = frames['x_range'] * x_scale
+        # Based on the accurate y and x ranges, we calculate a height and width
+        # that will scale our final image to our specified pixels_per_m
+        # (pixels per meter) parameter.
+        height = int(round(frames['y_range'] * y_scale))
+        width = int(round(frames['x_range'] * x_scale))
+        # We store the normalized points.
         frames['points'] = interpolate.normalized_points(frames['points'],
-                                                         int(round(width)),
-                                                         int(round(height)))
+                                                         width,
+                                                         height)
 
 def update_image():
+    """
+    Called every time the location of the car or the bearing of the car changes.
+    """
     if frames['points'] is not None:
         _, _, top_left, bottom_right = interpolate.dimensions(frames['points'])
         height = int(round(frames['y_range'] * y_scale))
