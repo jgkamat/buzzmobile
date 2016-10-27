@@ -8,7 +8,7 @@ image_width: 600
 image_height: 800
 pixels_per_m: 80
 
-#We also define `road_width`, a measurement of the width of the road in meters.
+# A measurement of the width of the road in meters.
 # This will be scaled to an appropriate size using `pixels_per_m` during
 # construction of the GPS model image.
 road_width: 0.5
