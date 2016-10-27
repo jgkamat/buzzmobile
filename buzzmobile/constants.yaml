@@ -18,7 +18,7 @@ road_width: 0.5
 # bearing calculation accuracy.
 median_filter_size: 5
 
-# These values are the sigma values used to create the Gaussian kernel during
+# Sigma values used to create the Gaussian kernel during
 # the blurring of the image constructed during the construction
 # of the GPS model image.
 sigma_x: 3
