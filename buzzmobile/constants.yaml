@@ -13,7 +13,7 @@ pixels_per_m: 80
 # construction of the GPS model image.
 road_width: 0.5
 
-# This is the number of bearings (angle from north in radians) that
+# Number of bearings (angle from north in radians) that
 # are kept track of to take a median in order to improve
 # bearing calculation accuracy.
 median_filter_size: 5

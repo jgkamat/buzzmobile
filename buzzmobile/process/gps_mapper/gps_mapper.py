@@ -35,28 +35,29 @@ def set_points(polyline):
     """Given a polyline as a ROS message, we normalize and store the points."""
     if polyline is not None:
         points = pl.decode(polyline.data)
-        # We calculate the y and x ranges here (in kilometers).
+        # Calculate the y and x ranges (in kilometers).
         # This is because we must later flip the polyline points
         # (this is the result of the structure of a polyline), which
         # makes the y and x range calculations invalid later on.
         (y_range, x_range,
          top_left, bottom_right) = interpolate.dimensions(points)
-        # These y and x ranges are now stored.
+        # Store y and x ranges.
         frames['y_range'] = y_range
         frames['x_range'] = x_range
-        # Now, we flip the points because we want the top of the image
+        # Flip the points because we want the top of the image
         # to represent north.
         frames['points'] = [(y, -x) for (x, y) in points]
-        # Because we must flip the points, we can't calculate the y and x
-        # ranges accurately in one step. This is why we do not reset the 
-        # y and x ranges here. However, we do still need the top left and
-        # bottom right coordinates.
+        # Recalculate top left and bottom right coordinates
+        # after flipping the polyline points. Do not save the new
+        # y and x ranges, because those will not be correct.
         _, _, top_left, bottom_right = interpolate.dimensions(frames['points'])
-        # Based on the accurate y and x ranges, we calculate a height and width
+        # Based on the accurate y and x ranges, calculate a height and width
         # that will scale our final image to our specified pixels_per_m
-        # (pixels per meter) parameter. Note that this is distinct from
-        # `image_height` and `image_width`, which are the height and width
-        # of the current window that will be passed to the frame merger!
+        # (pixels per meter) parameter.
+        
+        # Note that this is distinct from `image_height` and `image_width`,
+        # which are the height and width of the current window that will be
+        # passed to the frame merger!
         frames['height'] = int(round(frames['y_range'] * y_scale))
         frames['width'] = int(round(frames['x_range'] * x_scale))
         # We store the normalized points.
@@ -111,7 +112,7 @@ def set_location(fix_location):
         update_image()
 
 def gps_mapper_node():
-    # This initializes the ROS node and starts listening for
+    # Initializes the ROS node and starts listening for
     # polylines, bearings, and locations.
     rospy.init_node('gps_mapper', anonymous=True)
     rospy.Subscriber('polyline', String, set_points)
