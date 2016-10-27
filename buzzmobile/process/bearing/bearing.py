@@ -25,10 +25,10 @@ class MedianFilter:
             return (sortedArray[index] + sortedArray[index + 1]) / 2.0
 
 
-# Global variables
-globalVars = {}
-globalVars['last_fix'] = None
-globalVars['med_filter'] = MedianFilter(rospy.get_param('median_filter_size'))
+# Globals
+globals = {}
+globals['last_fix'] = None
+globals['med_filter'] = MedianFilter(rospy.get_param('median_filter_size'))
 bearing_pub = rospy.Publisher('bearing', Float64, queue_size=1)
 
 MIN_FIX_DISTANCE = rospy.get_param('min_fix_distance')
@@ -43,8 +43,8 @@ def bearing(fix):
     currently no last_fix
     """
 
-    last_fix = globalVars['last_fix']
-    med_filter = globalVars['med_filter']
+    last_fix = globals['last_fix']
+    med_filter = globals['med_filter']
 
     if fix is not None:
         if last_fix is not None:
@@ -53,10 +53,9 @@ def bearing(fix):
             med_filter.add(bearing)
             bearing_pub.publish(med_filter.median())
             if distance >= MIN_FIX_DISTANCE:
-                last_fix = fix
+                globals['last_fix'] = fix
         else:
-            last_fix = fix
-    globalVars['last_fix'] = last_fix
+            globals['last_fix'] = fix
 
 
 def get_distance(fix1, fix2):
