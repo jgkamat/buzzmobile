@@ -43,15 +43,12 @@ def bearing(fix):
     currently no last_fix
     """
 
-    last_fix = globals['last_fix']
-    med_filter = globals['med_filter']
-
     if fix is not None:
-        if last_fix is not None:
-            distance = get_distance(last_fix, fix)
-            bearing = get_forward_angle(last_fix, fix)
-            med_filter.add(bearing)
-            bearing_pub.publish(med_filter.median())
+        if globals['last_fix'] is not None:
+            distance = get_distance(globals['last_fix'], fix)
+            bearing = get_forward_angle(globals['last_fix'], fix)
+            globals['med_filter'].add(bearing)
+            bearing_pub.publish(globals['med_filter'].median())
             if distance >= MIN_FIX_DISTANCE:
                 globals['last_fix'] = fix
         else:
