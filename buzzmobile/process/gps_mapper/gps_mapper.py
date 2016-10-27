@@ -64,9 +64,16 @@ def set_points(polyline):
 def update_image():
     """
     Called every time the location of the car or the bearing of the car changes.
+    Calculates the rotated point space and then interpolates the points in the
+    specified window before publishing this updated window (image) to ROS.
     """
     if frames['points'] is not None:
+        # Calculate the top left and bottom right points
+        # of the full list of points.
         _, _, top_left, bottom_right = interpolate.dimensions(frames['points'])
+        # Calculate image height and width, and also
+        # normalize the current location to the size of the
+        # normalized polyline points.
         height = int(round(frames['y_range'] * y_scale))
         width = int(round(frames['x_range'] * x_scale))
         point = (frames['location'][0], -frames['location'][1])
@@ -76,6 +83,9 @@ def update_image():
                                                        height, width,
                                                        top_left, bottom_right,
                                                        point)
+        # Call method to calculate rotated points and interpolate a path
+        # between the points that are in the current window
+        # (based on the current location and bearing).
         result = interpolate.xwindow(frames['points'], point, frames['bearing'],
                                      line_width,
                                      sigma_x,
@@ -86,16 +96,20 @@ def update_image():
         gps_model_pub.publish(result_msg)
 
 def set_bearing(angle):
+    """Given a radian bearing, update the current bearing and update image."""
     frames['bearing'] = angle.data
     if frames['location'] is not None:
         update_image()
 
 def set_location(fix_location):
+    """Given a lat-lon, update current location and update image."""
     frames['location'] = (fix_location.latitude, fix_location.longitude)
     if frames['bearing'] is not None:
         update_image()
 
 def gps_mapper_node():
+    # This initializes the ROS node and starts listening for
+    # polylines, bearings, and locations.
     rospy.init_node('gps_mapper', anonymous=True)
     rospy.Subscriber('polyline', String, set_points)
     rospy.Subscriber('bearing', Float64, set_bearing)
