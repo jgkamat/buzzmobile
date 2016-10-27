@@ -29,8 +29,8 @@ image_height = rospy.get_param('image_height')
 def set_points(polyline):
     if polyline is not None:
         points = pl.decode(polyline.data)
-        y_range, x_range, top_left, bottom_right
-            = interpolate.dimensions(frames['points'])
+        (y_range, x_range,
+         top_left, bottom_right) = interpolate.dimensions(frames['points'])
         frames['y_range'] = y_range
         frames['x_range'] = x_range
         frames['points'] = [(y, -x) for (x, y) in points]
