@@ -65,13 +65,6 @@ You will then need to log in and out again. Simply starting a new terminal is
 not sufficient. The Linux kernel will not refresh groups until the user
 completely logs out and logs in again.
 
-To use a PS4 controller you will need to install the PS4 controller driver for
-Linux. For that, do:
-
-```bash
-sudo pip install ds4drv
-```
-
 
 Running
 -------
