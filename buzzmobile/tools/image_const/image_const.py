@@ -15,7 +15,7 @@ def publish_image(image_filename):
     imgMsg = bridge.cv2_to_imgmsg(imgFile, "bgr8")
 
     topic_name = sys.argv[1].split('/')[-1][:-4]
-    pub = rospy.Publisher(topic_name, Image, queue_size=0)
+    pub = rospy.Publisher(topic_name, Image, queue_size=1)
 
     rospy.init_node('image_const', anonymous=True)
 

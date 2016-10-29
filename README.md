@@ -8,7 +8,6 @@ A list of available nodes and an overview of the architecture is available [here
 
 ![architecture](/architecture.png?raw=true)
 
-
 Environment
 -----------
 
@@ -54,6 +53,12 @@ To use the gps and the lidar nodes, you will need user permissions to directly a
 sudo usermod -aG dialout <YOUR USERNAME>
 ```
 You will then need to log in and out again. Simply starting a new terminal is not sufficient. The Linux kernel will not refresh groups until the user completely logs out and logs in again.
+
+To use a PS4 controller you will need to install the PS4 controller driver for Linux. For that, do:
+
+```bash
+sudo pip install ds4drv
+```
 
 Running
 -------
@@ -135,3 +140,28 @@ To see info about the recorded data, do `rosbag info filename.bag`
 To play the data (and publish those messages), do `rosbag play test.bag`
 
 To see your video (if you recorded camera data), do `rqt_image_view` (rqt comes with ROS if your download the desktop version), play the data if it isn't already playing, hit the refresh button at the top, and then search for the topic your .bag file is publishing to. Your camera data will play in that window.
+
+Starting Car
+------------
+
+To start car and prepare it for driving, perform the following steps:
+
+1. Connect the battery
+2. Flip the switch inside to turn the car on
+3. Ensure all e-stops are disabled. (Red buttons on front and back in out position and enabled via remote)
+4. Press the green button to start the motors (Car is now live)
+5. The car starts in START mode where it receives no information. It must be switched to MANUAL or AUTO for it to drive. 
+6. See "Manual Mode Controls" for details on switching modes and operating the car.
+
+Manual Mode Controls
+--------------------
+
+The `controller_node` node outputs a CarPose message and a CarState message determined by input from a PS4 controller. To control these messages and operate the car manually using the controller, use the following controls:
+
+- Left Joystick: Change steering angle
+- R2 (Right Trigger): Change velocity
+- Square: Enable reverse. When this is held down, velocity is negated meaning the car will accelerate backwards.
+- X: Honk the horn
+- Home Button: Switch the car between AUTO and MANUAL modes.
+
+The car starts in START mode. When pressed it will switch to MANUAL mode. Every subsequent press toggles between AUTO and MANUAL mode.

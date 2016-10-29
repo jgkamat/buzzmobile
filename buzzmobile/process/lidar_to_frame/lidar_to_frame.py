@@ -16,7 +16,8 @@ image_width_m = image_width / pixels_per_m
 image_height_m = image_height / pixels_per_m
 
 
-lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=0)
+
+lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=1)
 bridge = CvBridge()
 
 
