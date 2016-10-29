@@ -95,9 +95,9 @@ rosparam set usb_cam/pixel_format yuyv
 rosrun usb_cam usb_cam_node
 ```
 
-Note that rospy nodes don't require `catkin_make`, but do require that the file
-be made executable, and the `.py` extension and has `#!/usr/bin/env python` as
-its first line.
+Note that rospy nodes don't require `catkin_make` to run, but do require the `.py`
+extension. If you're writing a new rospy node, also make sure the file is made
+executable, and has `#!/usr/bin/env python` as its first line.
 
 ```bash
 chmod +x path/to/rospy_node.py  # make sure file has shebang
@@ -108,17 +108,17 @@ Some nodes require parameters that are defined in the
 `buzzmobile/constants.yaml` file. To load those constants as `rosparam`s, do:
 
 ```bash
-rosparam load buzzmobile/buzzmobile/constants.yaml
+rosparam load ~/catkin_ws/src/buzzmobile/buzzmobile/constants.yaml
 ```
 
-If you want to visualize your nodes, you can run the ROS visualizer (rviz) OR
-`image_view`. In it, you can, for instance, create an 'image' instance, and set
-it to the value of the `/image_const` being broadcast, which will display the
-image:
+If you want to visualize your nodes, you can run the ROS visualizer (`rviz`),
+`image_view`, or `rqt_gui`. These three have different ways of visualizing
+messages being published:
 
 ```bash
 rosrun rviz rviz
 rosrun image_view image_view image:=some_imgmsg
+rosrun rqt_gui rqt_gui
 ```
 
 To load the buzzmobile mission control, load `rqt_gui` with the mission control
@@ -164,7 +164,8 @@ rosbag record -O filename /message/name
 
 To see info about the recorded data, do `rosbag info filename.bag`
 
-To play the data (and publish those messages), do `rosbag play test.bag`
+To play the data (and publish those messages), do `rosbag play test.bag`. To play
+in a loop, just add the `-l` flag.
 
 
 Starting Car
@@ -176,8 +177,10 @@ To start car and prepare it for driving, perform the following steps:
 2. Flip the switch inside to turn the car on
 3. Ensure all e-stops are disabled. (Red buttons on front and back in out position and enabled via remote)
 4. Press the green button to start the motors (Car is now live)
-5. The car starts in START mode where it receives no information. It must be switched to MANUAL or AUTO for it to drive. 
-6. See "Manual Mode Controls" for details on switching modes and operating the car.
+
+The car starts in START mode where it receives no information. It must be switched
+to MANUAL or AUTO for it to drive. See 'Manual Mode Controls' for details on
+switching modes and operating the car.
 
 
 Manual Mode Controls
