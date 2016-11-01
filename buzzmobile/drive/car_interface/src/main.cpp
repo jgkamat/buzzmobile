@@ -12,7 +12,7 @@ const double wheelCirc = 2.198;
 
 ros::Publisher encoder_pub;
 ros::Subscriber command_sub;
-ros::Subscriber horn_sub;
+//ros::Subscriber horn_sub;
 
 Arduino arduino;
 
@@ -27,7 +27,7 @@ ros::Duration keep_alive_frequency(1.0);
 //void command_callback(core_msgs::MotionCommand::ConstPtr);
 void command_callback(buzzmobile::CarPose::ConstPtr);
 
-void horn_callback(std_msgs::Bool::ConstPtr);
+//void horn_callback(std_msgs::Bool::ConstPtr);
 
 void keep_alive_callback(const ros::TimerEvent&);
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
   //encoder_pub = node_handle.advertise<core_msgs::Odom>("encoder_odom", 1000);
 
   command_sub = node_handle.subscribe("car_pose", 1, command_callback);
-  
+
   //horn_sub = node_handle.subscribe("car_horn", 1, horn_callback);
 
   ros::Timer keepAliveTimer = node_handle.createTimer(keep_alive_frequency, keep_alive_callback);
