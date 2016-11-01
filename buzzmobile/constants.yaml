@@ -1,7 +1,7 @@
 # Various constants for use throughout the project
 
 # These all relate to the shape of the interal representation of the world,
-# which is essentially a numpy array (or image) of `image_width` by 
+# which is essentially a numpy array (or image) of `image_width` by
 # `image_height` with a scale factor of `pixels_per_m`, corresponding to the
 # number of pixels per each real-world meter
 image_width: 600
@@ -13,7 +13,12 @@ pixels_per_m: 80
 # bearing calculation accuracy.
 median_filter_size: 5
 
-# Used for tentacle projection, travel distance is the step between each 
+# Minimum distance a positional fix must be from the previous
+# fix in order to add its bearing to the median filter. Used to
+# improve bearing accuracy at low speeds.
+min_fix_distance: 0.01 # meters
+
+# Used for tentacle projection, travel distance is the step between each
 # tentacle point, and num_points is the length of each tentacle, if using
 # linear, and not tentacle projection, ignore
 travel_distance: 0.061
