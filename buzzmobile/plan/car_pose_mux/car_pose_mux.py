@@ -5,34 +5,33 @@ from buzzmobile.msg import CarPose
 from buzzmobile.msg import CarState
 
 
-# Global Variables
-state = {
+g = {
         'manual_car_pose': None,
         'auto_car_pose': None,
-        'curr_car_state': CarState.START}
+        'curr_car_state': CarState.START} # globals
 
 car_pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=1)
 
 def mux(car_state):
     if car_state == CarState.START: return None
-    elif car_state == CarState.AUTO: return state['auto_car_pose']
-    elif car_state == CarState.MANUAL: return state['manual_car_pose']
+    elif car_state == CarState.AUTO: return g['auto_car_pose']
+    elif car_state == CarState.MANUAL: return g['manual_car_pose']
 
 def publish():
-    car_pose = mux(state['curr_car_state'])
+    car_pose = mux(g['curr_car_state'])
     if car_pose is not None:
         car_pose_pub.publish(car_pose)
 
 def set_manual_car_pose(car_pose):
-    state['manual_car_pose'] = car_pose
+    g['manual_car_pose'] = car_pose
     publish()
 
 def set_auto_car_pose(car_pose):
-    state['auto_car_pose'] = car_pose
+    g['auto_car_pose'] = car_pose
     publish()
 
 def set_car_state(car_state):
-    state['curr_car_state'] = car_state.state
+    g['curr_car_state'] = car_state.state
     mode = log_car_state(car_state)
     rospy.loginfo("Car in " + mode + " mode.")
     publish()
