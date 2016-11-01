@@ -107,7 +107,7 @@ void loop() {
       
       lastCmdTime = millis();
       retMsg[0] = STX;
-      sprintf(retMsg+1, "%05i%05.4f", count, getSteeringAngle());
+      sprintf(retMsg+1, "%05i%05.4f%05.4f", count, getSteeringAngle(), getSpeed());
       Serial.println(retMsg);
       count = 0;
     }
