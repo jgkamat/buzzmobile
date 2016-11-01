@@ -20,8 +20,6 @@ using namespace buzzmobile;
 ros::Publisher motion_pub;
 ros::Publisher state_pub;
 
-const float MAX_TURNING_ANGLE = M_PI / 6; // 30 degrees in radians
-
 int maxFwdSpeed = 1; //m/s
 int pubFreq     = 10; //hz
 
@@ -136,13 +134,16 @@ void handleBrake(const sensor_msgs::Joy::ConstPtr& joy) {
 
 void handleTurn(const sensor_msgs::Joy::ConstPtr& joy) {
     float angle = 0;
+    double maxAngle;
+    ros::param::get("max_steering_angle", maxAngle); // Get turning radius from constants.yaml
+
     // first test is to see if we're close to 0
     float mag = sqrt(joy->axes[0] * joy->axes[0] + joy->axes[1] * joy->axes[1]);
     //joystick is around the center...send 0 speed
     if (mag > 1e-6) {
         angle = -(atan2(fabs(joy->axes[1]), -joy->axes[0]) - M_PI_2);
         angle = angle / (M_PI / 2); // Divide by 90 degrees to get value [0, 1]
-        angle = angle * MAX_TURNING_ANGLE; // Scale to be from [0, MAX_TURNING_ANGLE]
+        angle = angle * maxAngle; // Scale to be from [0, maxAngle]
         ROS_INFO("angle: [%f]", angle);
     }
     if (lastAngle != angle) {
