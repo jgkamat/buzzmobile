@@ -12,29 +12,28 @@ from sensor_msgs.msg import NavSatFix
 from std_msgs.msg import String
 
 
-# GLOBALS
 gmaps = googlemaps.Client(key=gmpskey.googlemapskey)
 pub = rospy.Publisher('polyline', String, queue_size=1)
-target = {
+g = {
         'destination': None,
         'published': False,
-        'fix': None}
+        'fix': None} # globals
 
 
 def update_destination(new_destination):
-    target['destination'] = new_destination.data
-    target['published'] = False
-    if target['fix'] is not None:
+    g['destination'] = new_destination.data
+    g['published'] = False
+    if g['fix'] is not None:
         publish_polyline()
 
 def update_fix(new_fix):
-    target['fix'] = new_fix.latitude, new_fix.longitude
-    if (target['destination'] is not None and not target['published']):
+    g['fix'] = new_fix.latitude, new_fix.longitude
+    if (g['destination'] is not None and not g['published']):
         publish_polyline()
 
 def publish_polyline():
-    pub.publish(get_polyline(target['fix'], target['destination']))
-    target['published'] = True
+    pub.publish(get_polyline(g['fix'], g['destination']))
+    g['published'] = True
 
 def get_polyline(start, destination):
     direction_result = get_directions(start, destination)
