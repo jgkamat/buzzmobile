@@ -1,33 +1,45 @@
 [MASTER]
 
-# Specify a configuration file.
-#rcfile=
-
-# Python code to execute, usually for sys.path manipulation such as
-# pygtk.require().
-#init-hook=
-
-# Profiled execution.
-profile=no
+# A comma-separated list of package or module names from where C extensions may
+# be loaded. Extensions are loading into the active Python interpreter and may
+# run arbitrary code
+extension-pkg-whitelist=
 
 # Add files or directories to the blacklist. They should be base names, not
 # paths.
 ignore=CVS
 
-# Pickle collected data for later comparisons.
-persistent=yes
+# Add files or directories matching the regex patterns to the blacklist. The
+# regex matches against base names, not paths.
+ignore-patterns=
+
+# Python code to execute, usually for sys.path manipulation such as
+# pygtk.require().
+#init-hook=
+
+# Use multiple processes to speed up Pylint.
+jobs=1
 
 # List of plugins (as comma separated values of python modules names) to load,
 # usually to register additional checkers.
 load-plugins=
 
+# Pickle collected data for later comparisons.
+persistent=yes
+
+# Specify a configuration file.
+#rcfile=
+
+# Allow loading of arbitrary C extensions. Extensions are imported into the
+# active Python interpreter and may run arbitrary code.
+unsafe-load-any-extension=no
+
 
 [MESSAGES CONTROL]
 
-# Enable the message, report, category or checker with the given id(s). You can
-# either give multiple identifier separated by comma (,) or put this option
-# multiple time. See also the "--disable" option for examples.
-#enable=
+# Only show warnings with the listed confidence levels. Leave empty to show
+# all. Valid levels: HIGH, INFERENCE, INFERENCE_FAILURE, UNDEFINED
+confidence=
 
 # Disable the message, report, category or checker with the given id(s). You
 # can either give multiple identifiers separated by comma (,) or put this
@@ -38,23 +50,201 @@ load-plugins=
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use"--disable=all --enable=classes
 # --disable=W"
-disable=E1101, F0401, C0111 
+#
+#disable=print-statement,parameter-unpacking,unpacking-in-except,old-raise-syntax,backtick,long-suffix,old-ne-operator,old-octal-literal,import-star-module-level,raw-checker-failed,bad-inline-option,locally-disabled,locally-enabled,file-ignored,suppressed-message,useless-suppression,deprecated-pragma,apply-builtin,basestring-builtin,buffer-builtin,cmp-builtin,coerce-builtin,execfile-builtin,file-builtin,long-builtin,raw_input-builtin,reduce-builtin,standarderror-builtin,unicode-builtin,xrange-builtin,coerce-method,delslice-method,getslice-method,setslice-method,no-absolute-import,old-division,dict-iter-method,dict-view-method,next-method-called,metaclass-assignment,indexing-exception,raising-string,reload-builtin,oct-method,hex-method,nonzero-method,cmp-method,input-builtin,round-builtin,intern-builtin,unichr-builtin,map-builtin-not-iterating,zip-builtin-not-iterating,range-builtin-not-iterating,filter-builtin-not-iterating,using-cmp-argument,eq-without-hash,div-method,idiv-method,rdiv-method,exception-message-attribute
+
+#disable everything and then selectively enable
+disable=all
+# Enable the message, report, category or checker with the given id(s). You can
+# either give multiple identifier separated by comma (,) or put this option
+# multiple time (only on the command line, not in the configuration file where
+# it should appear only once). See also the "--disable" option for examples.
+#
+# C0102: Black listed name "%s"
+# C0103: Invalid %s name "%s"
+# C0111: Missing %s docstring
+# C0112: Empty %s docstring
+# C0121: Missing required attribute "%s"
+# C0202: Class method %s should have cls as first argument
+# C0203: Metaclass method %s should have mcs as first argument
+# C0204: Metaclass class method %s should have %s as first argument
+# C0301: Line too long (%s/%s)
+# C0302: Too many lines in module (%s)
+# C0303: Trailing whitespace
+# C0304: Final newline missing
+# C0321: More than one statement on a single line
+# C0322: Old: Operator not preceded by a space
+# C0323: Old: Operator not followed by a space
+# C0324: Old: Comma not followed by a space
+# C0325: Unnecessary parens after %r keyword
+# C0326: %s space %s %s %s\n%s
+# C1001: Old-style class defined.
+# E0001: (syntax error raised for a module; message varies)
+# E0011: Unrecognized file option %r
+# E0012: Bad option value %r
+# E0100: __init__ method is a generator
+# E0101: Explicit return in __init__
+# E0102: %s already defined line %s
+# E0103: %r not properly in loop
+# E0104: Return outside function
+# E0105: Yield outside function
+# E0106: Return with argument inside generator
+# E0107: Use of the non-existent %s operator
+# E0108: Duplicate argument name %s in function definition
+# E0202: An attribute affected in %s line %s hide this method
+# E0203: Access to member %r before its definition line %s
+# E0211: Method has no argument
+# E0213: Method should have "self" as first argument
+# E0221: Interface resolved to %s is not a class
+# E0222: Missing method %r from %s interface
+# E0235: __exit__ must accept 3 arguments: type, value, traceback
+# E0501: Old: Non ascii characters found but no encoding specified (PEP 263)
+# E0502: Old: Wrong encoding specified (%s)
+# E0503: Old: Unknown encoding specified (%s)
+# E0601: Using variable %r before assignment
+# E0602: Undefined variable %r
+# E0603: Undefined variable name %r in __all__
+# E0604: Invalid object %r in __all__, must contain only strings
+# E0611: No name %r in module %r
+# E0701: Bad except clauses order (%s)
+# E0702: Raising %s while only classes, instances or string are allowed
+# E0710: Raising a new style class which doesn't inherit from BaseException
+# E0711: NotImplemented raised - should raise NotImplementedError
+# E0712: Catching an exception which doesn\'t inherit from BaseException: %s
+# E1001: Use of __slots__ on an old style class
+# E1002: Use of super on an old style class
+# E1003: Bad first argument %r given to super()
+# E1004: Missing argument to super()
+# E1101: %s %r has no %r member
+# E1102: %s is not callable
+# E1103: %s %r has no %r member (but some types could not be inferred)
+# E1111: Assigning to function call which doesn't return
+# E1120: No value passed for parameter %s in function call
+# E1121: Too many positional arguments for function call
+# E1122: Old: Duplicate keyword argument %r in function call
+# E1123: Passing unexpected keyword argument %r in function call
+# E1124: Parameter %r passed as both positional and keyword argument
+# E1125: Old: Missing mandatory keyword argument %r
+# E1200: Unsupported logging format character %r (%#02x) at index %d
+# E1201: Logging format string ends in middle of conversion specifier
+# E1205: Too many arguments for logging format string
+# E1206: Not enough arguments for logging format string
+# E1300: Unsupported format character %r (%#02x) at index %d
+# E1301: Format string ends in middle of conversion specifier
+# E1302: Mixing named and unnamed conversion specifiers in format string
+# E1303: Expected mapping for format string, not %s
+# E1304: Missing key %r in format string dictionary
+# E1305: Too many arguments for format string
+# E1306: Not enough arguments for format string
+# E1310: Suspicious argument in %s.%s call
+# F0001: (error prevented analysis; message varies)
+# F0002: %s: %s (message varies)
+# F0003: ignored builtin module %s
+# F0004: unexpected inferred value %s
+# F0010: error while code parsing: %s
+# F0202: Unable to check methods signature (%s / %s)
+# F0220: failed to resolve interfaces implemented by %s (%s)
+# F0321: Old: Format detection error in %r
+# F0401: Unable to import %s
+# I0001: Unable to run raw checkers on built-in module %s
+# I0010: Unable to consider inline option %r
+# I0011: Locally disabling %s
+# I0012: Locally enabling %s
+# I0013: Ignoring entire file
+# I0014: Used deprecated directive "pylint:disable-all" or "pylint:disable=all"
+# I0020: Suppressed %s (from line %d)
+# I0021: Useless suppression of %s
+# I0022: Deprecated pragma "pylint:disable-msg" or "pylint:enable-msg"
+# R0201: Method could be a function
+# R0401: Cyclic import (%s)
+# R0801: Similar lines in %s files
+# R0901: Too many ancestors (%s/%s)
+# R0902: Too many instance attributes (%s/%s)
+# R0903: Too few public methods (%s/%s)
+# R0904: Too many public methods (%s/%s)
+# R0911: Too many return statements (%s/%s)
+# R0912: Too many branches (%s/%s)
+# R0913: Too many arguments (%s/%s)
+# R0914: Too many local variables (%s/%s)
+# R0915: Too many statements (%s/%s)
+# R0921: Abstract class not referenced
+# R0922: Abstract class is only referenced %s times
+# R0923: Interface not implemented
+# W0101: Unreachable code
+# W0102: Dangerous default value %s as argument
+# W0104: Statement seems to have no effect
+# W0105: String statement has no effect
+# W0106: Expression "%s" is assigned to nothing
+# W0107: Unnecessary pass statement
+# W0108: Lambda may not be necessary
+# W0109: Duplicate key %r in dictionary
+# W0110: map/filter on lambda could be replaced by comprehension
+# W0120: Else clause on loop without a break statement
+# W0121: Use raise ErrorClass(args) instead of raise ErrorClass, args.
+# W0122: Use of exec
+# W0141: Used builtin function %r
+# W0142: Used * or ** magic
+# W0150: %s statement in finally block may swallow exception
+# W0199: Assert called on a 2-uple. Did you mean \'assert x,y\'?
+# W0201: Attribute %r defined outside __init__
+# W0211: Static method with %r as first argument
+# W0212: Access to a protected member %s of a client class
+# W0221: Arguments number differs from %s method
+# W0222: Signature differs from %s method
+# W0223: Method %r is abstract in class %r but is not overridden
+# W0231: __init__ method from base class %r is not called
+# W0232: Class has no __init__ method
+# W0233: __init__ method from a non direct base class %r is called
+# W0234: iter returns non-iterator
+# W0301: Unnecessary semicolon
+# W0311: Bad indentation. Found %s %s, expected %s
+# W0312: Found indentation with %ss instead of %ss
+# W0331: Use of the <> operator
+# W0332: Use of "l" as long integer identifier
+# W0333: Use of the `` operator
+# W0401: Wildcard import %s
+# W0402: Uses of a deprecated module %r
+# W0403: Relative import %r, should be %r
+# W0404: Reimport %r (imported line %s)
+# W0406: Module import itself
+# W0410: __future__ import is not the first non docstring statement
+# W0511: (warning notes in code comments; message varies)
+# W0512: Cannot decode using encoding "%s", unexpected byte at position %d
+# W0601: Global variable %r undefined at the module level
+# W0602: Using global for %r but no assigment is done
+# W0603: Using the global statement
+# W0604: Using the global statement at the module level
+# W0611: Unused import %s
+# W0612: Unused variable %r
+# W0613: Unused argument %r
+# W0614: Unused import %s from wildcard import
+# W0621: Redefining name %r from outer scope (line %s)
+# W0622: Redefining built-in %r
+# W0623: Redefining name %r from %s in exception handler
+# W0631: Using possibly undefined loop variable %r
+# W0632: Possible unbalanced tuple unpacking with sequence%s: …
+# W0633: Attempting to unpack a non-sequence%s
+# W0701: Raising a string exception
+# W0702: No exception type(s) specified
+# W0703: Catching too general exception %s
+# W0704: Except doesn't do anything
+# W0710: Exception doesn't inherit from standard "Exception" class
+# W0711: Exception to catch is the result of a binary "%s" operation
+# W0712: Implicit unpacking of exceptions is not supported in Python 3
+# W1001: Use of "property" on an old style class
+# W1111: Assigning to function call which only returns None
+# W1201: Specify string format arguments as logging function parameters
+# W1300: Format string dictionary key should be a string, not %s
+# W1301: Unused key %r in format string dictionary
+# W1401: Anomalous backslash in string: \'%s\'. String constant might be missing an r prefix.
+# W1402: Anomalous Unicode escape in byte string: \'%s\'. String constant might be missing an r or u prefix.
+# W1501: "%s" is not a valid mode for open.
+#***enables here***
+enable = C0102, C0103, C0111, C0112, C0121, C0202, C0203, C0204, C0301, C0302, C0303, C0304, C0321, C0322, C0323, C0324, C0325, C0326, C1001, E0001, E0011, E0012, E0100, E0101, E0102, E0103, E0104, E0105, E0106, E0107, E0108, E0202, E0203, E0211, E0213, E0221, E0222, E0235, E0501, E0502, E0503, E0601, E0602, E0603, E0604, E0611, E0701, E0702, E0710, E0711, E0712, E1001, E1002, E1003, E1004, E1101, E1102, E1103, E1111, E1120, E1121, E1122, E1123, E1124, E1125, E1200, E1201, E1205, E1206, E1300, E1301, E1302, E1303, E1304, E1305, E1306, E1310, F0001, F0002, F0003, F0004, F0010, F0202, F0220, F0321, F0401, I0001, I0010, I0011, I0012, I0013, I0014, I0020, I0021, I0022, R0201, R0401, R0801, R0901, R0902, R0903, R0904, R0911, R0912, R0913, R0914, R0915, R0921, R0922, R0923, W0101, W0102, W0104, W0105, W0106, W0107, W0108, W0109, W0110, W0120, W0121, W0122, W0141, W0142, W0150, W0199, W0201, W0211, W0212, W0221, W0222, W0223, W0231, W0232, W0233, W0234, W0301, W0311, W0312, W0331, W0332, W0333, W0401, W0402, W0403, W0404, W0406, W0410, W0511, W0512, W0601, W0602, W0603, W0604, W0611, W0612, W0613, W0614, W0621, W0622, W0623, W0631, W0632, W0633, W0701, W0702, W0703, W0704, W0710, W0711, W0712, W1001, W1111, W1201, W1300, W1301, W1401, W1402, W1501
+ 
 
 
 [REPORTS]
-
-# Set the output format. Available formats are text, parseable, colorized, msvs
-# (visual studio) and html. You can also give a reporter class, eg
-# mypackage.mymodule.MyReporterClass.
-output-format=text
-
-# Put messages in a separate file for each module / package specified on the
-# command line instead of printing them on stdout. Reports (if any) will be
-# written in a file name "pylint_global.[txt|html]".
-files-output=no
-
-# Tells whether to display a full report or only the messages
-reports=yes
 
 # Python expression which should return a note less than 10 (10 is the highest
 # note). You have access to the variables errors warning, statement which
@@ -63,13 +253,26 @@ reports=yes
 # (RP0004).
 evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10)
 
-# Add a comment according to your evaluation note. This is used by the global
-# evaluation report (RP0004).
-comment=no
-
 # Template used to display messages. This is a python new-style format string
 # used to format the message information. See doc for all details
 #msg-template=
+
+# Set the output format. Available formats are text, parseable, colorized, json
+# and msvs (visual studio).You can also give a reporter class, eg
+# mypackage.mymodule.MyReporterClass.
+output-format=text
+
+# Tells whether to display a full report or only the messages
+reports=no
+
+# Activate the evaluation score.
+score=yes
+
+
+[REFACTORING]
+
+# Maximum number of nested blocks for function / method body
+max-nested-blocks=5
 
 
 [MISCELLANEOUS]
@@ -80,28 +283,62 @@ notes=FIXME,XXX,TODO
 
 [TYPECHECK]
 
+# List of decorators that produce context managers, such as
+# contextlib.contextmanager. Add to this list to register other decorators that
+# produce valid context managers.
+contextmanager-decorators=contextlib.contextmanager
+
+# List of members which are set dynamically and missed by pylint inference
+# system, and so shouldn't trigger E1101 when accessed. Python regular
+# expressions are accepted.
+generated-members=
+
 # Tells whether missing members accessed in mixin class should be ignored. A
 # mixin class is detected if its name ends with "mixin" (case insensitive).
 ignore-mixin-members=yes
 
-# List of classes names for which member attributes should not be checked
-# (useful for classes with attributes dynamically set).
-ignored-classes=SQLObject
+# List of class names for which member attributes should not be checked (useful
+# for classes with dynamically set attributes). This supports the use of
+# qualified names.
+ignored-classes=optparse.Values,thread._local,_thread._local
 
-# When zope mode is activated, add a predefined set of Zope acquired attributes
-# to generated-members.
-zope=no
+# List of module names for which member attributes should not be checked
+# (useful for modules/projects where namespaces are manipulated during runtime
+# and thus existing member attributes cannot be deduced by static analysis. It
+# supports qualified module names, as well as Unix pattern matching.
+ignored-modules=
 
-# List of members which are set dynamically and missed by pylint inference
-# system, and so shouldn't trigger E0201 when accessed. Python regular
-# expressions are accepted.
-generated-members=REQUEST,acl_users,aq_parent
+# Show a hint with possible names when a member name was not found. The aspect
+# of finding the hint is based on edit distance.
+missing-member-hint=yes
+
+# The minimum edit distance a name should have in order to be considered a
+# similar match for a missing member name.
+missing-member-hint-distance=1
+
+# The total number of similar names that should be taken in consideration when
+# showing a hint for a missing member.
+missing-member-max-choices=1
+
+
+[SPELLING]
+
+# Spelling dictionary name. Available dictionaries: none. To make it working
+# install python-enchant package.
+spelling-dict=
+
+# List of comma separated words that should not be checked.
+spelling-ignore-words=
+
+# A path to a file that contains private dictionary; one word per line.
+spelling-private-dict-file=
+
+# Tells whether to store unknown words to indicated private dictionary in
+# --spelling-private-dict-file option instead of raising a message.
+spelling-store-unknown-words=no
 
 
 [SIMILARITIES]
-
-# Minimum lines number of a similarity.
-min-similarity-lines=4
 
 # Ignore comments when computing similarities.
 ignore-comments=yes
@@ -110,99 +347,163 @@ ignore-comments=yes
 ignore-docstrings=yes
 
 # Ignore imports when computing similarities.
-ignore-imports=no
+ignore-imports=yes
+
+# Minimum lines number of a similarity.
+min-similarity-lines=4
 
 
 [FORMAT]
 
-# Maximum number of characters on a single line.
-max-line-length=100
+# Expected format of line ending, e.g. empty (any line ending), LF or CRLF.
+expected-line-ending-format=
 
 # Regexp for a line that is allowed to be longer than the limit.
 ignore-long-lines=^\s*(# )?<?https?://\S+>?$
 
-# Allow the body of an if to be on the same line as the test if there is no
-# else.
-single-line-if-stmt=no
+# Number of spaces of indent required inside a hanging  or continued line.
+indent-after-paren=4
 
-# List of optional constructs for which whitespace checking is disabled
-no-space-check=trailing-comma,dict-separator
-
-# Maximum number of lines in a module
-max-module-lines=1000
-
-# String used as indentation unit. This is usually " " (4 spaces) or "\t" (1
+# String used as indentation unit. This is usually "    " (4 spaces) or "\t" (1
 # tab).
 indent-string='    '
+
+# Maximum number of characters on a single line.
+max-line-length=80
+
+# Maximum number of lines in a module
+max-module-lines=200
+
+# List of optional constructs for which whitespace checking is disabled. `dict-
+# separator` is used to allow tabulation in dicts, etc.: {1  : 1,\n222: 2}.
+# `trailing-comma` allows a space between comma and closing bracket: (a, ).
+# `empty-line` allows space-only lines.
+no-space-check=trailing-comma,dict-separator
+
+# Allow the body of an if to be on the same line as the test if there is no
+# else.
+single-line-if-stmt=yes
+
+
+[LOGGING]
+
+# Logging modules to check that the string format arguments are in logging
+# function parameter format
+logging-modules=logging
 
 
 [BASIC]
 
-# Required attributes for module, separated by a comma
-required-attributes=
+# Naming hint for argument names
+argument-name-hint=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
-# List of builtins function names that should not be used, separated by a comma
-bad-functions=map,filter,apply,input
+# Regular expression matching correct argument names
+argument-rgx=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
-# Regular expression which should only match correct module names
-module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+# Naming hint for attribute names
+attr-name-hint=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
-# Regular expression which should only match correct module level names
-const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
-
-# Regular expression which should only match correct class names
-class-rgx=[A-Z_][a-zA-Z0-9]+$
-
-# Regular expression which should only match correct function names
-function-rgx=[a-z_][a-z0-9_]{2,30}$
-
-# Regular expression which should only match correct method names
-method-rgx=[a-z_][a-z0-9_]{2,30}$
-
-# Regular expression which should only match correct instance attribute names
-attr-rgx=[a-z_][a-z0-9_]{2,30}$
-
-# Regular expression which should only match correct argument names
-argument-rgx=[a-z_][a-z0-9_]{2,30}$
-
-# Regular expression which should only match correct variable names
-variable-rgx=[a-z_][a-z0-9_]{2,30}$
-
-# Regular expression which should only match correct attribute names in class
-# bodies
-class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
-
-# Regular expression which should only match correct list comprehension /
-# generator expression variable names
-inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
-
-# Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,ex,Run,_
+# Regular expression matching correct attribute names
+attr-rgx=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
 # Bad variable names which should always be refused, separated by a comma
 bad-names=foo,bar,baz,toto,tutu,tata
 
-# Regular expression which should only match function or class names that do
-# not require a docstring.
-no-docstring-rgx=__.*__
+# Naming hint for class attribute names
+class-attribute-name-hint=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
+
+# Regular expression matching correct class attribute names
+class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{2,30}|(__.*__))$
+
+# Naming hint for class names
+class-name-hint=[A-Z_][a-zA-Z0-9]+$
+
+# Regular expression matching correct class names
+class-rgx=[A-Z_][a-zA-Z0-9]+$
+
+# Naming hint for constant names
+const-name-hint=(([A-Z_][A-Z0-9_]*)|(__.*__))$
+
+# Regular expression matching correct constant names
+const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 
 # Minimum line length for functions/classes that require docstrings, shorter
 # ones are exempt.
 docstring-min-length=-1
 
+# Naming hint for function names
+function-name-hint=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
+
+# Regular expression matching correct function names
+function-rgx=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
+
+# Good variable names which should always be accepted, separated by a comma
+good-names=i,j,k,ex,Run,_
+
+# Include a hint for the correct naming format with invalid-name
+include-naming-hint=no
+
+# Naming hint for inline iteration names
+inlinevar-name-hint=[A-Za-z_][A-Za-z0-9_]*$
+
+# Regular expression matching correct inline iteration names
+inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
+
+# Naming hint for method names
+method-name-hint=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
+
+# Regular expression matching correct method names
+method-rgx=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
+
+# Naming hint for module names
+module-name-hint=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+
+# Regular expression matching correct module names
+module-rgx=(([a-z_][a-z0-9_]*)|([A-Z][a-zA-Z0-9]+))$
+
+# Colon-delimited sets of names that determine each other's naming style when
+# the name regexes allow several styles.
+name-group=
+
+# Regular expression which should only match function or class names that do
+# not require a docstring.
+no-docstring-rgx=^_
+
+# List of decorators that produce properties, such as abc.abstractproperty. Add
+# to this list to register other decorators that produce valid properties.
+property-classes=abc.abstractproperty
+
+# Naming hint for variable names
+variable-name-hint=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
+
+# Regular expression matching correct variable names
+variable-rgx=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
+
 
 [VARIABLES]
-
-# Tells whether we should check for unused import in __init__ files.
-init-import=no
-
-# A regular expression matching the beginning of the name of dummy variables
-# (i.e. not used).
-dummy-variables-rgx=_$|dummy
 
 # List of additional names supposed to be defined in builtins. Remember that
 # you should avoid to define new builtins when possible.
 additional-builtins=
+
+# List of strings which can identify a callback function by name. A callback
+# name must start or end with one of those strings.
+callbacks=cb_,_cb
+
+# A regular expression matching the name of dummy variables (i.e. expectedly
+# not used).
+dummy-variables-rgx=_+$|(_[a-zA-Z0-9_]*[a-zA-Z0-9]+?$)|dummy
+
+# Argument names that match this expression will be ignored. Default to name
+# with leading underscore
+ignored-argument-names=_.*
+
+# Tells whether we should check for unused import in __init__ files.
+init-import=no
+
+# List of qualified module names which can have objects that can redefine
+# builtins.
+redefining-builtins-modules=six.moves,future.builtins
 
 
 [DESIGN]
@@ -210,43 +511,42 @@ additional-builtins=
 # Maximum number of arguments for function / method
 max-args=5
 
-# Argument names that match this expression will be ignored. Default to name
-# with leading underscore
-ignored-argument-names=_.*
+# Maximum number of attributes for a class (see R0902).
+max-attributes=7
 
-# Maximum number of locals for function / method body
-max-locals=15
-
-# Maximum number of return / yield for function / method body
-max-returns=6
+# Maximum number of boolean expressions in a if statement
+max-bool-expr=5
 
 # Maximum number of branch for function / method body
 max-branches=12
 
-# Maximum number of statements in function / method body
-max-statements=50
+# Maximum number of locals for function / method body
+max-locals=15
 
 # Maximum number of parents for a class (see R0901).
 max-parents=7
 
-# Maximum number of attributes for a class (see R0902).
-max-attributes=7
+# Maximum number of public methods for a class (see R0904).
+max-public-methods=20
+
+# Maximum number of return / yield for function / method body
+max-returns=6
+
+# Maximum number of statements in function / method body
+max-statements=50
 
 # Minimum number of public methods for a class (see R0903).
 min-public-methods=2
 
-# Maximum number of public methods for a class (see R0904).
-max-public-methods=20
-
 
 [CLASSES]
 
-# List of interface methods to ignore, separated by a comma. This is used for
-# instance to not check methods defines in Zope's Interface base class.
-ignore-iface-methods=isImplementedBy,deferred,extends,names,namesAndDescriptions,queryDescriptionFor,getBases,getDescriptionFor,getDoc,getName,getTaggedValue,getTaggedValueTags,isEqualOrExtendedBy,setTaggedValue,isImplementedByInstancesOf,adaptWith,is_implemented_by
-
 # List of method names used to declare (i.e. assign) instance attributes.
 defining-attr-methods=__init__,__new__,setUp
+
+# List of member names, which should be excluded from the protected access
+# warning.
+exclude-protected=_asdict,_fields,_replace,_source,_make
 
 # List of valid names for the first argument in a class method.
 valid-classmethod-first-arg=cls
@@ -257,20 +557,32 @@ valid-metaclass-classmethod-first-arg=mcs
 
 [IMPORTS]
 
+# Analyse import fallback blocks. This can be used to support both Python 2 and
+# 3 compatible code, which means that the block might have code that exists
+# only in one or another interpreter, leading to false positives when analysed.
+analyse-fallback-blocks=no
+
 # Deprecated modules which should not be used, separated by a comma
 deprecated-modules=regsub,TERMIOS,Bastion,rexec
-
-# Create a graph of every (i.e. internal and external) dependencies in the
-# given file (report RP0402 must not be disabled)
-import-graph=
 
 # Create a graph of external dependencies in the given file (report RP0402 must
 # not be disabled)
 ext-import-graph=
 
+# Create a graph of every (i.e. internal and external) dependencies in the
+# given file (report RP0402 must not be disabled)
+import-graph=
+
 # Create a graph of internal dependencies in the given file (report RP0402 must
 # not be disabled)
 int-import-graph=
+
+# Force import order to recognize a module as part of the standard
+# compatibility libraries.
+known-standard-library=
+
+# Force import order to recognize a module as part of a third party library.
+known-third-party=enchant
 
 
 [EXCEPTIONS]
