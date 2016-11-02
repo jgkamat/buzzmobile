@@ -34,7 +34,8 @@ immediate_future_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
 cv2.circle(immediate_future_mask, (WIDTH//2, HEIGHT),
         int(BRAKING_DISTANCE * PIXELS_PER_METER), [255, 255, 255], -1)
 
-g = {'lidar_model': None} # globals
+g = {} # globals
+g['lidar_model'] = None
 
 
 def steering_node():
