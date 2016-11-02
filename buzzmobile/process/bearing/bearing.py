@@ -90,4 +90,4 @@ def bearing_node():
     rospy.Subscriber('/fix', NavSatFix, bearing)
     rospy.spin()
 
-if __name__=='__main__': compute_bearing_node()
+if __name__=='__main__': bearing_node()
