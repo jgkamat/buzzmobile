@@ -1,54 +1,64 @@
 #!/bin/bash
 
+function mytest {
+  "$@"
+  local status=$?
+  if [ $status -ne 0 ]; then
+    echo "error with $1" >&2
+    exit 1
+  fi
+  return $status
+}
+
 # need this to create venv if python was installed without the entire stdlib
-sudo apt-get -y install python3.4-venv
+failcheck $sudo apt-get -y install python3.4-venv
 
 # need this to be able to install ds4drv
-sudo apt-get install python3-dev
+failcheck $sudo apt-get install python3-dev
 
 # create a python3 virtualenvironment in the buzzmobile directory
 # yes, venv will allow you to create a virtualenv in any directory
-python3 -m venv .
+failcheck $python3 -m venv .
 
 # activate the virtualenv we just created
-source bin/activate
+failcheck $source bin/activate
 
 # default pip version in a venv is 1.5.4, we want to upgrade to a newer version
 # that supports anylinux wheels, specifically this is for OpenCV and
 # tensorflow, which cannot be installed via a setup.py, and so we manually
 # install them here through their .whl files
-pip install --upgrade pip
+failcheck $pip install --upgrade pip
 
 # before we install those though, we need to install buzzmobile, as it installs
 # some ROS dependencies, as well as numpy, needed for tf and opencv
-pip install -e buzzmobile
+failcheck $pip install -e buzzmobile
 
 # it might be worth trying to get these to install from inside of the
 # buzzmobile setup.py, but that would require dark trickery.
-pip install opencv-python==3.1.0.3
+failcheck $pip install opencv-python==3.1.0.3
 
 # Unfortunately, tensorflow isn't availible on pypi, so we have to pull it from this very readable link
-pip install https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc1-cp34-cp34m-linux_x86_64.whl
+failcheck $pip install https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.0rc1-cp34-cp34m-linux_x86_64.whl
 
 # Make sure ROS is installed, do some initialization
-sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
-sudo apt-get update -qq
-sudo apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential
-sudo rosdep init
-rosdep update
+failcheck $sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+failcheck $sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
+failcheck $sudo apt-get update -qq
+failcheck $sudo apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential
+failcheck $sudo rosdep init
+failcheck $rosdep update
 
 # Build our project and install rosdeps
-cd ~/catkin_ws/src
-source /opt/ros/indigo/setup.bash
-catkin_init_workspace
-rosdep install -y --from-paths . --ignore-src --rosdistro=indigo
-cd ~/catkin_ws
-catkin_make -j2 # Actually build
-source ~/catkin_ws/devel/setup.bash
+failcheck $cd ~/catkin_ws/src
+failcheck $source /opt/ros/indigo/setup.bash
+failcheck $catkin_init_workspace
+failcheck $rosdep install -y --from-paths . --ignore-src --rosdistro=indigo
+failcheck $cd ~/catkin_ws
+failcheck $catkin_make -j2 # Actually build
+failcheck $source ~/catkin_ws/devel/setup.bash
 
 # Set up environment variables
-echo "alias rosinit='source /opt/ros/indigo/setup.bash'" >> ~/.bashrc
-echo "alias rosdevel='source ~/catkin_ws/devel/setup.bash' # needed for autocompletion" >> ~/.bashrc
-echo "rosinit     # put these in your .bashrc too so they run everytime" >> ~/.bashrc
-echo "rosdevel    # you open a new terminal window/tab." >> ~/.bashrc
+failcheck $echo "alias rosinit='source /opt/ros/indigo/setup.bash'" >> ~/.bashrc
+failcheck $echo "alias rosdevel='source ~/catkin_ws/devel/setup.bash' # needed for autocompletion" >> ~/.bashrc
+failcheck $echo "rosinit     # put these in your .bashrc too so they run everytime" >> ~/.bashrc
+failcheck $echo "rosdevel    # you open a new terminal window/tab." >> ~/.bashrc
