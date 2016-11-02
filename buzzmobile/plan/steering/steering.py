@@ -33,7 +33,9 @@ BUZZMOBILE_WIDTH = rospy.get_param('buzzmobile_width')
 immediate_future_mask = np.zeros((HEIGHT, WIDTH), np.uint8)
 cv2.circle(immediate_future_mask, (WIDTH//2, HEIGHT),
         int(BRAKING_DISTANCE * PIXELS_PER_METER), [255, 255, 255], -1)
-saved_models = {'lidar_model': None}
+
+g = {} # globals
+g['lidar_model'] = None
 
 
 def steering_node():
@@ -56,7 +58,7 @@ def steer(ros_world_model):
     pose = CarPose()
 
     # check our path for obstacles
-    if should_brake(points, saved_models['lidar_model']):
+    if should_brake(points, g['lidar_model']):
         pose.brake = True
     else:
         pose.angle = angle
@@ -86,7 +88,7 @@ def set_lidar_model(new_lidar_model):
         lidar_model = bridge.imgmsg_to_cv2(new_lidar_model, 'mono8')
     except CvBridgeError:
         rospy.loginfo('Error converting world_model to cv2 in set_lidar_model')
-    saved_models['lidar_model'] = lidar_model
+    g['lidar_model'] = lidar_model
 
 def should_brake(points, lidar_model):
     if lidar_model is None:
@@ -198,7 +200,7 @@ def pick_tentacle(x_0, y_0, frame):
                 best_score = score
                 best_points = points
                 best_angle = angle
-		
+
 
     return best_points, best_angle
 
@@ -220,4 +222,3 @@ def draw_points(points, color_frame, color, thickness=None):
 
 
 if __name__ == '__main__': steering_node()
-

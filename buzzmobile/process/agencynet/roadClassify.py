@@ -10,6 +10,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('iterations', type=int, help='Number of iterations')
 args = parser.parse_args()
 
+g = {} # globals
+
 # Helper functions
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
@@ -27,7 +29,6 @@ def max_pool_2x2(x):
 
 
 sess = tf.Session()
-images = {}
 
 def get_next_example(index):
 
@@ -35,7 +36,7 @@ def get_next_example(index):
     label_filenames = map(lambda e: e.replace("images", "labels"), image_filenames)
 
     if index in images.keys():
-        return images[index][0], images[index][1], len(images)
+        return g[index][0], g[index][1], len(images)
 
     realIndex = index % len(image_filenames)
 
@@ -45,7 +46,7 @@ def get_next_example(index):
 
     blue, green, red = preLabel[:,:,0], preLabel[:,:,1], preLabel[:,:,2]
     mask = ((red == 255) & (green == 0) & (blue == 0)) | ((red == 255) & (green == 255) & (blue == 0))
-    
+
     label = np.zeros((preLabel.shape[0], preLabel.shape[1]), dtype=np.uint8)
     label[:,:][mask] = 255;
 
@@ -54,7 +55,7 @@ def get_next_example(index):
 
     label = np.reshape(label, [78*24])
 
-    images[index] = (image, label)
+    g[index] = (image, label)
 
     return image, label, len(images)
 
@@ -120,7 +121,7 @@ saver.restore(sess, "final_weights.model")
 
 current_step = global_step.eval(session=sess)
 for i in range(current_step, current_step+args.iterations):
-    
+
     imgs, lbls, count = get_next_example(i % 3)
 
     train_accuracy = accuracy.eval(session=sess, feed_dict={x: imgs, y_: lbls, keep_prob: 1.0})
@@ -136,7 +137,7 @@ for i in range(current_step, current_step+args.iterations):
         result = y_conv.eval(session=sess, feed_dict={x: imgs, y_: lbls, keep_prob: 1.0})
         result = np.reshape(result, [24, 78])
         cv2.imwrite("result.png", ((result * 255) > 127) * 255)
-        
+
         print ("Loss: %f" % loss.eval(session=sess, feed_dict={x: imgs, y_: lbls, keep_prob: 1.0}))
         print ("**** %d iterations/example ****" % (i / count))
 
