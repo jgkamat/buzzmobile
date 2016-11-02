@@ -13,11 +13,9 @@ from sensor_msgs.msg import NavSatFix, Image
 from std_msgs.msg import String
 
 
-
 g = {} # globals
 pub = rospy.Publisher('route_map', Image, queue_size=1)
 bridge = CvBridge()
-
 
 def get_map_url(polyline, coords):
     return ('https://maps.googleapis.com/maps/api/staticmap?size=400x400' +
