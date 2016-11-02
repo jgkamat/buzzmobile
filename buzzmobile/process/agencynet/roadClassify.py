@@ -10,6 +10,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('iterations', type=int, help='Number of iterations')
 args = parser.parse_args()
 
+g = {} # globals
+
 # Helper functions
 def weight_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
@@ -27,7 +29,6 @@ def max_pool_2x2(x):
 
 
 sess = tf.Session()
-g = {} # globals
 
 def get_next_example(index):
 
