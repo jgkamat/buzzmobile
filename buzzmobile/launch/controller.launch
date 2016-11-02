@@ -1,7 +1,7 @@
 <launch>
     <group ns="buzzmobile">
         <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
-        <node pkg="buzzmobile" name="controller_node" type="controller_node"/>
+        <node pkg="buzzmobile" name="controller" type="controller"/>
         <node pkg="buzzmobile" name="car_pose_mux" type="car_pose_mux.py"/>
         <node pkg="buzzmobile" name="car_interface" type="car_interface"/>
     </group>
