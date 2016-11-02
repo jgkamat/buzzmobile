@@ -1,9 +1,9 @@
 <launch>
-    <param name="hokuyo_node/port" value="/dev/ttyACM0"/>
+    <!--param name="hokuyo_node/_port" value="/dev/ttyACM1"/ -->
     <node pkg="rqt_gui" name="rqt_gui" type="rqt_gui"/>
     <node pkg="joy" name="joy_node" type="joy_node"/>
-    <node pkg="hokuyo_node" name="lidar" type="hokuyo_node"/>
-    <node pkg="fix" name="nmea_navsat_driver" type="nmea_serial_driver"/> 
+    <node pkg="hokuyo_node" name="lidar" type="hokuyo_node" args="_port:=/dev/ttyACM1"/>
+    <!--<node pkg="fix" name="nmea_navsat_driver" type="nmea_serial_driver"/>--> 
     
     <group ns="buzzmobile">
         <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
@@ -14,9 +14,10 @@
         <node pkg="buzzmobile" name="destination"     type="inputer.py"/>
         <node pkg="buzzmobile" name="polyline"        type="maps_querier.py"/>
         <node pkg="buzzmobile" name="route_map"       type="route_mapper.py"/>
-        <node pkg="buzzmobile" name="gps_model"       type="gps_mapper.py"/>
+        <node pkg="buzzmobile" name="gps_model"       type="image_const.py" args="~/catkin_ws/src/buzzmobile/buzzmobile/tools/image_const/gps_model.png"/>
+        <!--<node pkg="buzzmobile" name="gps_model"       type="gps_mapper.py"/> -->
         <node pkg="buzzmobile" name="bearing"         type="bearing.py"/>
-        <node pkg="buzzmobile" name="world_model"     type="frame_merger.py"/>
+        <node pkg="buzzmobile" name="world_model"     type="frame_merger.py" output="screen"/>
         <node pkg="buzzmobile" name="auto_car_pose"   type="steering.py"/>
         <node pkg="buzzmobile" name="lidar_model"     type="lidar_to_frame.py"/>
         <node pkg="buzzmobile" name="car_pose"        type="car_pose_mux.py"/>

@@ -15,25 +15,26 @@ class Frames(object):
 # Global Variables
 bridge = CvBridge()
 world_pub = rospy.Publisher('world_model', Image, queue_size=1)
-frames = Frames()
+g = {} # globals
+g['lidar_model'] = g['gps_model'] = None
 
 def merge_and_publish():
-    if hasattr(frames, 'gps_model') and hasattr(frames, 'lidar_model'):
-        result = merge_frames([frames.gps_model, frames.lidar_model], [1.0, 1.0])
+    if g['gps_model'] is not None and g['lidar_model'] is not None:
+        result = merge_frames([g['gps_model'], g['lidar_model']], [1.0, 1.0])
         result_msg = bridge.cv2_to_imgmsg(result)
         world_pub.publish(result_msg)
 
 
 def set_gps_model(gps):
     try:
-        frames.gps_model = bridge.imgmsg_to_cv2(gps, desired_encoding='mono8')
+        g['gps_model'] = bridge.imgmsg_to_cv2(gps, desired_encoding='mono8')
         merge_and_publish()
     except CvBridgeError as e:
         rospy.loginfo("Error converting gps model to cv2")
 
 def set_lidar_model(lidar):
     try:
-        frames.lidar_model = bridge.imgmsg_to_cv2(lidar, desired_encoding='mono8')
+        g['lidar_model'] = bridge.imgmsg_to_cv2(lidar, desired_encoding='mono8')
         merge_and_publish()
     except CvBridgeError as e:
         rospy.loginfo("Error converting lidar model to cv2")
