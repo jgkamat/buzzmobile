@@ -37,7 +37,8 @@ def set_points(polyline):
         points = pl.decode(polyline.data)
         # Calculate the y and x ranges (in kilometers).
         # This is because we must later flip the polyline points
-        # (this is the result of the structure of a polyline), which
+        # (this is because a polyline point is a tuple of (lat, lon) while we
+        # want (x, y) image coordinates), which
         # makes the y and x range calculations invalid later on.
         (y_range, x_range,
          top_left, bottom_right) = interpolate.dimensions(points)
