@@ -20,8 +20,6 @@ using namespace buzzmobile;
 ros::Publisher motion_pub;
 ros::Publisher state_pub;
 
-const float MAX_TURNING_ANGLE = M_PI / 6; // 30 degrees in radians
-
 int maxFwdSpeed = 1; //m/s
 int pubFreq     = 10; //hz
 
@@ -44,7 +42,7 @@ void handleTurn(const sensor_msgs::Joy::ConstPtr& joy);
 void handleHorn(const sensor_msgs::Joy::ConstPtr& joy);
 void handleState(const sensor_msgs::Joy::ConstPtr& joy);
 
-void honkHorn(); 
+void honkHorn();
 void sendMotionCommand();
 void sendStateCommand();
 void sendBrakeCommand();
@@ -58,7 +56,7 @@ void keepAliveCallback(const ros::TimerEvent&) {
 void joyCallback(const sensor_msgs::Joy::ConstPtr& joy) {
 //  Always publish the message
     handleHorn(joy);
-    handleBrake(joy);     
+    handleBrake(joy);
     handleDrive(joy);
     handleTurn(joy);
     handleState(joy);
@@ -94,20 +92,20 @@ void handleDrive(const sensor_msgs::Joy::ConstPtr& joy) {
     //********************************************
     //Motor control
     float speed = 0.0;
-  
+
     ROS_INFO("Last brake %d", lastBrake);
     if (!lastBrake) {
         if (joy->reverse_button) {
             float correction = -1; // Normally ranges from 1 to -1. Correct so it ranges from 0 to -2
             // Division by 2 brings to range -1 to 0. It can then be multiplied by max speed
-            speed = ((correction + joy->velocity_trigger) / 2.0) * maxFwdSpeed; 
+            speed = ((correction + joy->velocity_trigger) / 2.0) * maxFwdSpeed;
         } else {
             float correction = 1; // Once inverted, will range from -1 to 1. Correct to: 0 to 2
             // Division by 2 brings to range 0 to 1. It can then be multiplied by max speed
             speed = ((correction + -1 * joy->velocity_trigger) / 2.0) * maxFwdSpeed;
         }
     }
- 
+
     ROS_INFO("Speed: %f", speed);
     if (lastSpeed != speed) {
         lastSpeed = speed;
@@ -136,13 +134,16 @@ void handleBrake(const sensor_msgs::Joy::ConstPtr& joy) {
 
 void handleTurn(const sensor_msgs::Joy::ConstPtr& joy) {
     float angle = 0;
+    double maxAngle;
+    ros::param::get("max_steering_angle", maxAngle); // Get turning radius from constants.yaml
+
     // first test is to see if we're close to 0
     float mag = sqrt(joy->axes[0] * joy->axes[0] + joy->axes[1] * joy->axes[1]);
     //joystick is around the center...send 0 speed
     if (mag > 1e-6) {
         angle = -(atan2(fabs(joy->axes[1]), -joy->axes[0]) - M_PI_2);
         angle = angle / (M_PI / 2); // Divide by 90 degrees to get value [0, 1]
-        angle = angle * MAX_TURNING_ANGLE; // Scale to be from [0, MAX_TURNING_ANGLE]
+        angle = angle * maxAngle; // Scale to be from [0, maxAngle]
         ROS_INFO("angle: [%f]", angle);
     }
     if (lastAngle != angle) {
@@ -169,21 +170,21 @@ void handleHorn(const sensor_msgs::Joy::ConstPtr& joy) {
 //	if (!obstacleFlag && flag->data) {
 //		honkHorn();
 //	} //TODO: for some reason this will honk repeatedly (repeated obstacles)...may need to debug this
-//	
+//
 //	obstacleFlag = flag->data;
 //}
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "controller_node");
-  
+    ros::init(argc, argv, "controller");
+
     ros::NodeHandle n;
- 
+
     motion_pub = n.advertise<buzzmobile::CarPose>("manual_car_pose", 0);
     state_pub = n.advertise<buzzmobile::CarState>("car_state", 0);
 
     // Initialize the latched topic
     ros::Subscriber sub = n.subscribe<sensor_msgs::Joy>("/joy", 100, joyCallback);
-  
+
     //ros::Rate r(pubFreq); // Not sure what this is
 
     ros::Timer keepAliveTimer = n.createTimer(ros::Duration(1.0/pubFreq), keepAliveCallback);

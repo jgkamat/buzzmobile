@@ -1,7 +1,7 @@
 # Various constants for use throughout the project
 
 # These all relate to the shape of the interal representation of the world,
-# which is essentially a numpy array (or image) of `image_width` by 
+# which is essentially a numpy array (or image) of `image_width` by
 # `image_height` with a scale factor of `pixels_per_m`, corresponding to the
 # number of pixels per each real-world meter. 
 image_width: 600
@@ -25,7 +25,12 @@ sigma_x: 3
 sigma_y: 3
 
 
-# Used for tentacle projection, travel distance is the step between each 
+# Minimum distance a positional fix must be from the previous
+# fix in order to add its bearing to the median filter. Used to
+# improve bearing accuracy at low speeds.
+min_fix_distance: 0.01 # meters
+
+# Used for tentacle projection, travel distance is the step between each
 # tentacle point, and num_points is the length of each tentacle, if using
 # linear, and not tentacle projection, ignore
 travel_distance: 0.061
@@ -36,7 +41,7 @@ wheel_circumference: 2.198  # in meters, measured
 wheel_base: 1.8 # distance between front and back axels in meters
 
 # Hardware defined maximal steering angle to not break the vehicle
-max_steering_angle: 1.0 # radians
+max_steering_angle: 0.262 # radians (15 degrees)
 
 # Resolution of potential paths, that is to say, the higher this number, the
 # more tentacles/linear paths will be judged
