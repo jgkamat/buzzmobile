@@ -5,10 +5,10 @@ from buzzmobile.msg import CarPose
 from buzzmobile.msg import CarState
 
 
-g = {
-        'manual_car_pose': None,
-        'auto_car_pose': None,
-        'curr_car_state': CarState.START} # globals
+g = {} # globals
+g['manual_car_pose'] = None
+g['auto_car_pose'] = None
+g['curr_car_state'] = CarState.START
 
 car_pose_pub = rospy.Publisher('car_pose', CarPose, queue_size=1)
 
