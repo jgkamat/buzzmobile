@@ -14,11 +14,11 @@ from std_msgs.msg import String
 
 gmaps = googlemaps.Client(key=gmpskey.googlemapskey)
 pub = rospy.Publisher('polyline', String, queue_size=1)
-g = {
-        'destination': None,
-        'published': False,
-        'fix': None} # globals
 
+g = {} # globals
+g['destination'] = None
+g['published'] = False
+g['fix'] = None
 
 def update_destination(new_destination):
     g['destination'] = new_destination.data
