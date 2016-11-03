@@ -1,13 +1,11 @@
 #!/bin/bash
 
-DEBIAN_FRONTEND=noninteractive
-
 function failcheck {
   "$@"
   local status=$?
   if [ $status -ne 0 ]; then
     echo "error with $1" >&2
-    exit 1
+    exit $status
   fi
   return $status
 }
