@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 
   last_command_time = ros::Time::now();
 
-  encoder_pub = node_handle.advertise<buzzmobile::CarPose>("measured_pose", 1000);
+  encoder_pub = node_handle.advertise<buzzmobile::CarPose>("odom_car_pose", 1);
 
   command_sub = node_handle.subscribe("car_pose", 1, command_callback);
 
