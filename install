@@ -21,6 +21,8 @@ source bin/activate
 # tensorflow, which cannot be installed via a setup.py, and so we manually
 # install them here through their .whl files
 pip install --upgrade pip
+echo "look here"
+pip --version
 
 # before we install those though, we need to install buzzmobile, as it installs
 # some ROS dependencies, as well as numpy, needed for tf and opencv
