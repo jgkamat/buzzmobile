@@ -3,9 +3,6 @@
 # Makes this script exit on first error.
 set -e
 
-# This needs to be run before virtual env bc ROS default packages use python2
-sudo apt-get -y install python-empy
-
 # need this to create venv if python was installed without the entire stdlib
 sudo apt-get -y install python3.4-venv
 
@@ -45,19 +42,12 @@ sudo rosdep init
 rosdep update
 
 # Build our project and install rosdeps
-echo "1"
 cd ~/catkin_ws/src
-echo "2"
 source /opt/ros/indigo/setup.bash
-echo "3"
 catkin_init_workspace
-echo "4"
 rosdep install -y --from-paths . --ignore-src --rosdistro=indigo
-echo "5"
 cd ~/catkin_ws
-echo "6"
-catkin_make -j2 # Actually build
-echo "7"
+catkin_make # Actually build
 source ~/catkin_ws/devel/setup.bash
 
 # Set up environment variables
