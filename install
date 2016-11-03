@@ -45,12 +45,19 @@ sudo rosdep init
 rosdep update
 
 # Build our project and install rosdeps
+echo "1"
 cd ~/catkin_ws/src
+echo "2"
 source /opt/ros/indigo/setup.bash
+echo "3"
 catkin_init_workspace
+echo "4"
 rosdep install -y --from-paths . --ignore-src --rosdistro=indigo
+echo "5"
 cd ~/catkin_ws
+echo "6"
 catkin_make -j2 # Actually build
+echo "7"
 source ~/catkin_ws/devel/setup.bash
 
 # Set up environment variables
