@@ -49,7 +49,7 @@ source /opt/ros/indigo/setup.bash
 catkin_init_workspace
 rosdep install -y --from-paths . --ignore-src --rosdistro=indigo
 cd ~/catkin_ws
-catkin_make # Actually build
+catkin_make -j2 # Actually build
 source ~/catkin_ws/devel/setup.bash
 
 # Set up environment variables
