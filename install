@@ -11,7 +11,7 @@ sudo apt-get -y install python3-dev
 
 # This installs empy for py2, which ROS uses in some default packages, even inside venv
 sudo apt-get -y install python-pip
-pip install --upgrade empy
+sudo pip install --upgrade empy
 
 # create a python3 virtualenvironment in the buzzmobile directory
 # yes, venv will allow you to create a virtualenv in any directory
