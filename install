@@ -3,6 +3,9 @@
 # Makes this script exit on first error.
 set -e
 
+# This needs to be run before virtual env bc ROS default packages use python2
+sudo apt-get -y install python-empy
+
 # need this to create venv if python was installed without the entire stdlib
 sudo apt-get -y install python3.4-venv
 
