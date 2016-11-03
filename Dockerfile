@@ -25,5 +25,8 @@ ENV HOME /home/developer
 RUN mkdir -p /home/developer/catkin_ws/src/buzzmobile
 WORKDIR /home/developer/catkin_ws/src/buzzmobile
 
+# Setup apt to be happy with no console input
+RUN export DEBIAN_FRONTEND="noninteractive"
+
 # This image is not meant to be run directly, it has not been compiled yet!
 # In addition, it does not contain any source code, only dependencies
