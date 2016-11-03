@@ -9,6 +9,9 @@ sudo apt-get -y install python3.4-venv
 # need this to be able to install ds4drv
 sudo apt-get -y install python3-dev
 
+# This installs empy for py2, which ROS uses in some default packages, even inside venv
+pip install empy
+
 # create a python3 virtualenvironment in the buzzmobile directory
 # yes, venv will allow you to create a virtualenv in any directory
 python3 -m venv .
@@ -21,8 +24,6 @@ source bin/activate
 # tensorflow, which cannot be installed via a setup.py, and so we manually
 # install them here through their .whl files
 pip install --upgrade pip
-echo "look here"
-pip --version
 
 # before we install those though, we need to install buzzmobile, as it installs
 # some ROS dependencies, as well as numpy, needed for tf and opencv
