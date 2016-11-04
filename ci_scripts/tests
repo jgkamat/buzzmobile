@@ -5,6 +5,8 @@ set -e
 
 # Activate VirtualEnv
 source bin/activate
+source /opt/ros/indigo/setup.sh
+source ../../devel/setup.sh
 
 # Run unit tests
-echo "Tests would go here"
+pytest buzzmobile/tests/
