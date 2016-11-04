@@ -15,9 +15,9 @@ class TestInputer(unittest.TestCase):
         rospy.init_node(NAME, anonymous=True)
 
         rospy.Subscriber('destination', String, callback)
-        timeout = time.time() + 1.0
+        timeout = time.time() + 2.0
 
-        while time.time() < timeout:
+        while time.time() < timeout and not rospy.is_shutdown():
             time.sleep(0.1)
 
     def __init__(self, *args):
