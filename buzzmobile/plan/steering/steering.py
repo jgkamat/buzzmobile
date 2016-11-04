@@ -35,7 +35,7 @@ cv2.circle(immediate_future_mask, (WIDTH//2, HEIGHT),
         int(BRAKING_DISTANCE * PIXELS_PER_METER), [255, 255, 255], -1)
 saved_models = {'lidar_model': None}
 
-
+#TODO make this shorter :)
 def steering_node():
     rospy.init_node('steering', anonymous=True)
     rospy.Subscriber('world_model', Image, steer)
