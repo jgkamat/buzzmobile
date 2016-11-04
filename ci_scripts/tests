@@ -8,5 +8,14 @@ source bin/activate
 source /opt/ros/indigo/setup.sh
 source ../../devel/setup.sh
 
+# spin up roscore
+roscore&
+PID1=$!
+sleep 2
+
 # Run unit tests
 pytest buzzmobile/tests/
+
+# kill roscore when we are done
+kill $PID1
+sleep 2
