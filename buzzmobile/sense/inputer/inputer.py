@@ -10,7 +10,7 @@ def input_node():
     # Publish a nonsense initial value to make sure subscribers don't explode
     pub.publish("")
     while not rospy.is_shutdown():
-        new_dst = raw_input("Dest >> ")
+        new_dst = input("Dest >> ")
         pub.publish(new_dst)
 
 if __name__ == '__main__': input_node()
