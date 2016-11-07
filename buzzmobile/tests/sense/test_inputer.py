@@ -1,14 +1,13 @@
-import rostest
 import unittest
 import rospy
 import time
 from std_msgs.msg import String
-import roslaunch
+from tests import rostest_utils
 
-PKG = 'buzzmobile'
 NAME = 'test_inputer'
 
 
+@rostest_utils.with_roscore
 class TestInputer(unittest.TestCase):
 
     def run_node_with_callback(self, callback):
@@ -23,14 +22,10 @@ class TestInputer(unittest.TestCase):
     def __init__(self, *args):
         super().__init__(*args)
 
-
     def setUp(self):
         self.success = False
-        node = roslaunch.core.Node('buzzmobile', 'inputer.py')
-        launch = roslaunch.scriptapi.ROSLaunch()
-        launch.start()
-        self.process = launch.launch(node)
 
+    @rostest_utils.launch_node('buzzmobile', 'inputer.py')
     def test_inputer_no_input(self):
         def cb(data):
             self.success = (data.data == '')
@@ -38,18 +33,11 @@ class TestInputer(unittest.TestCase):
         self.run_node_with_callback(cb)
         assert self.success
 
+    @rostest_utils.launch_node('buzzmobile', 'inputer.py')
     def test_sanity(self):
         def cb(data):
             self.success = (data.data == b'success')
 
         self.run_node_with_callback(cb)
         assert not self.success
-
-    def tearDown(self):
-        self.process.stop()
-
-
-if __name__ == '__main__':
-    rostest.rosrun(PKG, NAME, TestInputer)
-
 
