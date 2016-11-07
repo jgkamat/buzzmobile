@@ -33,7 +33,7 @@ sess = tf.Session()
 def get_next_example(index):
 
     image_filenames = glob.glob("./images/*.png")
-    label_filenames = map(lambda e: e.replace("images", "labels"), image_filenames)
+    label_filenames = [e.replace("images", "labels") for e in image_filenames]
 
     if index in images.keys():
         return g[index][0], g[index][1], len(images)
@@ -126,7 +126,7 @@ for i in range(current_step, current_step+args.iterations):
 
     train_accuracy = accuracy.eval(session=sess, feed_dict={x: imgs, y_: lbls, keep_prob: 1.0})
     lossValue = loss.eval(session=sess, feed_dict={x: imgs, y_: lbls, keep_prob: 1.0})
-    print ("step %d, loss %f, training accuracy %f" % (i, lossValue, train_accuracy))
+    print(("step %d, loss %f, training accuracy %f" % (i, lossValue, train_accuracy)))
 
     train_step.run(session=sess, feed_dict={x: imgs, y_: lbls, keep_prob: 1.0})
 
@@ -138,8 +138,8 @@ for i in range(current_step, current_step+args.iterations):
         result = np.reshape(result, [24, 78])
         cv2.imwrite("result.png", ((result * 255) > 127) * 255)
 
-        print ("Loss: %f" % loss.eval(session=sess, feed_dict={x: imgs, y_: lbls, keep_prob: 1.0}))
-        print ("**** %d iterations/example ****" % (i / count))
+        print(("Loss: %f" % loss.eval(session=sess, feed_dict={x: imgs, y_: lbls, keep_prob: 1.0})))
+        print(("**** %d iterations/example ****" % (i / count)))
 
 if True:
     imgs, lbls, count = get_next_example(0) # 9 is fun
