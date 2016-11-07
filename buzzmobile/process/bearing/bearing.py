@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 import rospy
-import math
 from sensor_msgs.msg import NavSatFix
 from std_msgs.msg import Float64
+from calculate_directions import get_distance, get_forward_angle
 
 class MedianFilter:
     def __init__(self, size):
@@ -45,45 +45,14 @@ def bearing(fix):
     if fix is not None:
         if g['last_fix'] is not None:
             distance = get_distance(g['last_fix'], fix)
-            bearing = get_forward_angle(g['last_fix'], fix)
-            g['med_filter'].add(bearing)
+            current_bearing = get_forward_angle(g['last_fix'], fix)
+            g['med_filter'].add(current_bearing)
             bearing_pub.publish(g['med_filter'].median())
             if distance >= MIN_FIX_DISTANCE:
                 g['last_fix'] = fix
         else:
             g['last_fix'] = fix
 
-def get_distance(fix1, fix2):
-    """
-    Calculates great-circle distance between two positions in meters
-    """
-
-    lat1 = math.radians(fix1.latitude)
-    lon1 = math.radians(fix1.longitude)
-    lat2 = math.radians(fix2.latitude)
-    lon2 = math.radians(fix2.longitude)
-
-    a = (math.pow(math.sin((lat2 - lat1) / 2), 2)
-         + math.cos(lat1) * math.cos(lat2)
-         * math.pow(math.sin((lon2 - lon1) / 2), 2))
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return EARTH_RADIUS * c
-
-def get_forward_angle(fix1, fix2):
-    """
-    Calculates forward azimuth between two positions in radians
-    """
-
-    lat1 = math.radians(fix1.latitude)
-    lon1 = math.radians(fix1.longitude)
-    lat2 = math.radians(fix2.latitude)
-    lon2 = math.radians(fix2.longitude)
-
-    y = math.sin(lon2 - lon1) * math.cos(lat2)
-    x = (math.cos(lat1) * math.sin(lat2)
-         - math.sin(lat1) * math.cos(lat2) * math.cos(lon2 - lon1))
-    angle = math.atan2(y, x)
-    return (angle + 2 * math.pi) % (2 * math.pi)
 
 def bearing_node():
     rospy.init_node('bearing', anonymous=True)
