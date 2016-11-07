@@ -63,7 +63,7 @@ def get_distance(fix1, fix2):
     lat2 = math.radians(fix2.latitude)
     lon2 = math.radians(fix2.longitude)
 
-    a = (math.pow(math.sin(lat2 - lat1), 2)
+    a = (math.pow(math.sin((lat2 - lat1) / 2), 2)
          + math.cos(lat1) * math.cos(lat2)
          * math.pow(math.sin((lon2 - lon1) / 2), 2))
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
