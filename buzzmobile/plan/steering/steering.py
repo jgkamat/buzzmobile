@@ -56,6 +56,7 @@ def steer(ros_world_model):
     points, angle = pick_tentacle(width//2, height, world_frame)
 
     pose = CarPose()
+    pose.mode = 'auto'
 
     # check our path for obstacles
     if should_brake(points, g['lidar_model']):

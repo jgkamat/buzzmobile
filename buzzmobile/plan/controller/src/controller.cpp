@@ -68,6 +68,7 @@ void sendMotionCommand() {
     msg.angle = lastAngle;
     msg.horn = lastHorn;
     msg.brake = lastBrake;
+    msg.mode = "manual";
     motion_pub.publish(msg);
 }
 
