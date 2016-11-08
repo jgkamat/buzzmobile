@@ -4,21 +4,19 @@ import os
 import rospy
 import sys
 
-from buzzmobile.msg import CarState
+from buzzmobile.msg import CarPose
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
+from time import sleep
 
 
 g = {} # globals
 g['start'] = g['auto'] = g['manual'] = g['neutral'] = None
 pub = rospy.Publisher('car_state_image', Image, queue_size=1)
 
-def publish_car_state_image(car_state):
-    if car_state.state == CarState.START: pub.publish(g['start'])
-    elif car_state.state == CarState.AUTO: pub.publish(g['auto'])
-    elif car_state.state == CarState.MANUAL: pub.publish(g['manual'])
-    # TODO(irapha): add neutral car state
-    # elif car_state == CarState.NEUTRAL: pub.publish(g['neutral'])
+def publish_car_state_image(car_pose):
+    if car_pose.mode is not None and car_pose.mode in g.keys():
+        pub.publish(g[car_pose.mode])
 
 def create_images():
     BASE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -29,10 +27,11 @@ def create_images():
         g[image_name] = bridge.cv2_to_imgmsg(img, "bgr8")
 
 def state_viz_node():
-    create_images()
     rospy.init_node('state_viz', anonymous=True)
-    rospy.Subscriber('car_state', CarState, publish_car_state_image)
+    create_images()
+    sleep(1)
     pub.publish(g['start']) # publish initial state as start
+    rospy.Subscriber('car_pose', CarPose, publish_car_state_image)
     rospy.spin()
 
 if __name__ == '__main__': state_viz_node()
