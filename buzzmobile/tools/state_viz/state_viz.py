@@ -31,8 +31,8 @@ def create_images():
 def state_viz_node():
     create_images()
     rospy.init_node('state_viz', anonymous=True)
-    pub.publish(g['start']) # publish initial state as start
     rospy.Subscriber('car_state', CarState, publish_car_state_image)
+    pub.publish(g['start']) # publish initial state as start
     rospy.spin()
 
 if __name__ == '__main__': state_viz_node()
