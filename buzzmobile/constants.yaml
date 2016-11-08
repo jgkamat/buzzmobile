@@ -4,9 +4,9 @@
 # which is essentially a numpy array (or image) of `image_width` by
 # `image_height` with a scale factor of `pixels_per_m`, corresponding to the
 # number of pixels per each real-world meter.
-image_width: 600
-image_height: 800
-pixels_per_m: 80
+image_width: 600 # pixels
+image_height: 800 # pixels
+pixels_per_m: 80 # pixels / meter
 
 # A measurement of the width of the road in meters.
 # This will be scaled to an appropriate size using `pixels_per_m` during
@@ -32,7 +32,7 @@ min_fix_distance: 0.01 # meters
 # Used for tentacle projection, travel distance is the step between each
 # tentacle point, and num_points is the length of each tentacle, if using
 # linear, and not tentacle projection, ignore
-travel_distance: 0.061
+travel_distance: 0.061 # meters
 num_points_in_tentacle: 50
 
 # Hardware values dealing with the car to define Ackerman parameters
@@ -41,7 +41,7 @@ wheel_base: 2.032 # distance between front and back axels in meters
 wheel_separation: 1.3716 # distance between left and right wheels in meters
 
 # Hardware defined maximal steering angle to not break the vehicle
-max_steering_angle: 0.262 # radians (15 degrees)
+max_steering_angle: 0.262 # radians (=15 degrees)
 
 # Resolution of potential paths, that is to say, the higher this number, the
 # more tentacles/linear paths will be judged
