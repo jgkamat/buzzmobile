@@ -56,8 +56,9 @@ def laser_scan_to_cartesian(laser_scan):
 def get_lidar_image_message(lidar_image):
     """ Convert an opencv image (image) to an imgmsg """
     try:
-        color_image = cv2.cvtColor(lidar_image, cv2.COLOR_GRAY2BGR)
-        return bridge.cv2_to_imgmsg(color_image, encoding="bgr8")
+        #color_image = cv2.cvtColor(lidar_image, cv2.COLOR_GRAY2BGR)
+        #return bridge.cv2_to_imgmsg(color_image, encoding="mono8")
+        return bridge.cv2_to_imgmsg(lidar_image, encoding="mono8")
     except CvBridgeError as e:
         rospy.loginfo("Error converting lidar image to imgmsg")
 
