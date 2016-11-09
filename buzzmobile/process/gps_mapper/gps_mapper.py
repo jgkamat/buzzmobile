@@ -12,20 +12,20 @@ from std_msgs.msg import Float64
 from std_msgs.msg import String
 
 #Global Variables
-frames = {}
+g = {}
 # 'bearing' is counter-clockwise angle from north in radians.
 # 'points' will contain the polyline list of lat-lon points
 # (normalized to some size based on pixels_per_m).
 # 'location' is our lat-lon position (unmodified) from our GPS.
-frames['bearing'] = frames['points'] = frames['location'] = None
+g['bearing'] = g['points'] = g['location'] = None
 # These ranges are km dimensions of the path. Initialize them to 0.
 # Also initialize the scaled width and height of the points to 0.
-frames['y_range'] = frames['x_range'] = frames['height'] = frames['width'] = 0
+g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
 bridge = CvBridge()
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
 line_width = int(round(rospy.get_param('pixels_per_m')
-                       * rospy.get_param('road_width')))
+    * rospy.get_param('road_width')))
 sigma_x = rospy.get_param('sigma_x')
 sigma_y = rospy.get_param('sigma_y')
 image_width = rospy.get_param('image_width')
@@ -43,27 +43,27 @@ def set_points(polyline):
         (y_range, x_range,
          top_left, bottom_right) = interpolate.dimensions(points)
         # Store y and x ranges.
-        frames['y_range'] = y_range
-        frames['x_range'] = x_range
+        g['y_range'] = y_range
+        g['x_range'] = x_range
         # Flip the points because we want the top of the image
         # to represent north.
-        frames['points'] = [(y, -x) for (x, y) in points]
+        g['points'] = [(y, -x) for (x, y) in points]
         # Recalculate top left and bottom right coordinates
         # after flipping the polyline points. Do not save the new
         # y and x ranges, because those will not be correct.
-        _, _, top_left, bottom_right = interpolate.dimensions(frames['points'])
+        _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
         # Based on the accurate y and x ranges, calculate a height and width
         # that will scale our final image to our specified pixels_per_m
         # (pixels per meter) parameter.
         # Note that this is distinct from `image_height` and `image_width`,
         # which are the height and width of the current window that will be
         # passed to the frame merger!
-        frames['height'] = int(round(frames['y_range'] * y_scale))
-        frames['width'] = int(round(frames['x_range'] * x_scale))
+        g['height'] = int(round(g['y_range'] * y_scale))
+        g['width'] = int(round(g['x_range'] * x_scale))
         # Store the normalized points.
-        frames['points'] = interpolate.normalized_points(frames['points'],
-                                                         frames['width'],
-                                                         frames['height'])
+        g['points'] = interpolate.normalized_points(g['points'],
+                                                    g['width'],
+                                                    g['height'])
 
 def update_image():
     """
@@ -71,45 +71,47 @@ def update_image():
     Calculates the rotated point space and then interpolates the points in the
     specified window before publishing this updated window (image) to ROS.
     """
-    if frames['points'] is not None:
+    if g['points'] is not None:
         # Calculate the top left and bottom right points
         # of the full list of points.
-        _, _, top_left, bottom_right = interpolate.dimensions(frames['points'])
+        _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
         # Normalize the current location to the size of the
         # normalized polyline points.
-        point = (frames['location'][0], -frames['location'][1])
-        if frames['y_range'] is not 0:
-            point = interpolate.normalize_single_point(frames['y_range'],
-                                                       frames['x_range'],
-                                                       frames['height'],
-                                                       frames['width'],
-                                                       top_left,
-                                                       bottom_right,
-                                                       point)
+        point = (g['location'][1], -g['location'][0])
+        if g['y_range'] is not 0:
+            point = interpolate.normalize_single_point(g['y_range'],
+                    g['x_range'],
+                    g['height'],
+                    g['width'],
+                    top_left,
+                    bottom_right,
+                    point)
         # Call method to calculate rotated points and interpolate a path
         # between the points that are in the current window
         # (based on the current location and bearing).
-        result = interpolate.xwindow(frames['points'], point, frames['bearing'],
-                                     line_width,
-                                     sigma_x,
-                                     sigma_y,
-                                     image_height,
-                                     image_width)
+        result = interpolate.xwindow(g['points'], point, g['bearing'],
+                line_width,
+                sigma_x,
+                sigma_y,
+                image_height,
+                image_width)
         # Send the final image window as an image message through ROS.
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         gps_model_pub.publish(result_msg)
 
 def set_bearing(angle):
     """Given a radian bearing, update the current bearing and update image."""
-    frames['bearing'] = angle.data
-    if frames['location'] is not None:
-        update_image()
+    if angle is not None:
+        g['bearing'] = angle.data
+        if g['location'] is not None:
+            update_image()
 
 def set_location(fix_location):
     """Given a lat-lon, update current location and update image."""
-    frames['location'] = (fix_location.latitude, fix_location.longitude)
-    if frames['bearing'] is not None:
-        update_image()
+    if fix_location is not None:
+        g['location'] = (fix_location.latitude, fix_location.longitude)
+        if g['bearing'] is not None:
+            update_image()
 
 def gps_mapper_node():
     # Initializes the ROS node and starts listening for
