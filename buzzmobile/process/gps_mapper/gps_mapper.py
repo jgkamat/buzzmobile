@@ -87,7 +87,7 @@ def update_image():
         # Call method to calculate rotated points and interpolate a path
         # between the points that are in the current window
         # (based on the current location and bearing).
-        result = interpolate.xwindow(g['points'], point, g['bearing'],
+        result = interpolate.window(g['points'], point, g['bearing'],
                 line_width,
                 sigma_x,
                 sigma_y,

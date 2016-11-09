@@ -60,32 +60,7 @@ def normalize_single_point(y_range, x_range, height, width,
     return ((point[0] - top_left[0]) * width / x_range,
             (point[1] - top_left[1]) * height / y_range)
 
-
-def window(image, location, angle, height, width):
-    """
-    DO NOT USE THIS. USE THE FOLLOWING FUNCTION INSTEAD, WHICH TAKES ONLY POINTS INSTEAD OF
-    A FULL IMAGE. THE FOLLOWING FUNCTION IS LESS MEMORY INTENSIVE.
-    Takes an image, a location, an angle in radians, and optionally a height and width
-    in order to return the angled rectangular region of the image of the specified size,
-    with the location specifying the bottom middle point of the image.
-    ----------------------------------------------------------------------------
-    image: 2D array (NumPy/OpenCV) representing the path (should be normalized already)
-    location: tuple of (x, y) representing the current location to center the bottom of
-              the window at in pixels
-    angle: angle in radians to rotate rectangular region by (counterclockwise)
-    height, width: dimensions of the output image in pixels
-    ----------------------------------------------------------------------------
-    """
-    parallel = (math.cos(angle), math.sin(angle))
-    perpendicular = (-math.sin(angle), math.cos(angle))
-    horizontal = location[0] - parallel[0] * (width/2) - perpendicular[0] * (height/1)
-    vertical = location[1] - parallel[1] * (width/2) - perpendicular[1] * (height/1)
-    rotation_matrix = np.array([[parallel[0], perpendicular[0], horizontal],
-                               [parallel[1], perpendicular[1], vertical]])
-    return cv2.warpAffine(image, rotation_matrix, (width, height),
-                          flags=cv2.WARP_INVERSE_MAP)
-
-def xwindow(points, location, angle, line_width, sigma_x, sigma_y, height, width):
+def window(points, location, angle, line_width, sigma_x, sigma_y, height, width):
     """
     Takes a list of points, a location, an angle in radians,
     and optionally a height and width in order to
