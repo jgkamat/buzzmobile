@@ -12,7 +12,9 @@ bridge = CvBridge()
 
 def publish_image(image_filename):
     imgFile = cv2.imread(image_filename)
-    imgMsg = bridge.cv2_to_imgmsg(imgFile, "bgr8")
+    gray_im = cv2.cvtColor(imgFile, cv2.COLOR_BGR2GRAY)
+    
+    imgMsg = bridge.cv2_to_imgmsg(gray_im, encoding="mono8")
 
     topic_name = sys.argv[1].split('/')[-1][:-4]
     pub = rospy.Publisher(topic_name, Image, queue_size=1)
