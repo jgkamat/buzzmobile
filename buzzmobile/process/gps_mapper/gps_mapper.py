@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-import math
 import polyline as pl
 import interpolate
-from collections import namedtuple
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import NavSatFix
 from sensor_msgs.msg import Image
@@ -12,7 +10,7 @@ from std_msgs.msg import Float64
 from std_msgs.msg import String
 
 #Global Variables
-g = {}
+g = {} # globals
 # 'bearing' is counter-clockwise angle from north in radians.
 # 'points' will contain the polyline list of lat-lon points
 # (normalized to some size based on pixels_per_m).
@@ -25,7 +23,7 @@ gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
 bridge = CvBridge()
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
 line_width = int(round(rospy.get_param('pixels_per_m')
-    * rospy.get_param('road_width')))
+                       * rospy.get_param('road_width')))
 sigma_x = rospy.get_param('sigma_x')
 sigma_y = rospy.get_param('sigma_y')
 image_width = rospy.get_param('image_width')

@@ -21,6 +21,6 @@ setup(
         'pyyaml==3.12',
         'rospkg==1.0.41',
         'ds4drv', # requires apt-get install python-dev
-        'empy==3.3.2',
+        'empy==3.3.2', # required to make catkin_make work
         ],
 )

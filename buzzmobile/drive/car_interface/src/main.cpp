@@ -21,7 +21,7 @@ ros::Time last_command_time;
 
 ros::Duration keep_alive_frequency(1.0);
 
-//void odometry_callback(int, float);
+void odometry_callback(int, float, float);
 
 //void command_callback(core_msgs::MotionCommand::ConstPtr);
 void command_callback(buzzmobile::CarPose::ConstPtr);
@@ -34,13 +34,13 @@ int main(int argc, char **argv) {
 
   //arduino.open("/dev/arduino_motor_controller", 9600);
   arduino.open("/dev/ttyACM0", 9600);
-  //arduino.setOdometryCallback(odometry_callback);
+  arduino.setOdometryCallback(odometry_callback);
 
   ros::NodeHandle node_handle;
 
   last_command_time = ros::Time::now();
 
-  //encoder_pub = node_handle.advertise<core_msgs::Odom>("encoder_odom", 1000);
+  encoder_pub = node_handle.advertise<buzzmobile::CarPose>("odom_car_pose", 1);
 
   command_sub = node_handle.subscribe("car_pose", 1, command_callback);
 
@@ -57,15 +57,13 @@ void keep_alive_callback(const ros::TimerEvent&) {
     arduino.setSpeed(0);
   }
 }
-/**
-void odometry_callback(int tickCount, float steeringAngle) {
-  core_msgs::Odom msg;
-  msg.distance_travelled = (tickCount * wheelCirc) / ticksPerRev;
-  msg.steering_angle = steeringAngle;
-  msg.header.seq = odom_sequence++;
-  msg.header.stamp = ros::Time::now();
+
+void odometry_callback(int tickCount, float steeringAngle, float speed) {
+  buzzmobile::CarPose msg;
+  msg.velocity = speed;
+  msg.angle = steeringAngle;
   encoder_pub.publish(msg);
-}*/
+}
 
 //void command_callback(core_msgs::MotionCommand::ConstPtr cmd) {
 void command_callback(buzzmobile::CarPose::ConstPtr cmd) {
