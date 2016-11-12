@@ -1,0 +1,5 @@
+<launch>
+    <group ns="buzzmobile">
+        <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
+    </group>
+</launch>
