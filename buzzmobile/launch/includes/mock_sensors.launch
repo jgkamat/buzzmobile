@@ -1,0 +1,8 @@
+<launch>
+    <node pkg="rosbag" type="play" name="fix_mock" args="fix_mock.bag"/>
+    <node pkg="rqt_gui" name="rqt_gui" type="rqt_gui" 
+          args="--perspective=$(find buzzmobile)/tools/mission_control/Default.perspective"/>
+	<node pkg="buzzmobile" name="image_const" type="image_const.py" 
+          args="$(find buzzmobile)/tools/image_const/gps_model.png"/>
+</launch>
+

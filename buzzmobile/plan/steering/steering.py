@@ -62,7 +62,7 @@ def steer(ros_world_model):
         pose.brake = True
     else:
         pose.angle = angle
-        pose.velocity = 1.0
+        pose.velocity = 0.1
 
     # publish carpose
     pose_pub.publish(pose)
