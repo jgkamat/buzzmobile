@@ -43,6 +43,9 @@ wheel_separation: 1.3716 # distance between left and right wheels in meters
 # Hardware defined maximal steering angle to not break the vehicle
 max_steering_angle: 0.262 # radians (=15 degrees)
 
+# Max speed of buzzmobile in % of maximum output (We think)
+max_speed: 0.1 # 10% of max speed of motor (We think)
+
 # Resolution of potential paths, that is to say, the higher this number, the
 # more tentacles/linear paths will be judged
 angle_multiplier: 10 # this * max_angle is number of angles to span

@@ -47,7 +47,7 @@ def steering_node():
 def steer(ros_world_model):
     # convert RosImage to cv2
     try:
-        world_frame = bridge.imgmsg_to_cv2(ros_world_model)
+        world_frame = np.squeeze(bridge.imgmsg_to_cv2(ros_world_model, 'mono8'))
     except CvBridgeError:
         rospy.loginfo('Error converting world_model to cv2')
 
@@ -62,8 +62,9 @@ def steer(ros_world_model):
     if should_brake(points, g['lidar_model']):
         pose.brake = True
     else:
+        maxSpeed = rospy.get_param('max_speed', 1.0)
         pose.angle = angle
-        pose.velocity = 1.0
+        pose.velocity = maxSpeed
 
     # publish carpose
     pose_pub.publish(pose)
