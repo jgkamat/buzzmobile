@@ -20,7 +20,6 @@ using namespace buzzmobile;
 ros::Publisher motion_pub;
 ros::Publisher state_pub;
 
-int maxFwdSpeed = 1; //m/s
 int pubFreq     = 10; //hz
 
 bool obstacleFlag = false;
@@ -68,6 +67,7 @@ void sendMotionCommand() {
     msg.angle = lastAngle;
     msg.horn = lastHorn;
     msg.brake = lastBrake;
+    msg.mode = "manual";
     motion_pub.publish(msg);
 }
 
@@ -93,16 +93,19 @@ void handleDrive(const sensor_msgs::Joy::ConstPtr& joy) {
     //Motor control
     float speed = 0.0;
 
+    double maxSpeed;
+    ros::param::get("max_speed", maxSpeed); // Get max speed from constants.yaml
+    
     ROS_INFO("Last brake %d", lastBrake);
     if (!lastBrake) {
         if (joy->reverse_button) {
             float correction = -1; // Normally ranges from 1 to -1. Correct so it ranges from 0 to -2
             // Division by 2 brings to range -1 to 0. It can then be multiplied by max speed
-            speed = ((correction + joy->velocity_trigger) / 2.0) * maxFwdSpeed;
+            speed = ((correction + joy->velocity_trigger) / 2.0) * maxSpeed;
         } else {
             float correction = 1; // Once inverted, will range from -1 to 1. Correct to: 0 to 2
             // Division by 2 brings to range 0 to 1. It can then be multiplied by max speed
-            speed = ((correction + -1 * joy->velocity_trigger) / 2.0) * maxFwdSpeed;
+            speed = ((correction + -1 * joy->velocity_trigger) / 2.0) * maxSpeed;
         }
     }
 

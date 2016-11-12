@@ -1,29 +1,19 @@
 <launch>
-    <!-- We need rqt gui to mock polyline for gps_mapper testing-->
-    <node pkg="rqt_gui" name="rqt_gui" type="rqt_gui" 
-          args="--perspective=$(find buzzmobile)/tools/mission_control/Default.perspective"/>
-    <!-- TODO generate the fix bag for testing -->
-    <node pkg="rosbag" type="play" name="fix_mock" args="fix_mock.bag">
-    <!-- need a node to output exactly one gps map -->
-
+    <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
+    <!-- joystick and sensor nodes -->
     <node pkg="joy" name="joy_node" type="joy_node"/>
     <node pkg="hokuyo_node" name="lidar" type="hokuyo_node" args="_port:=/dev/ttyACM1"/>
-    
+    <!-- TODO generate the fix bag for testing -->
+    <node pkg="rosbag" type="play" name="fix_mock" args="fix_mock.bag">
+
     <group ns="buzzmobile">
-        <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
-        
-        <node pkg="buzzmobile" name="gps_mapper" type="gps_mapper.py"/>
-        <node pkg="buzzmobile" name="bearing" type="bearing.py"/>
-        
-        <node pkg="buzzmobile" nam=e"image_const" type="image_const.py" 
-              args="$(find buzzmobile)/tools/image_const/gps_model.png"/>
-   
-        <node pkg="buzzmobile" name="frame_merger" type="frame_merger.py"/>
-        <node pkg="buzzmobile" name="steering" type="steering.py"/>
-        <node pkg="buzzmobile" name="lidar_model" type="lidar_to_frame.py"/>
-        <node pkg="buzzmobile" name="car_pose" type="car_pose_mux.py"/>
-        <node pkg="buzzmobile" name="manual_car_pose" type="controller"/>
-        <node pkg="buzzmobile" name="car_interface" type="car_interface"/>
+        <include file="$(find buzzmobile)/launch/includes/gps.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/mapping.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/steering.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/lidar.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/controller.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/interface.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/visualization.launch"/>
     </group>
 </launch>
 

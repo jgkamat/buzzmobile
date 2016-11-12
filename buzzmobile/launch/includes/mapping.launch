@@ -1,4 +1,3 @@
 <launch>
-    <node pkg="buzzmobile" name="destination" type="inputer.py"/>
     <node pkg="buzzmobile" name="polyline" type="maps_querier.py"/>
 </launch>

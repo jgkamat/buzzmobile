@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 
 import rospy
-import math
 import polyline as pl
 import interpolate
-from collections import namedtuple
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import NavSatFix
 from sensor_msgs.msg import Image
 from std_msgs.msg import Float64
 from std_msgs.msg import String
 
-
+#Global Variables
 g = {} # globals
 # 'bearing' is counter-clockwise angle from north in radians.
 # 'points' will contain the polyline list of lat-lon points
@@ -62,8 +60,8 @@ def set_points(polyline):
         g['width'] = int(round(g['x_range'] * x_scale))
         # Store the normalized points.
         g['points'] = interpolate.normalized_points(g['points'],
-                                                         g['width'],
-                                                         g['height'])
+                                                    g['width'],
+                                                    g['height'])
 
 def update_image():
     """
@@ -77,39 +75,41 @@ def update_image():
         _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
         # Normalize the current location to the size of the
         # normalized polyline points.
-        point = (g['location'][0], -g['location'][1])
+        point = (g['location'][1], -g['location'][0])
         if g['y_range'] is not 0:
             point = interpolate.normalize_single_point(g['y_range'],
-                                                       g['x_range'],
-                                                       g['height'],
-                                                       g['width'],
-                                                       top_left,
-                                                       bottom_right,
-                                                       point)
+                    g['x_range'],
+                    g['height'],
+                    g['width'],
+                    top_left,
+                    bottom_right,
+                    point)
         # Call method to calculate rotated points and interpolate a path
         # between the points that are in the current window
         # (based on the current location and bearing).
-        result = interpolate.xwindow(g['points'], point, g['bearing'],
-                                     line_width,
-                                     sigma_x,
-                                     sigma_y,
-                                     image_height,
-                                     image_width)
+        result = interpolate.window(g['points'], point, g['bearing'],
+                line_width,
+                sigma_x,
+                sigma_y,
+                image_height,
+                image_width)
         # Send the final image window as an image message through ROS.
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         gps_model_pub.publish(result_msg)
 
 def set_bearing(angle):
     """Given a radian bearing, update the current bearing and update image."""
-    g['bearing'] = angle.data
-    if g['location'] is not None:
-        update_image()
+    if angle is not None:
+        g['bearing'] = angle.data
+        if g['location'] is not None:
+            update_image()
 
 def set_location(fix_location):
     """Given a lat-lon, update current location and update image."""
-    g['location'] = (fix_location.latitude, fix_location.longitude)
-    if g['bearing'] is not None:
-        update_image()
+    if fix_location is not None:
+        g['location'] = (fix_location.latitude, fix_location.longitude)
+        if g['bearing'] is not None:
+            update_image()
 
 def gps_mapper_node():
     # Initializes the ROS node and starts listening for

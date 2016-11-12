@@ -1,6 +1,7 @@
 <launch>
     <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
-    <include file="$(find buzzmobile)/launch/sensors.launch"/>
+
+    <include file="$(find buzzmobile)/launch/includes/sensors.launch"/>
     
     <group ns="buzzmobile">
         <include file="$(find buzzmobile)/launch/includes/gps.launch"/>
@@ -8,8 +9,8 @@
         <include file="$(find buzzmobile)/launch/includes/steering.launch"/>
         <include file="$(find buzzmobile)/launch/includes/lidar.launch"/>
         <include file="$(find buzzmobile)/launch/includes/controller.launch"/>
-        <include file="$(find buzzmobile)/launch/includes/interface.lanuch"/>
-        <include file="$(find buzzmobile)/launch/includes/visualization.lanuch"/>
+        <include file="$(find buzzmobile)/launch/includes/interface.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/visualization.launch"/>
     </group>
 </launch>
 

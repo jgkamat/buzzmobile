@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 
   last_command_time = ros::Time::now();
 
-  //encoder_pub = node_handle.advertise<core_msgs::Odom>("encoder_odom", 1000);
+  encoder_pub = node_handle.advertise<buzzmobile::CarPose>("odom_car_pose", 1);
 
   command_sub = node_handle.subscribe("car_pose", 1, command_callback);
 
@@ -59,15 +59,10 @@ void keep_alive_callback(const ros::TimerEvent&) {
 }
 
 void odometry_callback(int tickCount, float steeringAngle, float speed) {
-  //core_msgs::Odom msg;
-  //msg.distance_travelled = (tickCount * wheelCirc) / ticksPerRev;
-  //msg.steering_angle = steeringAngle;
-  //msg.header.seq = odom_sequence++;
-  //msg.header.stamp = ros::Time::now();
-  //encoder_pub.publish(msg);
-  if (tickCount % 100 == 0) {
-    ROS_INFO("Speed: %f", speed);
-  }
+  buzzmobile::CarPose msg;
+  msg.velocity = speed;
+  msg.angle = steeringAngle;
+  encoder_pub.publish(msg);
 }
 
 //void command_callback(core_msgs::MotionCommand::ConstPtr cmd) {
