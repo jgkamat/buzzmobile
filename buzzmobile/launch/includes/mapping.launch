@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="buzzmobile" name="maps_querier" type="maps_querier.py"/>
+</launch>

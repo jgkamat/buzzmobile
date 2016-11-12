@@ -1,0 +1,19 @@
+<launch>
+    <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
+    <!-- joystick and sensor nodes -->
+    <node pkg="joy" name="joy_node" type="joy_node"/>
+    <node pkg="hokuyo_node" name="lidar" type="hokuyo_node" args="_port:=/dev/ttyACM1"/>
+    <!-- TODO generate the fix bag for testing -->
+    <node pkg="rosbag" type="play" name="techgreen" args="techgreen.bag">
+
+    <group ns="buzzmobile">
+        <include file="$(find buzzmobile)/launch/includes/gps.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/mapping.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/steering.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/lidar.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/controller.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/interface.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/visualization.launch"/>
+    </group>
+</launch>
+
