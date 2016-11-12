@@ -20,7 +20,6 @@ using namespace buzzmobile;
 ros::Publisher motion_pub;
 ros::Publisher state_pub;
 
-int maxFwdSpeed = 1; //m/s
 int pubFreq     = 10; //hz
 
 bool obstacleFlag = false;

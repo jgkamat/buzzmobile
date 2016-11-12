@@ -47,12 +47,12 @@ def steering_node():
 def steer(ros_world_model):
     # convert RosImage to cv2
     try:
-        world_frame = bridge.imgmsg_to_cv2(ros_world_model, 'mono8')
+        world_frame = np.squeeze(bridge.imgmsg_to_cv2(ros_world_model, 'mono8'))
     except CvBridgeError:
         rospy.loginfo('Error converting world_model to cv2')
 
     # pick tentacle
-    height, width, _ = world_frame.shape
+    height, width = world_frame.shape
     points, angle = pick_tentacle(width//2, height, world_frame)
 
     pose = CarPose()
