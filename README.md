@@ -32,14 +32,9 @@ If you want to manually install ROS Indigo you can follow the tutorial
 The install script will create a virtualenv, install system dependencies
 (including ROS Indigo), install python dependencies, build the package, and
 source all required files. It will also put the `rosinit` and `rosdevel`
-aliases in your `.bashrc`.
-
-At this point, you should be able to activate the
-virtualenv and run nodes (see 'Running' below).
-
-```bash
-source ~/catkin_ws/src/buzzmobile/bin/activate
-```
+aliases in your `.bashrc`. Finally, it will make `.bashrc` automatically
+activate the virtualenv, which is needed to run nodes:
+`source ~/catkin_ws/src/buzzmobile/bin/activate`
 
 To use the google maps api, you'll need two api keys. Put one under
 `buzzmobile/sense/maps_querier/googlemapskey.py` and one under
