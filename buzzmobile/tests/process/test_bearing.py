@@ -3,6 +3,8 @@ from tests import rostest_utils
 import numpy as np
 from collections import namedtuple
 from process.bearing import calculate_directions
+from sensor_msgs.msg import NavSatFix
+from std_msgs.msg import Float64
 
 fix = namedtuple('fix', ['latitude', 'longitude'])
 
@@ -16,5 +18,21 @@ class TestBearing(unittest.TestCase):
 
 @rostest_utils.with_roscore
 class TestBearingNode(unittest.TestCase):
-    pass
+    
+    @rostest_utils.launch_node('buzzmobile', 'bearing.py', 'params.launch')
+    def test_bearing_node(self):
+        result = None
+        def callback(data):
+            nonlocal result
+            result = data.data
 
+        with rostest_utils.mock_node('fix', NavSatFix, queue_size=None) as fix_node:
+            with rostest_utils.test_node('bearing', Float64, callback) as tn:
+                # send mock data
+                fix_node.send(NavSatFix(None, None, 33.636700, -84.427863, None, None, None))
+                fix_node.send(NavSatFix(None, None, 39.029128, -111.838257, None, None, None))
+
+            # check the output from the node
+            assert result != None
+            assert np.isclose(result, 5.09105)
+            
