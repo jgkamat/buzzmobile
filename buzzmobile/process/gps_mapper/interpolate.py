@@ -91,7 +91,7 @@ def window(points, location, angle, line_width, sigma_x, sigma_y, height, width)
         # translate them to the proper location for the final image
         out.append((x_ + (width/2 - location[0]), y_ + (height - location[1])))
     return interpolate([(int(round(x)), int(round(y))) for (x, y) in out],
-                       line_width, sigma_x, sigma_y, width, height)
+                       line_width, sigma_x, sigma_y, height, width)
 
 def dimensions(points):
     """
