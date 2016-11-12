@@ -58,8 +58,8 @@ def merge_frames(frames, weights):
     """
     total_weight = sum(weights)
 
-    height, width, channels = frames[0].shape
-    merged = np.zeros((height, width, channels), np.uint8)
+    height, width= frames[0].shape
+    merged = np.zeros((height, width), np.uint8)
 
     for frame, weight in zip(frames, weights):
         alpha = (weight / total_weight)
