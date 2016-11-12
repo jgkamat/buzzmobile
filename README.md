@@ -38,7 +38,7 @@ At this point, you should be able to activate the
 virtualenv and run nodes (see 'Running' below).
 
 ```bash
-source ~/catkin_ws/src/buzzmobile/buzzmobile/bin/activate
+source ~/catkin_ws/src/buzzmobile/bin/activate
 ```
 
 To use the google maps api, you'll need two api keys. Put one under
