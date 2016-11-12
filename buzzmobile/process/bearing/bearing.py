@@ -24,13 +24,12 @@ class MedianFilter:
         else:
             return (sortedArray[index] + sortedArray[index + 1]) / 2.0
 
-
 g = {} # globals
 g['last_fix'] = None
-g['med_filter'] = MedianFilter(rospy.get_param('median_filter_size'))
+g['med_filter'] = MedianFilter(rospy.get_param('/buzzmobile/median_filter_size'))
 bearing_pub = rospy.Publisher('bearing', Float64, queue_size=1)
 
-MIN_FIX_DISTANCE = rospy.get_param('min_fix_distance')
+MIN_FIX_DISTANCE = rospy.get_param('/buzzmobile/min_fix_distance')
 EARTH_RADIUS = 6.3710088e6
 
 
