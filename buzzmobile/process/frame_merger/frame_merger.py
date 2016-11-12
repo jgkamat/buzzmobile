@@ -58,7 +58,7 @@ def merge_frames(frames, weights):
     """
     total_weight = sum(weights)
 
-    height, width= frames[0].shape
+    height, width = np.squeeze(frames[0].shape)
     merged = np.zeros((height, width), np.uint8)
 
     for frame, weight in zip(frames, weights):

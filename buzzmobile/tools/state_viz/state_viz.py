@@ -15,6 +15,8 @@ g['start'] = g['auto'] = g['manual'] = g['neutral'] = None
 pub = rospy.Publisher('car_state_image', Image, queue_size=1)
 
 def publish_car_state_image(car_pose):
+    if not hasattr(car_pose, 'mode'):
+	raise ValueError('car pose has no mode: ' + str(car_pose))
     if car_pose.mode is not None and car_pose.mode in g.keys():
         pub.publish(g[car_pose.mode])
 
