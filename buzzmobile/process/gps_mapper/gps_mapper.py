@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
-import rospy
-import polyline as pl
 import interpolate
+import math
+import polyline as pl
+import rospy
+
 from cv_bridge import CvBridge, CvBridgeError
-from sensor_msgs.msg import NavSatFix
 from sensor_msgs.msg import Image
+from sensor_msgs.msg import NavSatFix
 from std_msgs.msg import Float64
 from std_msgs.msg import String
 
@@ -100,7 +102,7 @@ def update_image():
 def set_bearing(angle):
     """Given a radian bearing, update the current bearing and update image."""
     if angle is not None:
-        g['bearing'] = angle.data
+        g['bearing'] = 2 * math.pi - angle.data
         if g['location'] is not None:
             update_image()
 
