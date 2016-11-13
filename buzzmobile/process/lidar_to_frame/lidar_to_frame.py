@@ -39,12 +39,16 @@ def laser_scan_to_cartesian(laser_scan):
     #effectively rotate the input data by 90 degrees counterclockwise
     angle = laser_scan.angle_min + pi / 2
     #convert points from polar to cartesian (origin at (width/2, height))
+    working = 0
     for i in range(len(ranges)):
         # when using hokuyo_node, far points are inf.
         # when using urg_node, they're nan.
-        distance_to_point = (
-                ranges[i] if ranges[i] != float('inf') and not isnan(ranges[i])
-                else image_width + image_height)
+        cur = ranges[i]
+        if (cur != float('inf') and not isnan(cur)):
+            distance_to_point = ranges[i]
+            working = distance_to_point
+        else:
+            distance_to_point = working
 
         lidar_points.append(
             (cos(angle) * distance_to_point * pixels_per_m + (image_width / 2),
