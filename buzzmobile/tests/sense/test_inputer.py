@@ -11,7 +11,8 @@ class TestInputer(unittest.TestCase):
     def setUp(self):
         self.success = False
 
-    @rostest_utils.launch_node('buzzmobile', 'inputer.py', 'params.launch')
+    @rostest_utils.with_launch_file('buzzmobile', 'params.launch')
+    @rostest_utils.launch_node('buzzmobile', 'inputer.py')
     def test_sanity(self):
         def cb(data):
             self.success = (data.data == b'success')
