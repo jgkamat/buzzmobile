@@ -143,6 +143,8 @@ ls -l /dev/ttyACM0  # List permissions. Will output failure if /dev/ttyACM0 is n
 sudo chmod a+rw /dev/ttyACM0  # Sets read/write permissions for all users, not recommended.
 ```
 
+If you need to mock a polyline, this tool will be useful: [google polyline util](https://developers.google.com/maps/documentation/utilities/polylineutility)
+
 
 Recording
 ---------
