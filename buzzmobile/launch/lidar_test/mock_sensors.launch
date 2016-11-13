@@ -1,5 +1,5 @@
 <launch>
-    <node pkg="rosbag" type="play" name="jank_af_lidar_tbh" args="-l /home/kpberry/bagfiles/lidar_jank.bag"/>
+    <node pkg="rosbag" type="play" name="jank_af_lidar_tbh" args="-l /bagfiles/lidar_jank.bag"/>
 	<node pkg="buzzmobile" name="image_const" type="image_const.py" 
           args="$(find buzzmobile)/tools/image_const/gps_model.png"/>
 </launch>
