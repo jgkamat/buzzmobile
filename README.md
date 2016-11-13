@@ -31,15 +31,8 @@ If you want to manually install ROS Indigo you can follow the tutorial
 
 The install script will create a virtualenv, install system dependencies
 (including ROS Indigo), install python dependencies, build the package, and
-source all required files. It will also put the `rosinit` and `rosdevel`
-aliases in your `.bashrc`.
-
-At this point, you should be able to activate the
-virtualenv and run nodes (see 'Running' below).
-
-```bash
-source ~/catkin_ws/src/buzzmobile/bin/activate
-```
+source all required files. It will also put the `rosinit`, `rosdevel` and
+`rosvenv` aliases in your `.bashrc`.
 
 To use the google maps api, you'll need two api keys. Put one under
 `buzzmobile/sense/maps_querier/googlemapskey.py` and one under
@@ -68,7 +61,7 @@ Running
 -------
 
 Make sure you are running inside the virtualenvironment, or things will
-appear broken: `source ~/catkin_ws/src/buzzmobile/buzzmobile/bin/activate`.
+appear broken: `rosvenv`.
 
 To start running, you must first run `catkin_make` from the `~/catkin_ws` dir.
 If there aren't any issues with the build, you can run `roscore` to start the
@@ -142,6 +135,8 @@ commands for debugging if things aren't set up correctly:
 ls -l /dev/ttyACM0  # List permissions. Will output failure if /dev/ttyACM0 is not set.
 sudo chmod a+rw /dev/ttyACM0  # Sets read/write permissions for all users, not recommended.
 ```
+
+If you need to mock a polyline, this tool will be useful: [google polyline util](https://developers.google.com/maps/documentation/utilities/polylineutility)
 
 
 Recording

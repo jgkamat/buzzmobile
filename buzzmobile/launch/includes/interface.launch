@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="buzzmobile" name="car_pose_mux" type="car_pose_mux.py"/>
+    <node pkg="buzzmobile" name="car_interface" type="car_interface"/>
+</launch>

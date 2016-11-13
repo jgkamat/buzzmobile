@@ -1,0 +1,6 @@
+<launch>
+    <node pkg="rosbag" type="play" name="fix_mock" args="fix_mock.bag"/>
+	<node pkg="buzzmobile" name="image_const" type="image_const.py" 
+          args="$(find buzzmobile)/tools/image_const/gps_model.png"/>
+</launch>
+

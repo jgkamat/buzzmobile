@@ -1,0 +1,6 @@
+<launch>
+    <node pkg="buzzmobile" name="route_map" type="route_mapper.py"/>
+    <node pkg="buzzmobile" name="state_viz" type="state_viz.py"/>
+    <node pkg="rqt_gui" name="rqt_gui" type="rqt_gui" 
+          args="--perspective=$(find buzzmobile)/tools/mission_control/Default.perspective"/>
+</launch>
