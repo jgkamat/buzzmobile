@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import math
 import rospy
 from sensor_msgs.msg import NavSatFix
 from std_msgs.msg import Float64
@@ -47,7 +48,7 @@ def bearing(fix):
             distance = get_distance(g['last_fix'], fix)
             current_bearing = get_forward_angle(g['last_fix'], fix)
             g['med_filter'].add(current_bearing)
-            bearing_pub.publish(g['med_filter'].median())
+            bearing_pub.publish(2 * math.pi - g['med_filter'].median())
             if distance >= MIN_FIX_DISTANCE:
                 g['last_fix'] = fix
         else:
