@@ -26,10 +26,10 @@ class MedianFilter:
 
 g = {} # globals
 g['last_fix'] = None
-g['med_filter'] = MedianFilter(rospy.get_param('/buzzmobile/median_filter_size'))
+g['med_filter'] = MedianFilter(rospy.get_param('median_filter_size'))
 bearing_pub = rospy.Publisher('bearing', Float64, queue_size=1)
 
-MIN_FIX_DISTANCE = rospy.get_param('/buzzmobile/min_fix_distance')
+MIN_FIX_DISTANCE = rospy.get_param('min_fix_distance')
 EARTH_RADIUS = 6.3710088e6
 
 
@@ -55,7 +55,7 @@ def bearing(fix):
 
 def bearing_node():
     rospy.init_node('bearing', anonymous=True)
-    rospy.Subscriber('/fix', NavSatFix, bearing)
+    rospy.Subscriber('fix', NavSatFix, bearing)
     rospy.spin()
 
 if __name__=='__main__': bearing_node()

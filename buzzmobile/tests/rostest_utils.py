@@ -78,16 +78,18 @@ def with_launch_file(package, launch):
         return new_test
     return launcher
             
-def launch_node(package, name):
+def launch_node(package, name, namespace=None):
     """Decorator to manage running a node and shutting it down gracefully.
 
     Note that this will wrap itself up cleanly and launch all nodes with a
     single launcher, instead of multiples.
     """
+    if not namespace:
+        namespace = '/'+package
     def launcher(func):
         @functools.wraps(func)
         def new_test(self):
-            node = roslaunch.core.Node(package, name)
+            node = roslaunch.core.Node(package, name, namespace=namespace)
             is_master = False
             global _launcher
             if _launcher is None:
@@ -100,8 +102,8 @@ def launch_node(package, name):
 
             process = launch.launch(node)
             # Beware this is a bit of a hack, and will currently not work if we
-            # want to run more than 1 node with the 
-            while not any(nn.startswith('/' + name.replace('.', '_')) 
+            # want to run more than 1 node with the same name.
+            while not any(nn.split('/')[-1].startswith(name.replace('.', '_')) 
                     for nn in rosnode.get_node_names()):
                 time.sleep(.1)
             try:
@@ -144,7 +146,7 @@ class TestNode:
 
 @contextlib.contextmanager
 def test_node(topic, rosmsg_type, callback):
-    rospy.init_node('test_'+topic, anonymous=True)
+    rospy.init_node('test_'+topic.split('/')[-1], anonymous=True)
     rospy.Subscriber(topic, rosmsg_type, callback)
     yield TestNode(topic, rosmsg_type, callback)
     rospy.signal_shutdown('test complete')
