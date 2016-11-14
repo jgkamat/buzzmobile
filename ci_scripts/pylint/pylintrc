@@ -28,7 +28,7 @@ load-plugins=todo
 persistent=yes
 
 # Specify a configuration file.
-rcfile=
+# rcfile=
 
 # Allow loading of arbitrary C extensions. Extensions are imported into the
 # active Python interpreter and may run arbitrary code.
