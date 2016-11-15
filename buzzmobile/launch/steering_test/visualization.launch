@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="rqt_gui" name="rqt_gui" type="rqt_gui" 
+          args="--perspective-file=$(find buzzmobile)/tools/mission_control/LidarTest.perspective"/>
+</launch>
