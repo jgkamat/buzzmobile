@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-
+from __future__ import division
+# TODO(irapha): remove this line when #126 is fixed.
 
 import colorsys
 import cv2
@@ -37,7 +38,7 @@ cv2.circle(immediate_future_mask, (WIDTH//2, HEIGHT),
 g = {} # globals
 g['lidar_model'] = None
 
-
+#TODO make this shorter :)
 def steering_node():
     rospy.init_node('steering', anonymous=True)
     rospy.Subscriber('world_model', Image, steer)
@@ -170,6 +171,7 @@ def score_tentacle(points, frame):
     # must use np.sum because cv2 uses ints to store pixels. So sum(sum()) overflows.
     normalizing_factor = np.sum(np.sum(tentacle_mask))
     if normalizing_factor == 0.0:
+        rospy.logerr('Mask has no pixels')
         return 0.0
 
     tentacle_score_image = cv2.bitwise_and(frame, frame, mask=tentacle_mask)
@@ -183,7 +185,6 @@ def pick_tentacle(x_0, y_0, frame):
     and breaks ties by picking the tentacle with the smallest magnitude angle
     """
     angles = np.linspace(0.0, MAX_ANGLE, MAX_ANGLE * ANGLE_MULTIPLIER)
-    color_frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
 
     best_score = -1
     best_points = []
@@ -215,6 +216,10 @@ def score_to_color(score):
     return [255 * c for c in colorsys.hsv_to_rgb(
         score_to_h(score), score_to_s(score), score_to_v(score))]
 
+
+def draw_score(x, y, score, frame):
+    cv2.putText(frame, '{:.5}'.format(str(score)), (x, y),
+            cv2.FONT_HERSHEY_PLAIN, 1, score_to_color(1.0))
 
 def draw_points(points, color_frame, color, thickness=None):
     for i in range(len(points) - 1):

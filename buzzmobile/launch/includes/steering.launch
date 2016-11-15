@@ -1,4 +1,3 @@
 <launch>
-	<node pkg="buzzmobile" name="frame_merger" type="frame_merger.py"/>
 	<node pkg="buzzmobile" name="steering" type="steering.py"/>
 </launch>
