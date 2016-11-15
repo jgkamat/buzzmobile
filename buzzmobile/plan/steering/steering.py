@@ -37,7 +37,7 @@ cv2.circle(immediate_future_mask, (WIDTH//2, HEIGHT),
 g = {} # globals
 g['lidar_model'] = None
 
-
+#TODO make this shorter :)
 def steering_node():
     rospy.init_node('steering', anonymous=True)
     rospy.Subscriber('world_model', Image, steer)
