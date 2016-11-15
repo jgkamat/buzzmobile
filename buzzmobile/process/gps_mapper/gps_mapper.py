@@ -114,8 +114,10 @@ def set_location(fix_location):
             update_image()
 
 def gps_mapper_node():
-    # Initializes the ROS node and starts listening for
-    # polylines, bearings, and locations.
+    """
+    Initializes the ROS node and starts listening for
+    polylines, bearings, and locations.
+    """
     rospy.init_node('gps_mapper', anonymous=True)
     rospy.Subscriber('polyline', String, set_points)
     rospy.Subscriber('bearing', Float64, set_bearing)
