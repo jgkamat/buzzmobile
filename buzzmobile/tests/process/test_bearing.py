@@ -22,18 +22,16 @@ class TestBearingNode(unittest.TestCase):
     @rostest_utils.with_launch_file('buzzmobile', 'params.launch')
     @rostest_utils.launch_node('buzzmobile', 'bearing.py')
     def test_bearing_node(self):
-        result = None
-        def callback(data):
-            nonlocal result
-            result = data.data
+        def callback(s, data):
+            s.result = data.data
 
         with rostest_utils.mock_node('/buzzmobile/fix', NavSatFix, queue_size=None) as fix_node:
-            with rostest_utils.test_node('/buzzmobile/bearing', Float64, callback):
+            with rostest_utils.test_node('/buzzmobile/bearing', Float64, callback) as tn:
                 # send mock data
                 fix_node.send(NavSatFix(None, None, 33.636700, -84.427863, None, None, None))
                 fix_node.send(NavSatFix(None, None, 39.029128, -111.838257, None, None, None))
 
             # check the output from the node
-            assert result != None
-            assert np.isclose(result, 5.09105)
+            assert tn.result != None
+            assert np.isclose(tn.result, 5.09105)
             

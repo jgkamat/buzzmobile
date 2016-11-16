@@ -139,16 +139,17 @@ def mock_node(topic, rosmsg_type, queue_size=1):
     pub.unregister()
 
 class TestNode:
-    def __init__(self, topic, msg_type, callback):
+    def __init__(self, topic, msg_type):
         self.topic = topic
         self.msg_type = msg_type
-        self.callback = callback
 
 @contextlib.contextmanager
 def test_node(topic, rosmsg_type, callback):
     rospy.init_node('test_'+topic.split('/')[-1], anonymous=True)
-    rospy.Subscriber(topic, rosmsg_type, callback)
-    yield TestNode(topic, rosmsg_type, callback)
+    tn = TestNode(topic, rosmsg_type)
+    cb  = functools.partial(callback, tn)
+    rospy.Subscriber(topic, rosmsg_type, cb)
+    yield tn 
     rospy.signal_shutdown('test complete')
 
     # Ros really doesn't want you to reinitialize a node once it's been
