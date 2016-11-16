@@ -16,8 +16,10 @@ g = {} # globals
 # 'bearing' is counter-clockwise angle from north in radians.
 # 'points' will contain the polyline list of lat-lon points
 # (normalized to some size based on pixels_per_m).
-# 'location' is our lat-lon position (unmodified) from our GPS.
-g['bearing'] = g['points'] = g['location'] = None
+# 'fixes' is a list of our last 'median_filter_size' number of lat-lon
+# coordinates which are passed through a median filter
+# to reduce the effect of noise in our location data.
+g['bearing'] = g['points'] = g['fixes'] = g['location'] = None
 # These ranges are km dimensions of the path. Initialize them to 0.
 # Also initialize the scaled width and height of the points to 0.
 g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
@@ -26,6 +28,7 @@ bridge = CvBridge()
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
 line_width = int(round(rospy.get_param('pixels_per_m')
                        * rospy.get_param('road_width')))
+median_filter_size = rospy.get_param('median_filter_size')
 sigma_x = rospy.get_param('sigma_x')
 sigma_y = rospy.get_param('sigma_y')
 image_width = rospy.get_param('image_width')
@@ -77,7 +80,8 @@ def update_image():
         _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
         # Normalize the current location to the size of the
         # normalized polyline points.
-        point = (g['location'][1], -g['location'][0])
+        point = median_filter(g['location'])
+        point = (point[1], -point[0])
         if g['y_range'] is not 0:
             point = interpolate.normalize_single_point(g['y_range'],
                     g['x_range'],
@@ -112,6 +116,19 @@ def set_location(fix_location):
         g['location'] = (fix_location.latitude, fix_location.longitude)
         if g['bearing'] is not None:
             update_image()
+
+def median_filter(fix):
+    if len(g['fixes']) > median_filter_size:
+        g['fixes'].pop(0)
+    g['fixes'].append(fix)
+    sorted_points = sorted(g['fixes'])
+    index = len(g['fixes']) // 2
+
+    if len(g['fixes']) % 2:
+        return sorted_points[index]
+    elif len(g['fixes']) > 1:
+        return ((sorted_points[index][0] + sorted_points[index + 1][0]) * 0.5,
+                (sorted_points[index][1] + sorted_points[index + 1][1]) * 0.5)
 
 def gps_mapper_node():
     """
