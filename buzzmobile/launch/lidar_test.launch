@@ -1,6 +1,0 @@
-<launch>
-    <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
-	<include file="$(find buzzmobile)/launch/lidar_test/mock_sensors.launch"/>
-	<include file="$(find buzzmobile)/launch/includes/lidar.launch"/>
-	<include file="$(find buzzmobile)/launch/lidar_test/visualization.launch"/>
-</launch>
