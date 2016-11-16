@@ -45,7 +45,7 @@ wheel_separation: 1.3716 # distance between left and right wheels in meters
 max_steering_angle: 0.8
 
 # Max speed of buzzmobile in % of maximum output (We think)
-//TODO this is not speed, it's acceleration. See issue #130.
+#TODO this is not speed, it's acceleration. See issue #130.
 #max_speed: 0.1 # 10% of max speed of motor (We think)
 max_speed: 0.6
 
