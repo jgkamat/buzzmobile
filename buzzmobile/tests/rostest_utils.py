@@ -144,7 +144,7 @@ class TestNode:
         self.msg_type = msg_type
 
 @contextlib.contextmanager
-def test_node(topic, rosmsg_type, callback):
+def check_topic(topic, rosmsg_type, callback):
     rospy.init_node('test_'+topic.split('/')[-1], anonymous=True)
     tn = TestNode(topic, rosmsg_type)
     cb  = functools.partial(callback, tn)
