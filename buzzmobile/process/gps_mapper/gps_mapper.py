@@ -19,7 +19,8 @@ g = {} # globals
 # 'fixes' is a list of our last 'median_filter_size' number of lat-lon
 # coordinates which are passed through a median filter
 # to reduce the effect of noise in our location data.
-g['bearing'] = g['points'] = g['fixes'] = g['location'] = None
+g['bearing'] = g['points'] = g['location'] = None
+g['fixes'] = []
 # These ranges are km dimensions of the path. Initialize them to 0.
 # Also initialize the scaled width and height of the points to 0.
 g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
