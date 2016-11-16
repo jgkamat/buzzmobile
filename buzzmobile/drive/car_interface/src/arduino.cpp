@@ -77,6 +77,7 @@ void Arduino::read_run() {
       float angle = atof(buffer);
       boost::asio::read(port, boost::asio::buffer(buffer, 5));
       float speed = atof(buffer);
+      ROS_INFO("Odom Speed: %s", buffer);
       if(odometry_callback != NULL) {
         odometry_callback(tickCount, angle, speed);
       }

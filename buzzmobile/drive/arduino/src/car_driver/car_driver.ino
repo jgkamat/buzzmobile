@@ -98,7 +98,7 @@ void setup() {
 void loop() {
   digitalWrite(yellow_led, digitalRead(estop_pin));
   
-  char retMsg[6] = {0};
+  char retMsg[20] = {0};
   while(Serial.available()) {
     if(Serial.read() == STX) {
       speedController.setDesiredValue(Serial.parseFloat());
