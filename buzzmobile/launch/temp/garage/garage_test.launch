@@ -6,7 +6,7 @@
     <node pkg="rosbag" type="play" name="techgreen" args="-l /bagfiles/techgreen.bag"/>
 
     <group ns="buzzmobile">
-	<rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
+        <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
 
         <include file="$(find buzzmobile)/launch/includes/gps.launch"/>
         <include file="$(find buzzmobile)/launch/includes/mapping.launch"/>
