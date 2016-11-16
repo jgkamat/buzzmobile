@@ -24,6 +24,10 @@ g['fixes'] = []
 # These ranges are km dimensions of the path. Initialize them to 0.
 # Also initialize the scaled width and height of the points to 0.
 g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
+# We also have these toggles to see if bearing and location have been updated.
+# These are used to in order to sync the updating of the model with updates of
+# both bearing and location, so that these hopefully match.
+g['location_toggle'] = g['bearing_toggle'] = False
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
 bridge = CvBridge()
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
@@ -75,7 +79,8 @@ def update_image():
     Calculates the rotated point space and then interpolates the points in the
     specified window before publishing this updated window (image) to ROS.
     """
-    if g['points'] is not None:
+    if g['points'] is not None and g['location_toggle'] and g['bearing_toggle']:
+        g['location_toggle'] = g['bearing_toggle'] = False
         # Calculate the top left and bottom right points
         # of the full list of points.
         _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
@@ -109,6 +114,7 @@ def set_bearing(angle):
     if angle is not None:
         g['bearing'] = angle.data
         if g['location'] is not None:
+            g['bearing_toggle'] = True
             update_image()
 
 def set_location(fix_location):
@@ -116,6 +122,7 @@ def set_location(fix_location):
     if fix_location is not None:
         g['location'] = (fix_location.latitude, fix_location.longitude)
         if g['bearing'] is not None:
+            g['location_toggle'] = True
             update_image()
 
 def median_filter(fix):
