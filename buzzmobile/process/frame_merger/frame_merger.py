@@ -21,20 +21,20 @@ g['lidar_model'] = g['gps_model'] = None
 def merge_and_publish():
     if g['gps_model'] is not None and g['lidar_model'] is not None:
         result = merge_frames([g['gps_model'], g['lidar_model']], [1.0, 1.0])
-        result_msg = bridge.cv2_to_imgmsg(result)
+        result_msg = bridge.cv2_to_imgmsg(result, 'mono8')
         world_pub.publish(result_msg)
 
 
 def set_gps_model(gps):
     try:
-        g['gps_model'] = bridge.imgmsg_to_cv2(gps, desired_encoding='mono8')
+        g['gps_model'] = np.squeeze(bridge.imgmsg_to_cv2(gps, desired_encoding='mono8'))
         merge_and_publish()
     except CvBridgeError as e:
         rospy.loginfo("Error converting gps model to cv2")
 
 def set_lidar_model(lidar):
     try:
-        g['lidar_model'] = bridge.imgmsg_to_cv2(lidar, desired_encoding='mono8')
+        g['lidar_model'] = np.squeeze(bridge.imgmsg_to_cv2(lidar, desired_encoding='mono8'))
         merge_and_publish()
     except CvBridgeError as e:
         rospy.loginfo("Error converting lidar model to cv2")
@@ -58,13 +58,13 @@ def merge_frames(frames, weights):
     """
     total_weight = sum(weights)
 
-    height, width= frames[0].shape
+    height, width = frames[0].shape
     merged = np.zeros((height, width), np.uint8)
 
     for frame, weight in zip(frames, weights):
         alpha = (weight / total_weight)
 
-        merged += frame * alpha
+        merged += (frame * alpha).astype(np.uint8)
 
     return merged
 

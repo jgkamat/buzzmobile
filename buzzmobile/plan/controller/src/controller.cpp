@@ -79,11 +79,15 @@ void sendStateCommand() {
 
 void handleState(const sensor_msgs::Joy::ConstPtr& joy) {
     if (joy->toggle_auto_button) { // If home button is pressed
-        if (lastState == buzzmobile::CarState::AUTO
-                || lastState == buzzmobile::CarState::START) {
+        if (lastState == buzzmobile::CarState::AUTO) {
+            lastState = buzzmobile::CarState::MANUAL;
+        } else if (lastState == buzzmobile::CarState::MANUAL) {
+            lastState = buzzmobile::CarState::AUTO;
+        } else if (lastState == buzzmobile::CarState::START) {
             lastState = buzzmobile::CarState::MANUAL;
         } else {
-            lastState = buzzmobile::CarState::AUTO;
+            ROS_INFO("Error in switching states. Last state = %d", lastState);
+            throw;
         }
     }
 }
