@@ -1,35 +1,42 @@
 #!/usr/bin/env python
+"""gps_mapper: node for creating gps_model, which defines immediate route.
+
+Subscribes:
+    /fix NavSatFix current coordinate location
+    polyline String encoded coordinate points of route
+    bearing Float64 direction the car is headed in radians (N is 0 rad)
+Publishes:
+    gps_model Image with immediate route to be taken
+"""
 
 import interpolate
-import math
 import polyline as pl
 import rospy
 
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import NavSatFix
 from std_msgs.msg import Float64
 from std_msgs.msg import String
 
-#Global Variables
+
 g = {} # globals
-# 'bearing' is counter-clockwise angle from north in radians.
-# 'points' will contain the polyline list of lat-lon points
-# (normalized to some size based on pixels_per_m).
-# 'location' is our lat-lon position (unmodified) from our GPS.
-g['bearing'] = g['points'] = g['location'] = None
-# These ranges are km dimensions of the path. Initialize them to 0.
-# Also initialize the scaled width and height of the points to 0.
-g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
-gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
+g['bearing'] = None # Counter-clockwise angle from north in radians.
+g['points'] = None # Polyline list of lat-lon points, after scaling to pixels.
+g['location'] = None # Current location /fix
+g['y_range'] = g['x_range'] = 0 # Dimensions of the path in km.
+g['height'] = g['width'] = 0 # Scaled width of the points
+pub = rospy.Publisher('gps_model', Image, queue_size=1)
 bridge = CvBridge()
-x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
-line_width = int(round(rospy.get_param('pixels_per_m')
+
+X_SCALE = Y_SCALE = 1000 * rospy.get_param('pixels_per_m')
+LINE_WIDTH = int(round(rospy.get_param('pixels_per_m')
                        * rospy.get_param('road_width')))
-sigma_x = rospy.get_param('sigma_x')
-sigma_y = rospy.get_param('sigma_y')
-image_width = rospy.get_param('image_width')
-image_height = rospy.get_param('image_height')
+SIGMA_X = rospy.get_param('sigma_x')
+SIGMA_Y = rospy.get_param('sigma_y')
+IMAGE_WIDTH = rospy.get_param('image_width')
+IMAGE_HEIGHT = rospy.get_param('image_height')
+
 
 def set_points(polyline):
     """Given a polyline as a ROS message, normalize and store the points."""
@@ -40,8 +47,7 @@ def set_points(polyline):
         # (this is because a polyline point is a tuple of (lat, lon) while we
         # want (x, y) image coordinates), which
         # makes the y and x range calculations invalid later on.
-        (y_range, x_range,
-         top_left, bottom_right) = interpolate.dimensions(points)
+        y_range, x_range, _, _ = interpolate.dimensions(points)
         # Store y and x ranges.
         g['y_range'] = y_range
         g['x_range'] = x_range
@@ -51,19 +57,18 @@ def set_points(polyline):
         # Recalculate top left and bottom right coordinates
         # after flipping the polyline points. Do not save the new
         # y and x ranges, because those will not be correct.
-        _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
+        _, _, _, _ = interpolate.dimensions(g['points'])
         # Based on the accurate y and x ranges, calculate a height and width
         # that will scale our final image to our specified pixels_per_m
         # (pixels per meter) parameter.
         # Note that this is distinct from `image_height` and `image_width`,
         # which are the height and width of the current window that will be
         # passed to the frame merger!
-        g['height'] = int(round(g['y_range'] * y_scale))
-        g['width'] = int(round(g['x_range'] * x_scale))
+        g['height'] = int(round(g['y_range'] * Y_SCALE))
+        g['width'] = int(round(g['x_range'] * X_SCALE))
         # Store the normalized points.
-        g['points'] = interpolate.normalized_points(g['points'],
-                                                    g['width'],
-                                                    g['height'])
+        g['points'] = interpolate.normalized_points(
+                g['points'], g['width'], g['height'])
 
 def update_image():
     """
@@ -79,25 +84,17 @@ def update_image():
         # normalized polyline points.
         point = (g['location'][1], -g['location'][0])
         if g['y_range'] is not 0:
-            point = interpolate.normalize_single_point(g['y_range'],
-                    g['x_range'],
-                    g['height'],
-                    g['width'],
-                    top_left,
-                    bottom_right,
-                    point)
+            point = interpolate.normalize_single_point(
+                    g['y_range'], g['x_range'], g['height'], g['width'],
+                    top_left, bottom_right, point)
         # Call method to calculate rotated points and interpolate a path
         # between the points that are in the current window
         # (based on the current location and bearing).
         result = interpolate.window(g['points'], point, g['bearing'],
-                line_width,
-                sigma_x,
-                sigma_y,
-                image_height,
-                image_width)
+                LINE_WIDTH, SIGMA_X, SIGMA_Y, IMAGE_HEIGHT, IMAGE_WIDTH)
         # Send the final image window as an image message through ROS.
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
-        gps_model_pub.publish(result_msg)
+        pub.publish(result_msg)
 
 def set_bearing(angle):
     """Given a radian bearing, update the current bearing and update image."""
@@ -114,12 +111,11 @@ def set_location(fix_location):
             update_image()
 
 def gps_mapper_node():
-    # Initializes the ROS node and starts listening for
-    # polylines, bearings, and locations.
+    """Initializes gps_mapper node."""
     rospy.init_node('gps_mapper', anonymous=True)
     rospy.Subscriber('polyline', String, set_points)
     rospy.Subscriber('bearing', Float64, set_bearing)
     rospy.Subscriber('/fix', NavSatFix, set_location)
     rospy.spin()
 
-if __name__=='__main__': gps_mapper_node()
+if __name__ == '__main__': gps_mapper_node()
