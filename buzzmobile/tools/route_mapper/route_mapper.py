@@ -1,11 +1,19 @@
 #!/usr/bin/env python
+"""route_mapper node: publishes map image with current location and route.
 
-import cv2
+Subscribes:
+    /fix NavSatFix the current location
+    polyline String the route to follow
+Publishes:
+    route_map a google maps image with current location and route
+"""
+
+import datetime as dt
 import requests
 import rospy
 
-import datetime as dt
-import googlemapskey as gmpskey # pylint: disable=import-error
+import cv2
+import googlemapskey as gmpskey
 import numpy as np
 
 from cv_bridge import CvBridge
