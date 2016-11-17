@@ -55,7 +55,7 @@ void Arduino::write_run() {
   while(threads_running) {
     stringstream command;
     ROS_INFO("%f, %f", speed, steer);
-    command << STX << speed << ',' << steer << ',' << horn <<'\n';
+    command << '$' << speed << ',' << steer << ',' << horn <<'\n';
     try {
       boost::asio::write(port, boost::asio::buffer(command.str().c_str(), command.str().length()));
     } catch(...) {
@@ -70,7 +70,7 @@ void Arduino::read_run() {
   while(threads_running) {
     char in = 0;
     boost::asio::read(port, boost::asio::buffer(&in, 1));
-    if(in == STX) {
+    if(in == '$') {
       boost::asio::read(port, boost::asio::buffer(buffer, 5));
       int tickCount = atoi(buffer);
       boost::asio::read(port, boost::asio::buffer(buffer, 5));

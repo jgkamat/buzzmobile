@@ -5,7 +5,7 @@ Subscribes:
     /fix NavSatFix the current location
     polyline String the route to follow
 Publishes:
-    route_map a google maps image with current location and route
+    route_map Image map with current location and route
 """
 
 import datetime as dt
