@@ -24,6 +24,7 @@ g['fixes'] = []
 # These ranges are km dimensions of the path. Initialize them to 0.
 # Also initialize the scaled width and height of the points to 0.
 g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
+g['top_left'] = g['bottom_right'] = (0, 0)
 # We also have these toggles to see if bearing and location have been updated.
 # These are used to in order to sync the updating of the model with updates of
 # both bearing and location, so that these hopefully match.
@@ -60,6 +61,8 @@ def set_points(polyline):
         # after flipping the polyline points. Do not save the new
         # y and x ranges, because those will not be correct.
         _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
+        g['top_left'] = top_left
+        g['bottom_right'] = bottom_right
         # Based on the accurate y and x ranges, calculate a height and width
         # that will scale our final image to our specified pixels_per_m
         # (pixels per meter) parameter.
@@ -83,7 +86,6 @@ def update_image():
         g['location_toggle'] = g['bearing_toggle'] = False
         # Calculate the top left and bottom right points
         # of the full list of points.
-        _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
         # Normalize the current location to the size of the
         # normalized polyline points.
         point = median_filter(g['location'])
@@ -93,8 +95,8 @@ def update_image():
                     g['x_range'],
                     g['height'],
                     g['width'],
-                    top_left,
-                    bottom_right,
+                    g['top_left'],
+                    g['bottom_right'],
                     point)
         # Call method to calculate rotated points and interpolate a path
         # between the points that are in the current window
