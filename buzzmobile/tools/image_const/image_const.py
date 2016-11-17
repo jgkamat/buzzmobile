@@ -6,6 +6,7 @@ Publishes:
 """
 
 from __future__ import print_function
+# TODO(irapha): remove this when #126 is fixed.
 
 import sys
 import rospy
