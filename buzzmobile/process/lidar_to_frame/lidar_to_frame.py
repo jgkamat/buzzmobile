@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+"""lidar_to_frame: creates lidar frame/model image based on lidar data.
+
+Subscribes:
+    /scan LaserScan of points from Lidar
+Publishes:
+    lidar_model Image representing drivable area in front of car
+"""
 
 import cv2
 import numpy as np
@@ -9,82 +16,78 @@ from sensor_msgs.msg import Image
 from sensor_msgs.msg import LaserScan
 from math import sin, cos, pi, isnan
 
-image_width = rospy.get_param("image_width")
-image_height = rospy.get_param("image_height")
-pixels_per_m = rospy.get_param("pixels_per_m")
-image_width_m = image_width / pixels_per_m
-image_height_m = image_height / pixels_per_m
-
-
-
-lidar_publisher = rospy.Publisher('lidar_model', Image, queue_size=1)
+IMAGE_WIDTH = rospy.get_param("image_width")
+IMAGE_HEIGHT = rospy.get_param("image_height")
+PIXELS_PER_M = rospy.get_param("pixels_per_m")
+pub = rospy.Publisher('lidar_model', Image, queue_size=1)
 bridge = CvBridge()
 
 
 def gen_lidar_image(laser_scan):
-    """ Converts a LaserScan message to a cv image, then publishes it through
-        a lidar_publisher """
-    #convert points from polar to cartesian (origin at (width/2, height))
+    """Converts LaserScan message to Image, then publishes it."""
+    # Convert points from polar to cartesian (origin at (width/2, height))
     lidar_points = laser_scan_to_cartesian(laser_scan)
-    #generate the image from the cartesian LaserScan points
+    # Generate the image from the cartesian LaserScan points
     lidar_image = gen_point_image(lidar_points)
-    #publish the cv image as an imgmsg
-    lidar_publisher.publish(get_lidar_image_message(lidar_image))
+    # Publish the cv image as an imgmsg
+    pub.publish(get_lidar_image_message(lidar_image))
 
 def laser_scan_to_cartesian(laser_scan):
-    """ Generates a list of cartesian coordinates from LaserScan range and angle
-        data. Uses (width/2, height/2) as the origin. """
+    """Generates a list of cartesian coordinates from LaserScan.
+    Uses (width/2, height/2) as the origin."""
     lidar_points = []
     ranges = laser_scan.ranges
-    #effectively rotate the input data by 90 degrees counterclockwise
+    # Effectively rotate the input data by 90 degrees counterclockwise
     angle = laser_scan.angle_min + pi / 2
-    #keep track of the last valid distance output by the lidar to use as a substitute
-    #distance for any subsequent far or invalid lidar distances
+    # Keep track of the last valid distance output by the lidar to use as a
+    # substitute distance for any subsequent far or invalid lidar distances
     last_valid = 0
-    #convert points from polar to cartesian (origin at (width/2, height))
+    # Convert points from polar to cartesian (origin at (width/2, height))
     for i in range(len(ranges)):
         # when using hokuyo_node, far points are inf.
         # when using urg_node, they're nan.
         cur = ranges[i]
-        if (cur != float('inf') and not isnan(cur)):
+        if cur != float('inf') and not isnan(cur):
             distance_to_point = ranges[i]
-            #set the last valid distance on encountering a valid distance
+            # set the last valid distance on encountering a valid distance
             last_valid = distance_to_point
         else:
-            #use the last valid distance on encountering lidar failure
+            # use the last valid distance on encountering lidar failure
             distance_to_point = last_valid
 
         lidar_points.append(
-            (cos(angle) * distance_to_point * pixels_per_m + (image_width / 2),
-             image_height - (sin(angle) * distance_to_point * pixels_per_m))
+            (cos(angle) * distance_to_point * PIXELS_PER_M + (IMAGE_WIDTH / 2),
+             IMAGE_HEIGHT - (sin(angle) * distance_to_point * PIXELS_PER_M))
         )
         angle += laser_scan.angle_increment
     return lidar_points
 
 def get_lidar_image_message(lidar_image):
-    """ Convert an opencv image (image) to an imgmsg """
+    """Convert an opencv image (image) to an imgmsg."""
     try:
         return bridge.cv2_to_imgmsg(lidar_image, encoding="mono8")
-    except CvBridgeError as e:
+    except CvBridgeError:
         rospy.loginfo("Error converting lidar image to imgmsg")
+        raise
 
 
 def gen_point_image(points):
     """ Generate a cv image from a list of tuple (x, y) coordinates """
     # Generate image of all 0's to represent image
-    image = np.zeros((image_height, image_width), np.uint8)
+    image = np.zeros((IMAGE_HEIGHT, IMAGE_WIDTH), np.uint8)
 
-    #add boundary points for line drawing
-    points.insert(0, (image_width//2, image_height))
-    points.append((image_width//2, image_height))
+    # Add boundary points for line drawing
+    points.insert(0, (IMAGE_WIDTH//2, IMAGE_HEIGHT))
+    points.append((IMAGE_WIDTH//2, IMAGE_HEIGHT))
 
-    #fill the drivable portion of the image with white
+    # Fill the drivable portion of the image with white
     cv2.fillPoly(image, [np.array(points, np.int32)], 255)
     return image
 
-def lidar_node():
+def lidar_to_frame_node():
+    """Initializes lidar_to_frame node."""
     rospy.init_node('lidar_to_frame', anonymous=True)
     rospy.Subscriber('/scan', LaserScan, gen_lidar_image, queue_size=1)
     rospy.spin()
 
-if __name__ == '__main__': lidar_node()
+if __name__ == '__main__': lidar_to_frame_node()
