@@ -22,9 +22,9 @@ from pylint.checkers import BaseChecker
 
 
 MSGS = {
-    'W9000': ('%s',
-              'custom-todo',
-              'Used to indicate when a todo for a specific user has been detected'),
+    'W9000': ('todo has no owner: \"%s\"',
+              'unowned-todo',
+              'Used to indicate when a todo with no user has been detected'),
     'W9001': ('Cannot decode using encoding "%s", unexpected byte at position %d',
               'todo-invalid-encoded-data',
               'Used when a source line cannot be decoded using the specified '
@@ -42,7 +42,7 @@ class CustomTODOChecker(BaseChecker):
     __implements__ = IRawChecker
 
     # configuration section name
-    name = 'custom-todo'
+    name = 'unowned-todo'
     msgs = MSGS
 
     ignore = re.compile(r"TODO\(.+\)")
@@ -53,7 +53,7 @@ class CustomTODOChecker(BaseChecker):
         if not match:
             return
         if not self.ignore.search(line):
-            self.add_message('custom-todo', args=line[match.start(1):-1], line=lineno)
+            self.add_message('unowned-todo', args=line[match.start(1):-1], line=lineno)
 
     def _check_encoding(self, lineno, line, file_encoding):
         try:
