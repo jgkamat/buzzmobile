@@ -16,8 +16,6 @@ def interpolate(points, line_width, sigma_x, sigma_y, height, width):
     output = np.zeros((height, width), np.uint8)
     x_vals = [x for (x, y) in points]
     y_vals = [y for (x, y) in points]
-    left = min(x_vals)
-    bottom = max(y_vals)
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
