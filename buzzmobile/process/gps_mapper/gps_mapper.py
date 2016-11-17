@@ -79,19 +79,19 @@ def update_image():
     if g['points'] is not None:
         # Calculate the top left and bottom right points
         # of the full list of points.
-        _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
+        _, _, top_left, _ = interpolate.dimensions(g['points'])
         # Normalize the current location to the size of the
         # normalized polyline points.
         point = (g['location'][1], -g['location'][0])
         if g['y_range'] is not 0:
             point = interpolate.normalize_single_point(
-                    g['y_range'], g['x_range'], g['height'], g['width'],
-                    top_left, bottom_right, point)
+                    g['y_range'], g['x_range'], (g['height'], g['width']),
+                    top_left, point)
         # Call method to calculate rotated points and interpolate a path
         # between the points that are in the current window
         # (based on the current location and bearing).
         result = interpolate.window(g['points'], point, g['bearing'],
-                LINE_WIDTH, SIGMA_X, SIGMA_Y, IMAGE_HEIGHT, IMAGE_WIDTH)
+                (SIGMA_X, SIGMA_Y), (IMAGE_HEIGHT, IMAGE_WIDTH, LINE_WIDTH))
         # Send the final image window as an image message through ROS.
         result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
         pub.publish(result_msg)
