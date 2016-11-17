@@ -38,7 +38,7 @@ def haversine(lat1, lon1, lat2, lon2):
     a = (math.sin(delta_lat / 2)**2
         + math.cos(lat1) * math.cos(lat2) * math.sin(delta_lon/2)**2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    R = 6371 # radius of Earth in km
+    R = 6371.0088 # radius of Earth in km
     d = R * c
     return d
 
@@ -55,8 +55,8 @@ def normalized_points(points, height, width):
         (y - top_left[1]) * height / y_range) 
         for (x, y) in points]
     
-def normalize_single_point(y_range, x_range, height, width,
-                           top_left, bottom_right, point):
+def normalize_single_point(y_range, x_range, height,
+                           width, top_left, point):
     return ((point[0] - top_left[0]) * width / x_range,
             (point[1] - top_left[1]) * height / y_range)
 
