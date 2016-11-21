@@ -28,7 +28,8 @@ g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
 # to normalize the lat-lon points (initalized to 0).
 g['ll_height'] = g['ll_width'] = 0
 # Initialize the top left and bottom right image coordinates to (0, 0).
-g['top_left'] = g['bottom_right'] = (0, 0)
+g['top_left'] = (0, 0)
+g['bottom_right'] = (0, 0)
 gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
 bridge = CvBridge()
 x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
