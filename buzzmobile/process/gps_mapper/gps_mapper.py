@@ -23,7 +23,9 @@ g['bearing'] = g['points'] = g['location'] = None
 g['fixes'] = []
 # These ranges are km dimensions of the path. Initialize them to 0.
 # Also initialize the scaled width and height of the points to 0.
-g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
+(g['y_range'] = g['x_range'] = g['height']
+ = g['width'] = g['ll_height'] = g['ll_width'] = 0)
+# Initialize the top left and bottom right image coordinates to (0, 0).
 g['top_left'] = g['bottom_right'] = (0, 0)
 # We also have these toggles to see if bearing and location have been updated.
 # These are used to in order to sync the updating of the model with updates of
@@ -49,20 +51,20 @@ def set_points(polyline):
         # (this is because a polyline point is a tuple of (lat, lon) while we
         # want (x, y) image coordinates), which
         # makes the y and x range calculations invalid later on.
-        (y_range, x_range,
-         top_left, bottom_right) = interpolate.dimensions(points)
+        y_range, x_range = interpolate.dimensions(points)
         # Store y and x ranges.
         g['y_range'] = y_range
         g['x_range'] = x_range
         # Flip the points because we want the top of the image
         # to represent north.
         g['points'] = [(y, -x) for (x, y) in points]
-        # Recalculate top left and bottom right coordinates
-        # after flipping the polyline points. Do not save the new
-        # y and x ranges, because those will not be correct.
-        _, _, top_left, bottom_right = interpolate.dimensions(g['points'])
+        # Calculate top left and bottom right coordinates
+        # after flipping the polyline points.
+        top_left, bottom_right = interpolate.corners(g['points'])
         g['top_left'] = top_left
         g['bottom_right'] = bottom_right
+        g['ll_height'] = abs(top_left[1] - bottom_right[1])
+        g['ll_width'] = abs(top_left[0] - bottom_right[0])
         # Based on the accurate y and x ranges, calculate a height and width
         # that will scale our final image to our specified pixels_per_m
         # (pixels per meter) parameter.
@@ -73,8 +75,11 @@ def set_points(polyline):
         g['width'] = int(round(g['x_range'] * x_scale))
         # Store the normalized points.
         g['points'] = interpolate.normalized_points(g['points'],
-                                                    g['width'],
-                                                    g['height'])
+                      g['top_left']
+                      g['ll_height']
+                      g['ll_width']
+                      g['height'],
+                      g['width'])
 
 def update_image():
     """
@@ -90,26 +95,24 @@ def update_image():
         # normalized polyline points.
         point = median_filter(g['location'])
         point = (point[1], -point[0])
-        if g['y_range'] is not 0:
-            point = interpolate.normalize_single_point(g['y_range'],
-                    g['x_range'],
+        if g['y_range'] is not 0 and point is not None:
+            point = interpolate.normalize_single_point(point, g['top_left'],
+                    g['ll_height'],
+                    g['ll_width'],
                     g['height'],
-                    g['width'],
-                    g['top_left'],
-                    g['bottom_right'],
-                    point)
-        # Call method to calculate rotated points and interpolate a path
-        # between the points that are in the current window
-        # (based on the current location and bearing).
-        result = interpolate.window(g['points'], point, g['bearing'],
-                line_width,
-                sigma_x,
-                sigma_y,
-                image_height,
-                image_width)
-        # Send the final image window as an image message through ROS.
-        result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
-        gps_model_pub.publish(result_msg)
+                    g['width'])
+            # Call method to calculate rotated points and interpolate a path
+            # between the points that are in the current window
+            # (based on the current location and bearing).
+            result = interpolate.window(g['points'], point, g['bearing'],
+                     line_width,
+                     sigma_x,
+                     sigma_y,
+                     image_height,
+                     image_width)
+            # Send the final image window as an image message through ROS.
+            result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
+            gps_model_pub.publish(result_msg)
 
 def set_bearing(angle):
     """Given a radian bearing, update the current bearing and update image."""
@@ -134,11 +137,15 @@ def median_filter(fix):
     sorted_points = sorted(g['fixes'])
     index = len(g['fixes']) // 2
 
-    if len(g['fixes']) % 2:
+    if len(g['fixes']) % 2 and len(g['fixes']) > 0:
         return sorted_points[index]
     elif len(g['fixes']) > 1:
         return ((sorted_points[index][0] + sorted_points[index + 1][0]) * 0.5,
                 (sorted_points[index][1] + sorted_points[index + 1][1]) * 0.5)
+    elif len(g['fixes'] == 1):
+        return sorted_points[0]
+    else:
+        return None
 
 def gps_mapper_node():
     """
