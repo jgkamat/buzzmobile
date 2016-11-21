@@ -23,8 +23,8 @@ g['bearing'] = g['points'] = g['location'] = None
 g['fixes'] = []
 # These ranges are km dimensions of the path. Initialize them to 0.
 # Also initialize the scaled width and height of the points to 0.
-(g['y_range'] = g['x_range'] = g['height']
- = g['width'] = g['ll_height'] = g['ll_width'] = 0)
+g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
+g['ll_height'] = g['ll_width'] = 0
 # Initialize the top left and bottom right image coordinates to (0, 0).
 g['top_left'] = g['bottom_right'] = (0, 0)
 # We also have these toggles to see if bearing and location have been updated.
