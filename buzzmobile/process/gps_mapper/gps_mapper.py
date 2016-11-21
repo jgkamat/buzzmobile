@@ -24,14 +24,19 @@ g = {} # globals
 g['bearing'] = None # Counter-clockwise angle from north in radians.
 g['points'] = None # Polyline list of lat-lon points, after scaling to pixels.
 g['location'] = None # Current location /fix
+g['fixes'] = [] # list of coords last received, to minimize loss (median filter)
 g['y_range'] = g['x_range'] = 0 # Dimensions of the path in km.
 g['height'] = g['width'] = 0 # Scaled width of the points
+g['ll_height'] = g['ll_width'] = 0 # lat-lon dimensions used to normalize points
+g['top_left'] = (0, 0) # top left of image
+g['bottom_right'] = (0, 0) # bottom righ of image
 pub = rospy.Publisher('gps_model', Image, queue_size=1)
 bridge = CvBridge()
 
 X_SCALE = Y_SCALE = 1000 * rospy.get_param('pixels_per_m')
 LINE_WIDTH = int(round(rospy.get_param('pixels_per_m')
                        * rospy.get_param('road_width')))
+MEDIAN_FILTER_SIZE = rospy.get_param('median_filter_size')
 SIGMA_X = rospy.get_param('sigma_x')
 SIGMA_Y = rospy.get_param('sigma_y')
 IMAGE_WIDTH = rospy.get_param('image_width')
@@ -47,17 +52,20 @@ def set_points(polyline):
         # (this is because a polyline point is a tuple of (lat, lon) while we
         # want (x, y) image coordinates), which
         # makes the y and x range calculations invalid later on.
-        y_range, x_range, _, _ = interpolate.dimensions(points)
+        y_range, x_range = interpolate.dimensions(points)
         # Store y and x ranges.
         g['y_range'] = y_range
         g['x_range'] = x_range
         # Flip the points because we want the top of the image
         # to represent north.
         g['points'] = [(y, -x) for (x, y) in points]
-        # Recalculate top left and bottom right coordinates
-        # after flipping the polyline points. Do not save the new
-        # y and x ranges, because those will not be correct.
-        _, _, _, _ = interpolate.dimensions(g['points'])
+        # Calculate top left and bottom right coordinates
+        # after flipping the polyline points.
+        top_left, bottom_right = interpolate.corners(g['points'])
+        g['top_left'] = top_left
+        g['bottom_right'] = bottom_right
+        g['ll_height'] = abs(top_left[1] - bottom_right[1])
+        g['ll_width'] = abs(top_left[0] - bottom_right[0])
         # Based on the accurate y and x ranges, calculate a height and width
         # that will scale our final image to our specified pixels_per_m
         # (pixels per meter) parameter.
@@ -67,8 +75,9 @@ def set_points(polyline):
         g['height'] = int(round(g['y_range'] * Y_SCALE))
         g['width'] = int(round(g['x_range'] * X_SCALE))
         # Store the normalized points.
-        g['points'] = interpolate.normalized_points(
-                g['points'], g['width'], g['height'])
+        g['points'] = interpolate.normalized_points(g['points'],
+                      g['top_left'], g['ll_height'], g['ll_width'],
+                      (g['height'], g['width']))
 
 def update_image():
     """
@@ -77,24 +86,23 @@ def update_image():
     specified window before publishing this updated window (image) to ROS.
     """
     if g['points'] is not None:
-        # Calculate the top left and bottom right points
-        # of the full list of points.
-        _, _, top_left, _ = interpolate.dimensions(g['points'])
-        # Normalize the current location to the size of the
+        # Normalize the current location to the coordinates of the
         # normalized polyline points.
-        point = (g['location'][1], -g['location'][0])
-        if g['y_range'] is not 0:
-            point = interpolate.normalize_single_point(
-                    g['y_range'], g['x_range'], (g['height'], g['width']),
-                    top_left, point)
-        # Call method to calculate rotated points and interpolate a path
-        # between the points that are in the current window
-        # (based on the current location and bearing).
-        result = interpolate.window(g['points'], point, g['bearing'],
-                (SIGMA_X, SIGMA_Y), (IMAGE_HEIGHT, IMAGE_WIDTH, LINE_WIDTH))
-        # Send the final image window as an image message through ROS.
-        result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
-        pub.publish(result_msg)
+        point = median_filter(g['location'])
+        point = (point[1], -point[0])
+        if g['y_range'] is not 0 and point is not None:
+            point = interpolate.normalize_single_point(point,
+                    g['top_left'], g['ll_height'], g['ll_width'],
+                    (g['height'], g['width']))
+            # Call method to calculate rotated points and interpolate a path
+            # between the points that are in the current window
+            # (based on the current location and bearing).
+            result = interpolate.window(g['points'], point, g['bearing'],
+                     (SIGMA_X, SIGMA_Y),
+                     (IMAGE_HEIGHT, IMAGE_WIDTH, LINE_WIDTH))
+            # Send the final image window as an image message through ROS.
+            result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
+            pub.publish(result_msg)
 
 def set_bearing(angle):
     """Given a radian bearing, update the current bearing and update image."""
@@ -109,6 +117,24 @@ def set_location(fix_location):
         g['location'] = (fix_location.latitude, fix_location.longitude)
         if g['bearing'] is not None:
             update_image()
+
+def median_filter(fix):
+    """Calculates new median coordinates, based on the ones saved."""
+    if len(g['fixes']) > MEDIAN_FILTER_SIZE:
+        g['fixes'].pop(0)
+    g['fixes'].append(fix)
+    sorted_points = sorted(g['fixes'])
+    index = len(g['fixes']) // 2
+
+    if len(g['fixes']) % 2 and len(g['fixes']) > 0:
+        return sorted_points[index]
+    elif len(g['fixes']) > 1:
+        return ((sorted_points[index][0] + sorted_points[index + 1][0]) * 0.5,
+                (sorted_points[index][1] + sorted_points[index + 1][1]) * 0.5)
+    elif len(g['fixes'] == 1):
+        return sorted_points[0]
+    else:
+        return None
 
 def gps_mapper_node():
     """Initializes gps_mapper node."""
