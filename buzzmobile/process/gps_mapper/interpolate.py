@@ -40,23 +40,19 @@ def haversine(lat1, lon1, lat2, lon2):
     d = R * c
     return d
 
-def normalized_points(points, height, width):
+def normalized_points(points, top_left, ll_height, ll_width, height, width):
     """
     Takes a list of points (tuples of x, y coordinates) and an output image size
     and returns a transformed list of points that fit in the output image.
     """
-    top_left = (min([x for (x, y) in points]), min([y for (x, y) in points]))
-    bottom_right = (max([x for (x, y) in points]), max([y for (x, y) in points]))
-    x_range = abs(top_left[0] - bottom_right[0])
-    y_range = abs(top_left[1] - bottom_right[1])
-    return [((x - top_left[0]) * width / x_range, 
-        (y - top_left[1]) * height / y_range) 
-        for (x, y) in points]
+    return [((x - top_left[0]) * width / ll_width,
+            (y - top_left[1]) * height / ll_height)
+            for (x, y) in points]
     
-def normalize_single_point(y_range, x_range, height,
-                           width, top_left, point):
-    return ((point[0] - top_left[0]) * width / x_range,
-            (point[1] - top_left[1]) * height / y_range)
+def normalize_single_point(point, top_left, ll_height,
+                           ll_width, height, width):
+    return ((point[0] - top_left[0]) * width / ll_width,
+            (point[1] - top_left[1]) * height / ll_height)
 
 def window(points, location, angle, line_width, sigma_x, sigma_y, height, width):
     """
@@ -94,7 +90,7 @@ def window(points, location, angle, line_width, sigma_x, sigma_y, height, width)
 def dimensions(points):
     """
     Takes a set of latitude and longitude points
-    and returns the width and height in kilometers.
+    and returns the height and width in kilometers.
     """
     x_vals = [x for (x, y) in points]
     y_vals = [y for (x, y) in points]
@@ -102,4 +98,16 @@ def dimensions(points):
     bottom_right = (max(x_vals), min(y_vals))
     x_range = haversine(top_left[0], top_left[1], bottom_right[0], top_left[1])
     y_range = haversine(top_left[0], top_left[1], top_left[0], bottom_right[1])
-    return y_range, x_range, top_left, bottom_right
+    return y_range, x_range
+
+def corners(flipped_points):
+    """
+    Takes a set of lat-lon points that have been
+    flipped to image array coordinates and finds
+    the top left and and bottom right corner coordinates.
+    """
+    x_vals = [x for (x, y) in flipped_points]
+    y_vals = [y for (x, y) in flipped_points]
+    top_left = (min(x_vals), min(y_vals))
+    bottom_right = (max(x_vals), max(y_vals))
+    return top_left, bottom_right
