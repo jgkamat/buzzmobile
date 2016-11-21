@@ -77,7 +77,7 @@ def set_points(polyline):
         g['points'] = interpolate.normalized_points(g['points'],
                       g['top_left'],
                       g['ll_height'],
-                      g['ll_width']
+                      g['ll_width'],
                       g['height'],
                       g['width'])
 
