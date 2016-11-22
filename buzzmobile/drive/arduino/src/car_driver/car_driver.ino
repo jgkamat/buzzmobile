@@ -3,8 +3,6 @@
 #include "pid.h"
 #include <stdio.h>
 
-#define STX ((char)2)
-
 const int enc_a      = 2;
 const int motor_pin  = 3;
 const int enc_b      = 4;
@@ -31,6 +29,7 @@ const float anglePerPotTick = 0.003697731; // rad
 
 float desiredSpeed = 0; // m/s
 float desiredAngle = 0; // rad
+float lastSpeed = 0; // m/s
 
 long lastTime;
 
@@ -46,7 +45,11 @@ float getSpeed() {
   if(dTime > 0.001) {
     measured = ((ticks / ticksPerRev) * wheelCirc) / dTime;
     ticks = 0;
+  } else {
+    measured = lastSpeed;
   }
+
+  lastSpeed = measured;
   return measured;
 }
 
@@ -98,17 +101,16 @@ void setup() {
 void loop() {
   digitalWrite(yellow_led, digitalRead(estop_pin));
   
-  char retMsg[6] = {0};
-  while(Serial.available()) {
-    if(Serial.read() == STX) {
+  char retMsg[16] = {0};
+  if(Serial.available()) {
+    if(Serial.read() == '$') {
       speedController.setDesiredValue(Serial.parseFloat());
       steerController.setDesiredValue(Serial.parseFloat());
-      digitalWrite(horn_pin, Serial.parseInt());
       
       lastCmdTime = millis();
-      retMsg[0] = STX;
-      sprintf(retMsg+1, "%05i%05.4f%05.4f", count, getSteeringAngle(), getSpeed());
-      Serial.println(retMsg);
+      retMsg[0] = '$';
+      //sprintf(retMsg+1, "%05i%05.4f%05.4f", count, getSteeringAngle(), getSpeed());
+      //Serial.println(retMsg);
       count = 0;
     }
   }
@@ -121,18 +123,17 @@ void loop() {
     speedController.update(getSpeed());
     motor.write(speedController.getOutput());
     
-    
-    steerController.update(getSteeringAngle());
-    // Soft limits on steering to avoid damage.
-    if(analogRead(pot_pin) >= maxPotVal && steerController.getOutput() < 90)
-      steer.write(90);
-    else if(analogRead(pot_pin) <= minPotVal && steerController.getOutput() > 90)
-      steer.write(90);
-    else
-      steer.write(steerController.getOutput());
+//    steerController.update(getSteeringAngle());
+//    // Soft limits on steering to avoid damage.
+//    if(analogRead(pot_pin) >= maxPotVal && steerController.getOutput() < 90)
+//      steer.write(90);
+//    else if(analogRead(pot_pin) <= minPotVal && steerController.getOutput() > 90)
+//      steer.write(90);
+//    else
+//      steer.write(steerController.getOutput());
       
     
-    if(millis() - lastCmdTime > 500) {
+    if(millis() - lastCmdTime > 5000) {
       digitalWrite(red_led, HIGH);
       stopAll();
     } else {

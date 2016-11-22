@@ -30,10 +30,17 @@ float lastAngle = 0;
 bool lastBrake = false;
 bool lastHorn = 0;
 uint8_t lastState = buzzmobile::CarState::START; // Start the car in manual mode
+double maxSpeed = 0;
 
 unsigned int state;
 bool manualToggle = true; //start up with manual toggle = true
 bool brakePushed  = false;
+
+// Used as a latch, which is set the first time the user presses
+// a button on the controller. Otherwise, the first few messages
+// are a pointer to a zero memory block, and the inital button value is
+// assumed to be zero, which breaks our logic.
+bool speedSet = false;
 
 void handleBrake(const sensor_msgs::Joy::ConstPtr& joy);
 void handleDrive(const sensor_msgs::Joy::ConstPtr& joy);
@@ -97,11 +104,9 @@ void handleDrive(const sensor_msgs::Joy::ConstPtr& joy) {
     //Motor control
     float speed = 0.0;
 
-    double maxSpeed;
-    ros::param::get("max_speed", maxSpeed); // Get max speed from constants.yaml
-    
-    ROS_INFO("Last brake %d", lastBrake);
-    if (!lastBrake) {
+    //ROS_INFO("Last brake %d", lastBrake);
+    speedSet = (!speedSet && joy->velocity_trigger != 0.0);
+    if (!lastBrake && speedSet) {
         if (joy->reverse_button) {
             float correction = -1; // Normally ranges from 1 to -1. Correct so it ranges from 0 to -2
             // Division by 2 brings to range -1 to 0. It can then be multiplied by max speed
@@ -113,7 +118,7 @@ void handleDrive(const sensor_msgs::Joy::ConstPtr& joy) {
         }
     }
 
-    ROS_INFO("Speed: %f", speed);
+    //ROS_INFO("Speed: %f", speed);
     if (lastSpeed != speed) {
         lastSpeed = speed;
         sendMotionCommand();
@@ -183,6 +188,7 @@ void handleHorn(const sensor_msgs::Joy::ConstPtr& joy) {
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "controller");
+    ros::param::get("max_speed", maxSpeed); // Get max speed from constants.yaml
 
     ros::NodeHandle n;
 

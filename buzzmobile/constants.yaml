@@ -46,8 +46,7 @@ max_steering_angle: 0.8
 
 # Max speed of buzzmobile in % of maximum output (We think)
 #TODO this is not speed, it's acceleration. See issue #130.
-#max_speed: 0.1 # 10% of max speed of motor (We think)
-max_speed: 0.6
+max_speed: 0.2
 
 # Resolution of potential paths, that is to say, the higher this number, the
 # more tentacles/linear paths will be judged
