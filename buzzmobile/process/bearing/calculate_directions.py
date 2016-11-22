@@ -25,8 +25,8 @@ def get_forward_angle(fix1, fix2):
     lat2 = math.radians(fix2.latitude)
     lon2 = math.radians(fix2.longitude)
 
-    y_coord = math.sin(lon2 - lon1) * math.cos(lat2)
-    x_coord = (math.cos(lat1) * math.sin(lat2)
+    y = math.sin(lon2 - lon1) * math.cos(lat2)
+    x = (math.cos(lat1) * math.sin(lat2)
                - math.sin(lat1) * math.cos(lat2) * math.cos(lon2 - lon1))
-    angle = math.atan2(y_coord, x_coord)
+    angle = math.atan2(y, x)
     return (angle + 2 * math.pi) % (2 * math.pi)
