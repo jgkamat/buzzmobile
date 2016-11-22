@@ -118,7 +118,7 @@ void handleDrive(const sensor_msgs::Joy::ConstPtr& joy) {
         }
     }
 
-    //ROS_INFO("Speed: %f", speed);
+    ROS_INFO("Speed: %f", speed);
     if (lastSpeed != speed) {
         lastSpeed = speed;
         sendMotionCommand();

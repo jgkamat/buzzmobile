@@ -53,15 +53,14 @@ Arduino::~Arduino() {
 
 void Arduino::write_run() {
   while(threads_running) {
-    //stringstream command;
+    stringstream command;
     char command[10];
-    //ROS_INFO("%f, %f", speed, steer);
-    //command << STX << speed << ',' << steer << ',' << '\n';
+    ROS_INFO("%f, %f", speed, steer);
+    command << STX << speed << ',' << steer << ',' << '\n';
     sprintf(command, "$%5.4f,%5.4f", speed, steer);
     printf("%s\n", command);
     try {
-      //boost::asio::write(port, boost::asio::buffer(command.str().c_str(), command.str().length()));
-      boost::asio::write(port, boost::asio::buffer(command, 10));
+      boost::asio::write(port, boost::asio::buffer(command.str().c_str(), command.str().length()));
     } catch(...) {
       ROS_ERROR("An error occurred while writing to %s.", device_path.c_str());
     }

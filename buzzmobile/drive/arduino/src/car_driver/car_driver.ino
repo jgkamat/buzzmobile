@@ -101,15 +101,17 @@ void setup() {
 void loop() {
   digitalWrite(yellow_led, digitalRead(estop_pin));
   
-  char retMsg[16] = {0};
+  char retMsg[30] = {0};
   if(Serial.available()) {
     if(Serial.read() == '$') {
       speedController.setDesiredValue(Serial.parseFloat());
       steerController.setDesiredValue(Serial.parseFloat());
+      digitalWrite(horn_pin, Serial.parseInt());
       
       lastCmdTime = millis();
       retMsg[0] = '$';
-      //sprintf(retMsg+1, "%05i%05.4f%05.4f", count, getSteeringAngle(), getSpeed());
+      sprintf(retMsg+1, "%05i,%05.4f,%05.4f", count, getSteeringAngle(), getSpeed());
+      // Odom callback temporarily disabled. See #41.
       //Serial.println(retMsg);
       count = 0;
     }
@@ -123,17 +125,17 @@ void loop() {
     speedController.update(getSpeed());
     motor.write(speedController.getOutput());
     
-//    steerController.update(getSteeringAngle());
-//    // Soft limits on steering to avoid damage.
-//    if(analogRead(pot_pin) >= maxPotVal && steerController.getOutput() < 90)
-//      steer.write(90);
-//    else if(analogRead(pot_pin) <= minPotVal && steerController.getOutput() > 90)
-//      steer.write(90);
-//    else
-//      steer.write(steerController.getOutput());
+    steerController.update(getSteeringAngle());
+    // Soft limits on steering to avoid damage.
+    if(analogRead(pot_pin) >= maxPotVal && steerController.getOutput() < 90)
+      steer.write(90);
+    else if(analogRead(pot_pin) <= minPotVal && steerController.getOutput() > 90)
+      steer.write(90);
+    else
+      steer.write(steerController.getOutput());
       
     
-    if(millis() - lastCmdTime > 5000) {
+    if(millis() - lastCmdTime > 500) {
       digitalWrite(red_led, HIGH);
       stopAll();
     } else {

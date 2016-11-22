@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
 }
 
 void keep_alive_callback(const ros::TimerEvent&) {
-  //ROS_INFO("Keep alive callback called");
+  ROS_INFO("Keep alive callback called");
   // 1 sec command frequency required to maintain velocity
   if((ros::Time::now() - last_command_time) > keep_alive_frequency) {
     arduino.setSpeed(0);
@@ -67,7 +67,7 @@ void odometry_callback(int tickCount, float steeringAngle, float speed) {
 
 //void command_callback(core_msgs::MotionCommand::ConstPtr cmd) {
 void command_callback(buzzmobile::CarPose::ConstPtr cmd) {
-  //ROS_INFO("Command received, speed: %f, angle: %f", cmd->velocity, cmd->angle);
+  ROS_INFO("Command received, speed: %f, angle: %f", cmd->velocity, cmd->angle);
   //arduino.setSpeed(cmd->speed);
   arduino.setSpeed(cmd->velocity);
   arduino.setSteering(cmd->angle);
