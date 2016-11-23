@@ -19,7 +19,8 @@ def interpolate(points, sigmas, iminfo):
     Arguments:
         points: list of (x, y) points that will be plotted on the image
         line_width: width in pixels of line used to interpolate between points
-        sigma: (sigma_x, sigma_y) gaussian parameters (higher = more blurry)
+        sigmas: namedtuple of (sigma_x, sigma_y) 
+                    Gaussian parameters (higher => more blurry)
         height, width: dimensions of the output image in pixels
     """
     line_width, height, width = iminfo
