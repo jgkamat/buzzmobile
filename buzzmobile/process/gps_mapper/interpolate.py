@@ -1,8 +1,9 @@
 """Util interpolation and distance calculation methods for gps_mapper."""
 
-import numpy as np
-import math
 import cv2
+import math
+import numpy as np
+from collections import namedtuple
 
 
 EARTH_RADIUS = 6371.0088 # radius of Earth in km
@@ -13,7 +14,7 @@ Sigmas = namedtuple('Sigmas', 'sigma_x, sigma_y')
 
 
 def interpolate(points, sigmas, iminfo):
-    """Connects a list of points with a line, and applies gaussian blur.
+    """Connects a list of points with a line and applies Gaussian blur.
 
     Arguments:
         points: list of (x, y) points that will be plotted on the image
