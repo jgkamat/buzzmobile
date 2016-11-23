@@ -1,10 +1,17 @@
 #!/usr/bin/env python
+"""inputer: REPL for inputting destinations for the car.
+
+Publishes:
+    destination String the destination inputted via the command line
+"""
+
 import rospy
 
 from std_msgs.msg import String
 
 
-def input_node():
+def inputer_node():
+    """Initializes inputer node."""
     pub = rospy.Publisher('destination', String, queue_size=1)
     rospy.init_node('inputer', anonymous=True)
     # Publish a nonsense initial value to make sure subscribers don't explode
@@ -13,4 +20,4 @@ def input_node():
         new_dst = input("Dest >> ")
         pub.publish(new_dst)
 
-if __name__ == '__main__': input_node()
+if __name__ == '__main__': inputer_node()

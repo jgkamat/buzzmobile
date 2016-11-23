@@ -1,45 +1,50 @@
 #!/usr/bin/env python
+"""gps_mapper: node for creating gps_model, which defines immediate route.
+
+Subscribes:
+    /fix NavSatFix current coordinate location
+    polyline String encoded coordinate points of route
+    bearing Float64 direction the car is headed in radians (N is 0 rad)
+Publishes:
+    gps_model Image with immediate route to be taken
+"""
 
 import interpolate
-import math
 import polyline as pl
 import rospy
 
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import NavSatFix
 from std_msgs.msg import Float64
 from std_msgs.msg import String
 
-#Global Variables
+
 g = {} # globals
-# 'bearing' is counter-clockwise angle from north in radians.
-# 'points' will contain the polyline list of lat-lon points
-# (normalized to some size based on pixels_per_m).
-# 'fixes' is a list of our last 'median_filter_size' number of lat-lon
-# coordinates which are passed through a median filter
-# to reduce the effect of noise in our location data.
-g['bearing'] = g['points'] = g['location'] = None
-g['fixes'] = []
-# These ranges are km dimensions of the path. Initialize them to 0.
-# Also initialize the scaled width and height of the points to 0.
-g['y_range'] = g['x_range'] = g['height'] = g['width'] = 0
-# These are the lat-lon dimensions that are used
-# to normalize the lat-lon points (initalized to 0).
-g['ll_height'] = g['ll_width'] = 0
-# Initialize the top left and bottom right image coordinates to (0, 0).
-g['top_left'] = (0, 0)
-g['bottom_right'] = (0, 0)
-gps_model_pub = rospy.Publisher('gps_model', Image, queue_size=1)
+g['bearing'] = None # Counter-clockwise angle from north in radians.
+g['points'] = None # Polyline list of lat-lon points, after scaling to pixels.
+g['location'] = None # Current location /fix
+g['fixes'] = [] # list of coords last received, to minimize loss (median filter)
+g['y_range'] = g['x_range'] = 0 # Dimensions of the path in km.
+g['height'] = g['width'] = 0 # Scaled width of the points
+g['ll_height'] = g['ll_width'] = 0 # lat-lon dimensions used to normalize points
+g['top_left'] = (0, 0) # top left of image
+g['bottom_right'] = (0, 0) # bottom righ of image
+pub = rospy.Publisher('gps_model', Image, queue_size=1)
 bridge = CvBridge()
-x_scale = y_scale = 1000 * rospy.get_param('pixels_per_m')
-line_width = int(round(rospy.get_param('pixels_per_m')
+
+X_SCALE = Y_SCALE = 1000 * rospy.get_param('pixels_per_m')
+LINE_WIDTH = int(round(rospy.get_param('pixels_per_m')
                        * rospy.get_param('road_width')))
-median_filter_size = rospy.get_param('median_filter_size')
-sigma_x = rospy.get_param('sigma_x')
-sigma_y = rospy.get_param('sigma_y')
-image_width = rospy.get_param('image_width')
-image_height = rospy.get_param('image_height')
+IMAGE_WIDTH = rospy.get_param('image_width')
+IMAGE_HEIGHT = rospy.get_param('image_height')
+IMINFO = interpolate.ImageInfo(LINE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH)
+MEDIAN_FILTER_SIZE = rospy.get_param('median_filter_size')
+SIGMA_X = rospy.get_param('sigma_x')
+SIGMA_Y = rospy.get_param('sigma_y')
+SIGMAS = interpolate.Sigmas(SIGMA_X, SIGMA_Y)
+
+
 
 def set_points(polyline):
     """Given a polyline as a ROS message, normalize and store the points."""
@@ -70,15 +75,11 @@ def set_points(polyline):
         # Note that this is distinct from `image_height` and `image_width`,
         # which are the height and width of the current window that will be
         # passed to the frame merger!
-        g['height'] = int(round(g['y_range'] * y_scale))
-        g['width'] = int(round(g['x_range'] * x_scale))
+        g['height'] = int(round(g['y_range'] * Y_SCALE))
+        g['width'] = int(round(g['x_range'] * X_SCALE))
         # Store the normalized points.
-        g['points'] = interpolate.normalized_points(g['points'],
-                      g['top_left'],
-                      g['ll_height'],
-                      g['ll_width'],
-                      g['height'],
-                      g['width'])
+        g['points'] = interpolate.normalized_points(g['points'], g['top_left'],
+                      g['ll_height'], g['ll_width'], IMINFO)
 
 def update_image():
     """
@@ -93,22 +94,15 @@ def update_image():
         point = (point[1], -point[0])
         if g['y_range'] is not 0 and point is not None:
             point = interpolate.normalize_single_point(point, g['top_left'],
-                    g['ll_height'],
-                    g['ll_width'],
-                    g['height'],
-                    g['width'])
+                    g['ll_height'], g['ll_width'], IMINFO)
             # Call method to calculate rotated points and interpolate a path
             # between the points that are in the current window
             # (based on the current location and bearing).
             result = interpolate.window(g['points'], point, g['bearing'],
-                     line_width,
-                     sigma_x,
-                     sigma_y,
-                     image_height,
-                     image_width)
+                     SIGMAS, IMINFO)
             # Send the final image window as an image message through ROS.
             result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
-            gps_model_pub.publish(result_msg)
+            pub.publish(result_msg)
 
 def set_bearing(angle):
     """Given a radian bearing, update the current bearing and update image."""
@@ -125,7 +119,8 @@ def set_location(fix_location):
             update_image()
 
 def median_filter(fix):
-    if len(g['fixes']) > median_filter_size:
+    """Calculates new median coordinates, based on the ones saved."""
+    if len(g['fixes']) > MEDIAN_FILTER_SIZE:
         g['fixes'].pop(0)
     g['fixes'].append(fix)
     sorted_points = sorted(g['fixes'])
@@ -142,14 +137,11 @@ def median_filter(fix):
         return None
 
 def gps_mapper_node():
-    """
-    Initializes the ROS node and starts listening for
-    polylines, bearings, and locations.
-    """
+    """Initializes gps_mapper node."""
     rospy.init_node('gps_mapper', anonymous=True)
     rospy.Subscriber('polyline', String, set_points)
     rospy.Subscriber('bearing', Float64, set_bearing)
     rospy.Subscriber('/fix', NavSatFix, set_location)
     rospy.spin()
 
-if __name__=='__main__': gps_mapper_node()
+if __name__ == '__main__': gps_mapper_node()
