@@ -9,7 +9,7 @@ from collections import namedtuple
 EARTH_RADIUS = 6371.0088 # radius of Earth in km
 
 
-Image = namedtuple('Image', 'linewidth, height, width')
+ImageInfo = namedtuple('ImageInfo', 'linewidth, height, width')
 Sigmas = namedtuple('Sigmas', 'sigma_x, sigma_y')
 
 

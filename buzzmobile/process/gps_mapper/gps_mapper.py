@@ -38,11 +38,11 @@ LINE_WIDTH = int(round(rospy.get_param('pixels_per_m')
                        * rospy.get_param('road_width')))
 IMAGE_WIDTH = rospy.get_param('image_width')
 IMAGE_HEIGHT = rospy.get_param('image_height')
-IMINFO = Image(LINE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH)
+IMINFO = interpolate.ImageInfo(LINE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH)
 MEDIAN_FILTER_SIZE = rospy.get_param('median_filter_size')
 SIGMA_X = rospy.get_param('sigma_x')
 SIGMA_Y = rospy.get_param('sigma_y')
-SIGMAS = Sigmas(SIGMA_X, SIGMA_Y)
+SIGMAS = interpolate.Sigmas(SIGMA_X, SIGMA_Y)
 
 
 
