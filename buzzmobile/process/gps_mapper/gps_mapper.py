@@ -36,11 +36,14 @@ bridge = CvBridge()
 X_SCALE = Y_SCALE = 1000 * rospy.get_param('pixels_per_m')
 LINE_WIDTH = int(round(rospy.get_param('pixels_per_m')
                        * rospy.get_param('road_width')))
+IMAGE_WIDTH = rospy.get_param('image_width')
+IMAGE_HEIGHT = rospy.get_param('image_height')
+IMINFO = Image(LINE_WIDTH, IMAGE_HEIGHT, IMAGE_WIDTH)
 MEDIAN_FILTER_SIZE = rospy.get_param('median_filter_size')
 SIGMA_X = rospy.get_param('sigma_x')
 SIGMA_Y = rospy.get_param('sigma_y')
-IMAGE_WIDTH = rospy.get_param('image_width')
-IMAGE_HEIGHT = rospy.get_param('image_height')
+SIGMAS = Sigmas(SIGMA_X, SIGMA_Y)
+
 
 
 def set_points(polyline):
@@ -75,9 +78,8 @@ def set_points(polyline):
         g['height'] = int(round(g['y_range'] * Y_SCALE))
         g['width'] = int(round(g['x_range'] * X_SCALE))
         # Store the normalized points.
-        g['points'] = interpolate.normalized_points(g['points'],
-                      g['top_left'], g['ll_height'], g['ll_width'],
-                      (g['height'], g['width']))
+        g['points'] = interpolate.normalized_points(g['points'], g['top_left'],
+                      g['ll_height'], g['ll_width'], IMINFO)
 
 def update_image():
     """
@@ -91,15 +93,13 @@ def update_image():
         point = median_filter(g['location'])
         point = (point[1], -point[0])
         if g['y_range'] is not 0 and point is not None:
-            point = interpolate.normalize_single_point(point,
-                    g['top_left'], g['ll_height'], g['ll_width'],
-                    (g['height'], g['width']))
+            point = interpolate.normalize_single_point(point, g['top_left'],
+                    g['ll_height'], g['ll_width'], IMINFO)
             # Call method to calculate rotated points and interpolate a path
             # between the points that are in the current window
             # (based on the current location and bearing).
             result = interpolate.window(g['points'], point, g['bearing'],
-                     (SIGMA_X, SIGMA_Y),
-                     (IMAGE_HEIGHT, IMAGE_WIDTH, LINE_WIDTH))
+                     SIGMAS, IMINFO)
             # Send the final image window as an image message through ROS.
             result_msg = bridge.cv2_to_imgmsg(result, encoding='mono8')
             pub.publish(result_msg)

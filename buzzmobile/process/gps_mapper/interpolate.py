@@ -8,7 +8,11 @@ import cv2
 EARTH_RADIUS = 6371.0088 # radius of Earth in km
 
 
-def interpolate(points, line_width, sigmas, height, width):
+Image = namedtuple('Image', 'linewidth, height, width')
+Sigmas = namedtuple('Sigmas', 'sigma_x, sigma_y')
+
+
+def interpolate(points, sigmas, iminfo):
     """Connects a list of points with a line, and applies gaussian blur.
 
     Arguments:
@@ -17,13 +21,13 @@ def interpolate(points, line_width, sigmas, height, width):
         sigma: (sigma_x, sigma_y) gaussian parameters (higher = more blurry)
         height, width: dimensions of the output image in pixels
     """
-    sigma_x, sigma_y = sigmas
+    line_width, height, width = iminfo
     output = np.zeros((height, width), np.uint8)
     for i in range(len(points) - 1):
         pt1 = points[i]
         pt2 = points[i+1]
         cv2.line(output, pt1, pt2, [255, 255, 255], line_width)
-    output = cv2.GaussianBlur(output, (sigma_x, sigma_y), 0)
+    output = cv2.GaussianBlur(output, sigmas, 0)
     return output
 
 def haversine(lat1, lon1, lat2, lon2):
@@ -35,27 +39,25 @@ def haversine(lat1, lon1, lat2, lon2):
     delta_lat = (lat2 - lat1)
     delta_lon = (lon2 - lon1)
     angle = (math.sin(delta_lat / 2)**2
-        + math.cos(lat1) * math.cos(lat2) * math.sin(delta_lon/2)**2)
+          + math.cos(lat1) * math.cos(lat2) * math.sin(delta_lon/2)**2)
     unit_distance = 2 * math.atan2(math.sqrt(angle), math.sqrt(1 - angle))
     return EARTH_RADIUS * unit_distance
 
-def normalized_points(points, top_left, ll_height, ll_width, dims):
+def normalized_points(points, top_left, ll_height, ll_width, iminfo):
     """
     Takes a list of points (tuples of x, y coordinates) and an output image size
     and returns a transformed list of points that fit in the output image.
     """
-    height, width = dims
-    return [((x - top_left[0]) * width / ll_width,
-            (y - top_left[1]) * height / ll_height)
+    return [((x - top_left[0]) * iminfo.width / ll_width,
+            (y - top_left[1]) * iminfo.height / ll_height)
             for (x, y) in points]
 
-def normalize_single_point(point, top_left, ll_height, ll_width, dims):
+def normalize_single_point(point, top_left, ll_height, ll_width, iminfo):
     """Normalizes single point."""
-    height, width = dims
-    return ((point[0] - top_left[0]) * width / ll_width,
-            (point[1] - top_left[1]) * height / ll_height)
+    return ((point[0] - top_left[0]) * iminfo.width / ll_width,
+            (point[1] - top_left[1]) * iminfo.height / ll_height)
 
-def window(points, loc, angle, sigmas, dims):
+def window(points, loc, angle, sigmas, iminfo):
     """Returns frame with the line of points that fit, given current location.
 
     Takes a list of points, a location, an angle in radians,
@@ -72,11 +74,10 @@ def window(points, loc, angle, sigmas, dims):
                   bottom of the window at in pixels
         angle: angle in rad to rotate rectangular region by (counterclockwise)
         sigmas: (sigma_x, sigma_y) Gaussian kernel parameters
-        dims: (height, width, line_width)
-                    dimensions of the output image in pixels
-                    and line width in pixels to interpolate between points
+        iminfo: (line_width, height, width)
+                    line width in pixels to interpolate between points
+                    and dimensions of output image in pixels as a namedtuple
     """
-    height, width, line_width = dims
     out = []
     parallel = (math.cos(angle), -math.sin(angle))
     perpendicular = (math.sin(angle), math.cos(angle))
@@ -87,9 +88,9 @@ def window(points, loc, angle, sigmas, dims):
                  - loc[0] * perpendicular[0] - loc[1] * perpendicular[1])
         # when adding the points back,
         # translate them to the proper location for the final image
-        out.append((x_img + (width/2 - loc[0]), y_img + (height - loc[1])))
-    return interpolate([(int(round(x)), int(round(y))) for (x, y) in out],
-                       line_width, sigmas, height, width)
+        out.append((x_img + (iminfo.width/2 - loc[0]), y_img + (iminfo.height - loc[1])))
+    return interpolate([(int(round(x)), int(round(y))) for (x, y) in out], 
+                       sigmas, iminfo)
 
 def dimensions(points):
     """Returns the width and height in kilometers given lat/long points."""
