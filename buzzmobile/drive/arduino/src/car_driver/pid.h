@@ -36,7 +36,7 @@ public:
     float error = setValue - measurement;
     float dError = error - lastError;
     lastError = error;
-    
+
     output += P * error + D * dError;
     if(clampValues)
       output = min(maxVal, max(minVal, output));

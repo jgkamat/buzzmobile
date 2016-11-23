@@ -4,7 +4,7 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 
-#define STX ((char)2)
+#define STX '$'
 
 class Arduino {
 
