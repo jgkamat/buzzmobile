@@ -1,9 +1,0 @@
-<launch>
-    <group ns="buzzmobile">
-        <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
-        <param name="hokuyo_node/port" value="/dev/ttyACM0"/>
-        <node pkg="buzzmobile" name="lidar_model" type="lidar_to_frame.py"/>
-        <node pkg="buzzmobile" name="frame_merger" type="frame_merger.py"/>
-        <node pkg="hokuyo_node" name="lidar" type="hokuyo_node"/>
-    </group>
-</launch>

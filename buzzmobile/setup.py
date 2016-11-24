@@ -1,7 +1,8 @@
 #!/usr/bin/env python
+"""Python setup environment for buzzmobile."""
 
-#for downloading the packages needed for this project.
-from setuptools import setup, find_packages
+# for downloading the packages needed for this project.
+from setuptools import setup
 
 setup(
     name='buzzmobile',

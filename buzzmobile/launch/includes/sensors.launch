@@ -1,0 +1,8 @@
+<!-- Launch file to spin up all sensors -->
+
+<launch>
+    <node pkg="joy" name="joystick" type="joy_node"/>
+    <node pkg="hokuyo_node" name="lidar" type="hokuyo_node" args="_port:=/dev/ttyACM0"/>
+    <node pkg="fix" name="gps" type="nmea_serial_driver"/>
+</launch>
+

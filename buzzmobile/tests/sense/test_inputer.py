@@ -1,3 +1,4 @@
+"""Tests for inputer node."""
 import unittest
 from std_msgs.msg import String
 from tests.rostest_utils import with_roscore, check_topic, with_launch_file, launch_node
@@ -17,4 +18,3 @@ class TestInputer(unittest.TestCase):
                 ct.success
             except AttributeError:
                 assert True
-

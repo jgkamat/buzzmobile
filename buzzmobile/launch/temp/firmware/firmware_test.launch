@@ -1,0 +1,13 @@
+<launch>
+    <!-- joystick and sensor nodes -->
+    <node pkg="joy" name="joy_node" type="joy_node"/>
+
+    <group ns="buzzmobile">
+        <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
+
+        <include file="$(find buzzmobile)/launch/includes/controller.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/interface.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/visualization.launch"/>
+    </group>
+</launch>
+

@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="rosbag" type="play" name="steering_murder" args="-l /bagfiles/steering.bag"/>
+</launch>
+
