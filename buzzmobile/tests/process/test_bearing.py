@@ -33,5 +33,5 @@ class TestBearingNode(unittest.TestCase):
 
             # check the output from the node
             assert ct != None
-            assert np.isclose(ct.result, 5.09105)
+            assert np.isclose(ct.result, 1.19212)
             
