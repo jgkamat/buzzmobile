@@ -131,7 +131,7 @@ class MockNode:
         time.sleep(1)
 
 @contextlib.contextmanager
-def mock_node(topic, rosmsg_type, queue_size=1):
+def mock_pub(topic, rosmsg_type, queue_size=1):
     """Mocks a node and cleans it up when done.
     """
     pub = rospy.Publisher(topic, rosmsg_type, queue_size=queue_size)

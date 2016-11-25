@@ -1,5 +1,5 @@
 import unittest
-from tests.rostest_utils import mock_node, check_topic, with_roscore, with_launch_file, launch_node
+from tests.rostest_utils import mock_pub, check_topic, with_roscore, with_launch_file, launch_node
 import numpy as np
 from collections import namedtuple
 from process.bearing import calculate_directions
@@ -25,7 +25,7 @@ class TestBearingNode(unittest.TestCase):
         def callback(s, data):
             s.result = data.data
 
-        with mock_node('/fix', NavSatFix, queue_size=None) as fix_node:
+        with mock_pub('/fix', NavSatFix, queue_size=None) as fix_node:
             with check_topic('/buzzmobile/bearing', Float64, callback) as ct:
                 # send mock data
                 fix_node.send(NavSatFix(None, None, 33.636700, -84.427863, None, None, None))
