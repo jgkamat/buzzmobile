@@ -19,7 +19,7 @@ class TestBearing(unittest.TestCase):
 @with_roscore
 class TestBearingNode(unittest.TestCase):
     
-    @with_launch_file('buzzmobile', 'params.launch')
+    @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'bearing.py')
     def test_bearing_node(self):
         def callback(s, data):

@@ -7,7 +7,7 @@ from tests.rostest_utils import with_roscore, check_topic, with_launch_file, lau
 @with_roscore
 class TestInputer(unittest.TestCase):
 
-    @with_launch_file('buzzmobile', 'params.launch')
+    @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'inputer.py')
     def test_sanity(self):
         def cb(s, data):
