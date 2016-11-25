@@ -45,7 +45,7 @@ def bearing(fix):
 def bearing_node():
     """Initializes bearing node."""
     rospy.init_node('bearing', anonymous=True)
-    rospy.Subscriber('fix', NavSatFix, bearing)
+    rospy.Subscriber('/fix', NavSatFix, bearing)
     rospy.spin()
 
 if __name__ == '__main__': bearing_node()

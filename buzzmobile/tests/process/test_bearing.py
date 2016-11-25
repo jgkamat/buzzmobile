@@ -25,7 +25,7 @@ class TestBearingNode(unittest.TestCase):
         def callback(s, data):
             s.result = data.data
 
-        with mock_node('/buzzmobile/fix', NavSatFix, queue_size=None) as fix_node:
+        with mock_node('/fix', NavSatFix, queue_size=None) as fix_node:
             with check_topic('/buzzmobile/bearing', Float64, callback) as ct:
                 # send mock data
                 fix_node.send(NavSatFix(None, None, 33.636700, -84.427863, None, None, None))
