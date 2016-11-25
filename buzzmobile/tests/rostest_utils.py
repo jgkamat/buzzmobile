@@ -128,7 +128,8 @@ class MockNode:
     
     def send(self, value):
         self.node.publish(value)
-        time.sleep(1)
+        # Just long enough to prevent out of order
+        time.sleep(.1)
 
 @contextlib.contextmanager
 def mock_pub(topic, rosmsg_type, queue_size=1):
@@ -142,13 +143,25 @@ class TestNode:
     def __init__(self, topic, msg_type):
         self.topic = topic
         self.msg_type = msg_type
+        self.received = False
+
+    def wait_for_message(self):
+        while not self.received:
+            time.sleep(.1)
+        yield
 
 @contextlib.contextmanager
 def check_topic(topic, rosmsg_type, callback):
     rospy.init_node('test_'+topic.split('/')[-1], anonymous=True)
     tn = TestNode(topic, rosmsg_type)
     cb  = functools.partial(callback, tn)
-    rospy.Subscriber(topic, rosmsg_type, cb)
+
+    # Set a flag when the node is actually called to
+    def cb_wrapper(test_node):
+        test_node.received = True
+        return cb(tn)
+
+    rospy.Subscriber(topic, rosmsg_type, cb_wrapper)
     yield tn 
     rospy.signal_shutdown('test complete')
 

@@ -32,6 +32,7 @@ class TestBearingNode(unittest.TestCase):
                 fix_node.send(NavSatFix(None, None, 39.029128, -111.838257, None, None, None))
 
             # check the output from the node
+            yield from ct.wait_for_message()
             assert ct != None
             assert np.isclose(ct.result, 1.19212)
             
