@@ -33,6 +33,5 @@ class TestBearingNode(unittest.TestCase):
 
             # check the output from the node
             yield from ct.wait_for_message()
-            assert ct != None
             assert np.isclose(ct.result, 1.19212)
             
