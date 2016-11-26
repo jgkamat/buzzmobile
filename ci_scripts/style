@@ -7,4 +7,4 @@ set -e
 source bin/activate
 
 # Run pylint on all files
-find . -name "*.py" -exec pylint --rcfile=ci_scripts/pylint/pylintrc {} \;
+python -m pylint buzzmobile --rcfile=ci_scripts/pylint/pylintrc
