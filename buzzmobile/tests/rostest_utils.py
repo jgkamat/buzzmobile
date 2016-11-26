@@ -145,9 +145,13 @@ class TestNode:
         self.msg_type = msg_type
         self.received = False
 
-    def wait_for_message(self):
-        while not self.received:
+    def wait_for_message(self, timeout=10):
+        elapsed = 0
+        while not self.received and elapsed < timeout:
             time.sleep(.1)
+            elapsed += .1
+        if elapsed >= timeout:
+            raise TimeoutError('Test timed out')
         yield
 
 @contextlib.contextmanager
