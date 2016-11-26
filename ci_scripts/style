@@ -5,6 +5,7 @@ set -e
 
 # Activate VirtualEnv
 source bin/activate
+rosinit
 
 # Run pylint on all files
-python -m pylint buzzmobile --rcfile=ci_scripts/pylint/pylintrc
+pylint buzzmobile --rcfile=ci_scripts/pylint/pylintrc
