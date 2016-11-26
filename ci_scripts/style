@@ -4,7 +4,7 @@
 set -e
 
 # Activate VirtualEnv
-# source bin/activate
+source bin/activate
 
 # Run pylint on all files
 find . -name "*.py" -exec pylint --rcfile=ci_scripts/pylint/pylintrc {} \;
