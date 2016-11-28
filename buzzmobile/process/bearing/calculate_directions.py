@@ -12,7 +12,7 @@ def get_distance(fix1, fix2):
     lat2 = math.radians(fix2.latitude)
     lon2 = math.radians(fix2.longitude)
 
-    angle = (math.pow(math.sin(lat2 - lat1), 2)
+    angle = (math.pow(math.sin((lat2 - lat1) / 2), 2)
              + math.cos(lat1) * math.cos(lat2)
              * math.pow(math.sin((lon2 - lon1) / 2), 2))
     unit_distance = 2 * math.atan2(math.sqrt(angle), math.sqrt(1 - angle))

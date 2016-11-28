@@ -1,0 +1,6 @@
+<launch>
+    <group ns="buzzmobile">
+        <include file="$(find buzzmobile)/launch/includes/params.launch"/>
+    </group>
+</launch>
+

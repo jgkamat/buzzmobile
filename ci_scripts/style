@@ -5,6 +5,8 @@ set -e
 
 # Activate VirtualEnv
 source bin/activate
+source /opt/ros/indigo/setup.sh
+source ../../devel/setup.sh
 
 # Run pylint on all files
-find . -name "*.py" -exec pylint --rcfile=ci_scripts/pylint/pylintrc {} \;
+pylint buzzmobile --rcfile=ci_scripts/pylint/pylintrc

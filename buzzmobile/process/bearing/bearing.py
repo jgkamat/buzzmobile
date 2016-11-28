@@ -12,9 +12,8 @@ import rospy
 
 from sensor_msgs.msg import NavSatFix
 from std_msgs.msg import Float64
-from calculate_directions import get_distance, get_forward_angle
-from median_filter import MedianFilter
-
+from process.bearing.calculate_directions import get_distance, get_forward_angle
+from process.bearing.median_filter import MedianFilter
 
 g = {} # globals
 g['last_fix'] = None
