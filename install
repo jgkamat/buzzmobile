@@ -1,7 +1,11 @@
 #!/bin/bash
 
-# Takes two arguments, the mode (install, update, etc.)
-# and optionally the package name.
+# Safe apt-get that waits until all other instances
+# of apt-get have completed (and released the lock)
+# before executing. This is to prevent the script
+# from failing due to a dpkg database lock.
+#
+# Takes the same arguments as apt-get
 safe-apt-get() {
     i=0
     tput sc
@@ -18,7 +22,7 @@ safe-apt-get() {
         ((i=i+1))
     done 
 
-    sudo apt-get -y "$1" "$2"
+    sudo apt-get "$@"
 }
 
 # Makes this script exit on first error.
@@ -26,11 +30,11 @@ set -e
 
 # need this to create venv if python was installed without the entire stdlib
 #sudo apt-get -y install python3.4-venv
-safe-apt-get install python3.4-venv
+safe-apt-get -y install python3.4-venv
 
 # need this to be able to install ds4drv
 #sudo apt-get -y install python3-dev
-safe-apt-get install python3-dev
+safe-apt-get -y install python3-dev
 
 # create a python3 virtualenvironment in the buzzmobile directory
 # yes, venv will allow you to create a virtualenv in any directory
@@ -62,15 +66,17 @@ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA
 #sudo apt-get update -qq
 #sudo apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential python3-tk
 #sudo apt-get install psmisc  # needed for testing
-safe-apt-get update
-safe-apt-get install python-catkin-pkg
-safe-apt-get install python-rosdep
-safe-apt-get install ros-indigo-catkin
-safe-apt-get install ros-indigo-ros
-safe-apt-get install ros-indigo-roslaunch
-safe-apt-get install build-essential
-safe-apt-get install python3-tk
-safe-apt-get install psmisc
+safe-apt-get update -qq
+safe-apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential python3-tk
+safe-apt-get install -y psmisc
+#safe-apt-get install -y python-catkin-pkg
+#safe-apt-get install -y python-rosdep
+#safe-apt-get install -y ros-indigo-catkin
+#safe-apt-get install -y ros-indigo-ros
+#safe-apt-get install -y ros-indigo-roslaunch
+#safe-apt-get install -y build-essential
+#safe-apt-get install -y python3-tk
+#safe-apt-get install -y psmisc
 
 
 sudo rosdep init
