@@ -31,11 +31,9 @@ safe-apt-get() {
 set -e
 
 # need this to create venv if python was installed without the entire stdlib
-#sudo apt-get -y install python3.4-venv
 safe-apt-get -y install python3.4-venv
 
 # need this to be able to install ds4drv
-#sudo apt-get -y install python3-dev
 safe-apt-get -y install python3-dev
 
 # create a python3 virtualenvironment in the buzzmobile directory
@@ -65,29 +63,17 @@ pip install https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.11.
 # Make sure ROS is installed, do some initialization
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
-#sudo apt-get update -qq
-#sudo apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential python3-tk
-#sudo apt-get install psmisc  # needed for testing
 safe-apt-get update -qq
 safe-apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential python3-tk
 safe-apt-get install -y psmisc
-#safe-apt-get install -y python-catkin-pkg
-#safe-apt-get install -y python-rosdep
-#safe-apt-get install -y ros-indigo-catkin
-#safe-apt-get install -y ros-indigo-ros
-#safe-apt-get install -y ros-indigo-roslaunch
-#safe-apt-get install -y build-essential
-#safe-apt-get install -y python3-tk
-#safe-apt-get install -y psmisc
 
-
-sudo rosdep init
+sudo rosdep init # This can only be run once. Possible enhancement, check this
 rosdep update
 
 # Build our project and install rosdeps
 cd ~/catkin_ws/src
 source /opt/ros/indigo/setup.bash
-catkin_init_workspace
+catkin_init_workspace # This can only be run once. Possible enhancement, check this
 rosdep install -y --from-paths . --ignore-src --rosdistro=indigo
 cd ~/catkin_ws
 catkin_make -j2 # Actually build
