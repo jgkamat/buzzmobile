@@ -14,7 +14,7 @@ using namespace buzzmobile;
 #define reverse_button buttons[15]
 #define brake_button buttons[13]
 #define horn_button buttons[0]
-#define velocity_trigger axes[9]
+#define velocity_trigger axes[13]
 #define toggle_auto_button buttons[16]
 
 ros::Publisher motion_pub;

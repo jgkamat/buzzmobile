@@ -54,7 +54,7 @@ Arduino::~Arduino() {
 void Arduino::write_run() {
   while(threads_running) {
     stringstream command;
-    ROS_INFO("%f, %f", speed, steer);
+    // ROS_INFO("%f, %f", speed, steer);
     command << STX << speed << ',' << steer << ',' << horn <<'\n';
     try {
       boost::asio::write(port, boost::asio::buffer(command.str().c_str(), command.str().length()));
