@@ -31,6 +31,7 @@ def publish():
     """Publishes current car_pose, if possible."""
     car_pose = mux(g['curr_car_state'])
     if car_pose is not None:
+	car_pose.header.stamp = rospy.Time.now()
         pub.publish(car_pose)
 
 def set_manual_car_pose(car_pose):

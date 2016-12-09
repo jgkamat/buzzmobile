@@ -61,7 +61,7 @@ void Arduino::write_run() {
     } catch(...) {
       ROS_ERROR("An error occurred while writing to %s.", device_path.c_str());
     }
-    usleep(50000);
+    usleep(100000);
   }
 }
 
