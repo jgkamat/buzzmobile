@@ -11,11 +11,11 @@
 using namespace buzzmobile;
 
 // Buttons mapped to a PS4 controller using the Joy ROS node.
-#define reverse_button buttons[0]
-#define brake_button buttons[2]
-#define horn_button buttons[1]
-#define velocity_trigger axes[4]
-#define toggle_auto_button buttons[12]
+#define reverse_button buttons[15]
+#define brake_button buttons[13]
+#define horn_button buttons[0]
+#define velocity_trigger axes[9]
+#define toggle_auto_button buttons[16]
 
 ros::Publisher motion_pub;
 ros::Publisher state_pub;
