@@ -6,7 +6,7 @@
         <rosparam command="load" file="$(find buzzmobile)/constants.yaml"/>
 
         <include file="$(find buzzmobile)/launch/includes/controller.launch"/>
-        <include file="$(find buzzmobile)/launch/includes/interface.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/interface.launch" output="screen"/>
         <include file="$(find buzzmobile)/launch/includes/visualization.launch"/>
     </group>
 </launch>
