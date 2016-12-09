@@ -20,6 +20,7 @@ Arduino arduino;
 ros::Time last_command_time;
 
 ros::Duration keep_alive_frequency(1.0);
+ros::Duration keep_alive_tolerance(0.5);
 
 void odometry_callback(int, float, float);
 
@@ -53,7 +54,8 @@ int main(int argc, char **argv) {
 void keep_alive_callback(const ros::TimerEvent&) {
   // ROS_INFO("Keep alive callback called");
   // 1 sec command frequency required to maintain velocity
-  if((ros::Time::now() - last_command_time) > keep_alive_frequency) {
+  ros::Duration delta = ros::Time::now() - last_command_time;
+  if(delta > (keep_alive_frequency + keep_alive_tolerance)) {
     arduino.setSpeed(0);
   }
 }

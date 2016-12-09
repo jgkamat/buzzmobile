@@ -101,7 +101,7 @@ void setup() {
 void loop() {
   digitalWrite(yellow_led, digitalRead(estop_pin));
   
-  char retMsg[30] = {0};
+  char retMsg[20] = {0};
   if(Serial.available()) {
     if(Serial.read() == '$') {
       speedController.setDesiredValue(Serial.parseFloat());
@@ -109,10 +109,12 @@ void loop() {
       digitalWrite(horn_pin, Serial.parseInt());
       
       lastCmdTime = millis();
-      retMsg[0] = '$';
-      sprintf(retMsg+1, "%05i,%05.4f,%05.4f", count, getSteeringAngle(), getSpeed());
-      // Odom callback temporarily disabled. See #41.
-      //Serial.println(retMsg);
+      char steeringStr[5] = {0};
+      char speedStr[5] = {0};
+      dtostrf(getSteeringAngle(), 5, 3, steeringStr);
+      dtostrf(getSpeed(), 5, 3, speedStr);
+      sprintf(retMsg, "$%05i,%s,%s", count, steeringStr, speedStr);
+      Serial.println(retMsg);
       count = 0;
     }
   }
