@@ -68,8 +68,8 @@ safe-apt-get update -qq
 safe-apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential python3-tk
 safe-apt-get install -y psmisc
 
-safe-apt-get install -y build-essential cmake libqt4-dev libxml2-dev libxslt1-dev python-dev qtmobility-dev python-pip
-pip install -U PySide
+#safe-apt-get install -y build-essential cmake libqt4-dev libxml2-dev libxslt1-dev python-dev qtmobility-dev python-pip
+#pip install -U PySide
 
 sudo rosdep init # This can only be run once. Possible enhancement, check this
 rosdep update
