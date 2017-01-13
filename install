@@ -35,7 +35,7 @@ safe-apt-get -y install python-dev
 # create a python2 virtualenv in the buzzmobile directory using python3
 # yes this is intentional, we're doing this because virtualenv and venv
 # function differently, and venv isn't availible on python2
-safe-apt-get install python-virtualenv
+safe-apt-get -y install python-virtualenv
 python -m virtualenv .
 
 # activate the virtualenv we just created
