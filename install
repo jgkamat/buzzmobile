@@ -41,6 +41,9 @@ python -m virtualenv .
 # activate the virtualenv we just created
 source bin/activate
 
+# remove a name conflict with catkin_make later
+rm local/buzzmobile
+
 # default pip version in a venv is 1.5.4, we want to upgrade to a newer version
 # that supports anylinux wheels, specifically this is for OpenCV and
 # tensorflow, which cannot be installed via a setup.py, and so we manually
