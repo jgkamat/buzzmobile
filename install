@@ -8,7 +8,6 @@
 # Takes the same arguments as apt-get
 safe-apt-get() {
     i=0
-    tput sc
     
     # Wait while the dpkg lock is set
     while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
@@ -18,7 +17,6 @@ safe-apt-get() {
             2 ) j="|" ;;
             3 ) j="/" ;;
         esac
-        tput rc
         echo -en "\r[$j] Waiting for other software managers to finish..." 
         sleep 0.5
         ((i=i+1))
