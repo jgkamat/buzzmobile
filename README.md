@@ -5,7 +5,8 @@ An autonomous parade vehicle, modeled after Georgia Tech's Rambling Wreck
 Architecture
 ------------
 
-A list of available nodes and an overview of the architecture is available [here](https://docs.google.com/drawings/d/1Lryui91lSutyC1TQhDmWI3JqDfefNB9E9RoSaBPHhcE/edit?usp=sharing).
+A list of available nodes and an overview of the architecture is available
+[here](https://docs.google.com/drawings/d/1Lryui91lSutyC1TQhDmWI3JqDfefNB9E9RoSaBPHhcE/edit?usp=sharing).
 
 ![architecture](/architecture.png?raw=true)
 
@@ -14,7 +15,7 @@ Environment
 -----------
 
 To get started, be running Ubuntu 14.04 (required for ROS Indigo) with python
-3.4 installed. Then run:
+2.7 installed. Then run:
 
 ```bash
 mkdir -p ~/catkin_ws/src
@@ -187,3 +188,20 @@ the car manually using the controller, use the following controls:
 
 The car starts in START mode. When pressed it will switch to MANUAL mode. Every
 subsequent press toggles between AUTO and MANUAL mode.
+
+
+Testing
+-------
+
+Testing is done with pytest. To run tests, make sure that the environment is
+initialized (run `rosvenv`, `rosinit`, and `rosdevel`) then run `pytest
+buzzmobile/tests`. This will run all tests in the tests directory. Be careful,
+beacuse there is a virtualenv in the root directory of the project, **running
+`pytest` will attempt to run thousands of unittests included with the python
+interpreter.**
+
+To write additional tests, please place within `buzzmobile/tests` in directories
+that match the source files, that is tests for the
+`buzzmobile/process/gps_mapper` node should go in
+`buzzmobile/tests/process/test_gps_mapper.py`. Integration and simulation tests
+should go in the `<TODO>` and `<TODO>` directories respectively.
