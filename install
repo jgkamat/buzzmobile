@@ -67,9 +67,16 @@ safe-apt-get update -qq
 safe-apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential python-tk
 safe-apt-get install -y psmisc
 
-# install pyside for pyqt bindings
-#safe-apt-get install -y build-essential cmake libqt4-dev libxml2-dev libxslt1-dev python-dev qtmobility-dev python-pip
-#pip install -U PySide
+# install pyqt4 for pyqt bindings
+safe-apt-get install -y build-essential cmake libqt4-dev libxml2-dev libxslt1-dev python-dev qtmobility-dev python-pip python-qt4
+
+# pyqt only installs at a system level, which means we need to symlink
+ln -s /usr/lib/python2.7/dist-packages/PyQt4/ ./lib/python2.7/site-packages/
+ln -s /usr/lib/python2.7/dist-packages/sip.so ./lib/python2.7/site-packages/
+
+# ---------
+# Everything above this point has been installing various python dependencies
+# for things we do. Stuff below this is the ros build and install.
 
 sudo rosdep init # This can only be run once. Possible enhancement, check this
 rosdep update
@@ -78,7 +85,6 @@ rosdep update
 cd ~/catkin_ws/src
 source /opt/ros/indigo/setup.bash
 catkin_init_workspace # This can only be run once. Possible enhancement, check this
-#rosdep install -y --from-paths . --ignore-src --rosdistro=indigo
 rosdep install -y --from-paths ./buzzmobile/buzzmobile --ignore-src --rosdistro=indigo
 cd ~/catkin_ws
 catkin_make -j2 # Actually build
