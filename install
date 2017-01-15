@@ -32,9 +32,7 @@ set -e
 # virtualenvironment
 safe-apt-get -y install python-dev
 
-# create a python2 virtualenv in the buzzmobile directory using python3
-# yes this is intentional, we're doing this because virtualenv and venv
-# function differently, and venv isn't availible on python2
+# install virtualenv for python2 and create a virtual environment
 safe-apt-get -y install python-virtualenv
 python -m virtualenv .
 
@@ -66,10 +64,10 @@ pip install https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.12.
 sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
 sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net --recv-key 0xB01FA116
 safe-apt-get update -qq
-#safe-apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential python3-tk
 safe-apt-get install -y python-catkin-pkg python-rosdep ros-indigo-catkin ros-indigo-ros ros-indigo-roslaunch build-essential python-tk
 safe-apt-get install -y psmisc
 
+# install pyside for pyqt bindings
 #safe-apt-get install -y build-essential cmake libqt4-dev libxml2-dev libxslt1-dev python-dev qtmobility-dev python-pip
 #pip install -U PySide
 
