@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Makes this script exit on first error.
+set -e
+
+# Activate VirtualEnv
+source bin/activate
+source /opt/ros/indigo/setup.sh
+source ../../devel/setup.sh
+
+# Run unit tests
+pytest buzzmobile/tests/unit
+

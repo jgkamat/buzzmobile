@@ -200,8 +200,9 @@ beacuse there is a virtualenv in the root directory of the project, **running
 `pytest` will attempt to run thousands of unittests included with the python
 interpreter.**
 
-To write additional tests, please place within `buzzmobile/tests` in directories
-that match the source files, that is tests for the
+To write additional unit tests, please place within `buzzmobile/tests/unit` in
+directories that match the source files, that is tests for the
 `buzzmobile/process/gps_mapper` node should go in
-`buzzmobile/tests/process/test_gps_mapper.py`. Integration and simulation tests
-should go in the `integration` and `simulation` directories respectively.
+`buzzmobile/tests/unit/process/test_gps_mapper.py`. Integration and simulation 
+tests should go in the `integration` and `simulation` test subdirectories 
+respectively.

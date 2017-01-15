@@ -59,7 +59,8 @@ SETUP_COMMAND="sudo apt-get update && sudo apt-get -y install vim tmux git"
 TEST_COMMANDS=()
 TEST_COMMANDS+=( './install;build;Check for installation and catkin_make' )
 TEST_COMMANDS+=( './ci_scripts/style;style;Check for pylint errors and warnings' )
-TEST_COMMANDS+=( './ci_scripts/tests;tests;Check for pytests' )
+TEST_COMMANDS+=( './ci_scripts/unittest;unittest;Run unit tests' )
+TEST_COMMANDS+=( './ci_scripts/simulation;simulation;Run simulation/full system tests' )
 
 # Environmental variables to make available to the build environment
 ENV_VARS=()
