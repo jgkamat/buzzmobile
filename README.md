@@ -204,4 +204,4 @@ To write additional tests, please place within `buzzmobile/tests` in directories
 that match the source files, that is tests for the
 `buzzmobile/process/gps_mapper` node should go in
 `buzzmobile/tests/process/test_gps_mapper.py`. Integration and simulation tests
-should go in the `<TODO>` and `<TODO>` directories respectively.
+should go in the `integration` and `simulation` directories respectively.
