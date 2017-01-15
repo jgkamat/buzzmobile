@@ -1,5 +1,15 @@
 import unittest
 
 class TestNoop(unittest.TestCase):
+    """Class showing proof of concept of simulation/unit test split.
+    """
+
+    def setUp(self):
+        """Sets up test environment.
+        """
+        self.true = True
+
     def test_example(self):
-        assert True
+        """Example test method.
+        """
+        assert self.true
