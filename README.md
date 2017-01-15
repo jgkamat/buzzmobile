@@ -204,5 +204,5 @@ To write additional unit tests, please place within `buzzmobile/tests/unit` in
 directories that match the source files, that is tests for the
 `buzzmobile/process/gps_mapper` node should go in
 `buzzmobile/tests/unit/process/test_gps_mapper.py`. Integration and simulation 
-tests should go in the `integration` and `simulation` test subdirectories 
-respectively.
+tests should go in the `buzzmobile/tests/integration` and
+`buzzmobile/tests/simulation` test subdirectories respectively.

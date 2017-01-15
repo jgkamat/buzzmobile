@@ -1,5 +1,6 @@
 import unittest
 
+# TODO(iRapha): Remove this test when we have actual simulation tests.
 class TestNoop(unittest.TestCase):
     """Class showing proof of concept of simulation/unit test split.
     """
