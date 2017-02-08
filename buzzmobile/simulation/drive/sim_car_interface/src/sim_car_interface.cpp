@@ -102,7 +102,7 @@ void fillWheelSpeeds(const double steering_angle, const double speed, double &le
 
 int main(int argc, char **argv) {
 
-    ros::init(argc, argv, "speedi_controller");
+    ros::init(argc, argv, "sim_car_interface");
 
     ros::NodeHandle handle;
 
