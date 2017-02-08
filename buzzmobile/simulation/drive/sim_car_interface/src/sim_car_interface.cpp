@@ -3,6 +3,7 @@
 #include <rr_platform/steering.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/JointState.h>
+#include <buzzmobile/CarPose.h>
 
 class PDController {
 public:
@@ -35,6 +36,7 @@ double speed_measured_right = 0.0;
 
 double steer_set_point = 0.0;
 
+// TODO(sahit): change to rosparams
 constexpr double chassis_length = 0.33246;
 constexpr double chassis_width = 0.28732;
 constexpr double inv_chassis_length = 1.0 / chassis_length;
@@ -43,13 +45,18 @@ constexpr double max_torque = 0.1;
 
 constexpr double wheel_circumference = 2.0 * M_PI * 0.036;
 
-void speedCallback(const rr_platform::speedConstPtr &msg) {
-    speed_set_point = -msg->speed;
+void carPoseCallback(const buzzmobile::CarPose::ConstPtr &msg) {
+    speed_set_point = -msg->velocity;
+    steer_set_point = -msg->angle;
+
+    // arduino.setSteering(cmd->angle);
+    // arduino.setHorn(cmd->horn);
+    // last_command_time = cmd->header.stamp;
 }
 
-void steeringCallback(const rr_platform::steeringConstPtr &msg) {
-    steer_set_point = -msg->angle;
-}
+// void steeringCallback(const rr_platform::steeringConstPtr &msg) {
+    // steer_set_point = -msg->angle;
+// }
 
 void jointStateCallback(const sensor_msgs::JointStateConstPtr &msg) {
 
@@ -100,18 +107,14 @@ int main(int argc, char **argv) {
     ros::NodeHandle handle;
 
     ros::Publisher leftDrivePublisher = handle.advertise<std_msgs::Float64>("/left_wheel_effort_controller/command", 1);
-
     ros::Publisher rightDrivePublisher = handle.advertise<std_msgs::Float64>("/right_wheel_effort_controller/command", 1);
-
     ros::Publisher leftSteeringPublisher = handle.advertise<std_msgs::Float64>("/left_steer_position_controller/command", 1);
-
     ros::Publisher rightSteeringPublisher = handle.advertise<std_msgs::Float64>("/right_steer_position_controller/command", 1);
 
-    auto speedSub = handle.subscribe("/speed", 1, speedCallback);
-
-    auto steerSub = handle.subscribe("/steering", 1, steeringCallback);
-
-    auto stateSub = handle.subscribe("/roboracing/joint_states", 1, jointStateCallback);
+    auto carPoseSub = handle.subscribe("/car_pose", 1, carPoseCallback);
+    auto stateSub = handle.subscribe("/buzzmobile/joint_states", 1, jointStateCallback);
+    // auto speedSub = handle.subscribe("/speed", 1, speedCallback);
+    // auto steerSub = handle.subscribe("/steering", 1, steeringCallback);
 
     ros::Rate rate{30};
     while(ros::ok()) {
