@@ -11,12 +11,12 @@
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/meshes/buzzmobile.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/buzzmobile.dae"/>
             </geometry>
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/meshes/buzzmobile.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/buzzmobile.dae"/>
             </geometry>
         </collision>
     </link>

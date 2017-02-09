@@ -2,4 +2,4 @@
 
 sleep 3
 
-roslaunch rr_gazebo spawn_buzzmobile_platform.launch
+roslaunch buzzmobile spawn_buzzmobile_platform.launch

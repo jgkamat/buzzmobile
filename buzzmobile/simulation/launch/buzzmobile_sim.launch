@@ -8,9 +8,9 @@
 
     <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen" required="true"/>
 
-    <node pkg="pr2_controller_manager" type="spawner" args="left_wheel_effort_controller right_wheel_effort_controller left_wheel_position_controller right_wheel_position_controller --shutdown timeout 1"/>
+    <node name="spawner" pkg="pr2_controller_manager" type="spawner" args="left_wheel_effort_controller right_wheel_effort_controller left_wheel_position_controller right_wheel_position_controller --shutdown timeout 1"/>
 
-    <rosparam file="$(find buzzmobile)/simulation/models/car/service_controllers_to_joints_urdf_mapping.yaml"
+    <rosparam file="$(find buzzmobile)/simulation/models/car/service_controllers_to_joints_urdf_mapping.yaml"/>
 
     <param name="robot_description" command="cat $(find buzzmobile)/simulation/models/buzzmobile/urdf/buzzmobile.urdf"/>
 
