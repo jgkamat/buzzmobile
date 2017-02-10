@@ -1,4 +1,5 @@
 <launch>
+    <!-- Spawn Car -->
     <node name="spawn_platform" pkg="gazebo_ros" type="spawn_model"
           args="-file $(find buzzmobile)/simulation/models/buzzmobile/urdf/buzzmobile.urdf
             -gazebo_namespace /gazebo
