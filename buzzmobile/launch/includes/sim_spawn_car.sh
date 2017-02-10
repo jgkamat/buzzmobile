@@ -2,4 +2,4 @@
 
 sleep 3
 
-roslaunch buzzmobile spawn_buzzmobile_platform.launch
+roslaunch buzzmobile sim_spawn_car.launch
