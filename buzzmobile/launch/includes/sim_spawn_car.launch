@@ -5,6 +5,7 @@
           args="left_wheel_effort_controller right_wheel_effort_controller \
                 left_wheel_position_controller right_wheel_position_controller"/>
 
+
     <!-- Spawn Car -->
     <node pkg="gazebo_ros" name="spawn_model" type="spawn_model"
           args="-file $(find buzzmobile)/simulation/models/car/car_joints.urdf
