@@ -1,7 +1,7 @@
 <launch>
     <arg name="mission_control" default="false"/>
-    <arg name="gz_client" defaults="false" />
-    <arg name="world" default="worlds/empty.world"/>
+    <arg name="gzclient" default="false" />
+    <arg name="world" default="$(find buzzmobile)/simulation/models/world/empty.world"/>
 
     <group ns="buzzmobile">
         <include file="$(find buzzmobile)/launch/includes/params.launch"/>
@@ -17,9 +17,9 @@
     </group>
 
     <!-- Start gazebo server, load world, optionally start viz client -->
-    <node name="gazebo" pkg="gazebo_ros" type="gzserver"
-        args="-e ode $(arg world) use_sim_time:=true"/>
-    <group if="$(arg gz_client)">
+    <node pkg="gazebo_ros" name="gazebo" type="gzserver"
+          args="-e ode $(arg world) use_sim_time:=true"/>
+    <group if="$(arg gzclient)">
         <node pkg="gazebo_ros" name="gazebo_gui" type="gzclient"/>
     </group>
 

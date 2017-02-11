@@ -40,4 +40,4 @@ include_directories(
 add_subdirectory(process/projector)
 add_subdirectory(plan/controller)
 add_subdirectory(drive/car_interface)
-add_subdirectory(simulation/drive/sim_car_interface)
+add_subdirectory(simulation/sim_car_interface)

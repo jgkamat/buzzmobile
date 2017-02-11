@@ -3,8 +3,8 @@
     <rosparam file="$(find buzzmobile)/simulation/models/car/service_controllers_to_joints_mapping.yaml"/>
     <node pkg="pr2_controller_manager" name="spawner" type="spawner"
           args="left_wheel_effort_controller right_wheel_effort_controller \
-                left_wheel_position_controller right_wheel_position_controller \
-                --shutdown timeout 1"/>
+                left_wheel_position_controller right_wheel_position_controller"/>
+
 
     <!-- Spawn Car -->
     <node pkg="gazebo_ros" name="spawn_model" type="spawn_model"
