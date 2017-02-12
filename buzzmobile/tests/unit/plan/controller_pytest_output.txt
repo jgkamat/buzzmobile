@@ -1,0 +1,84 @@
+============================= test session starts ==============================
+platform linux2 -- Python 2.7.6, pytest-3.0.3, py-1.4.32, pluggy-0.4.0
+rootdir: /home/cole/catkin_ws/src/buzzmobile/buzzmobile, inifile: 
+collected 4 items
+
+tests/simulation/test_noop.py .
+tests/unit/plan/test_controller.py .
+tests/unit/process/test_bearing.py .F
+
+=================================== FAILURES ===================================
+______________________ TestBearingNode.test_bearing_node _______________________
+
+self = <test_bearing.TestBearingNode testMethod=test_bearing_node>
+
+    @functools.wraps(func)
+    def new_test(self):
+        """Wrapper around the user provided test that runs a launch file.
+                """
+        launch = ROSLauncher(full_name)
+        launch.start()
+        global _LAUNCHER # pylint: disable=global-statement
+        _LAUNCHER = launch
+    
+>       temp = func(self)
+
+tests/test_utils/launch_tools.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_utils/launch_tools.py:91: in new_test
+    temp = func(self)
+tests/unit/process/test_bearing.py:33: in test_bearing_node
+    assert np.isclose(ct.message.data, 1.19212)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <tests.test_utils.mock_nodes.TestNode object at 0x7fc5affd4090>
+
+    @property
+    def message(self):
+        """Getter for the message property.
+    
+            Makes sure you've actually recieved a message before providing one.
+            """
+        if not self.received:
+            raise NoMessage(('No message has been '
+>               'published to {} yet').format(self.topic))
+E           NoMessage: No message has been published to /buzzmobile/bearing yet
+
+tests/test_utils/mock_nodes.py:65: NoMessage
+----------------------------- Captured stdout call -----------------------------
+[1mstarted roslaunch server http://ubuntu:44049/[0m
+
+SUMMARY
+========
+
+PARAMETERS
+ * /buzzmobile/angle_multiplier: 10
+ * /buzzmobile/braking_distance: 2.5
+ * /buzzmobile/braking_score_threshhold: 0.85
+ * /buzzmobile/buzzmobile_width: 1.676
+ * /buzzmobile/image_height: 800
+ * /buzzmobile/image_width: 600
+ * /buzzmobile/max_speed: 0.2
+ * /buzzmobile/max_steering_angle: 0.262
+ * /buzzmobile/median_filter_size: 5
+ * /buzzmobile/min_fix_distance: 0.01
+ * /buzzmobile/num_points_in_tentacle: 50
+ * /buzzmobile/pixels_per_m: 80
+ * /buzzmobile/road_width: 2.438
+ * /buzzmobile/sigma_x: 3
+ * /buzzmobile/sigma_y: 3
+ * /buzzmobile/travel_distance: 0.061
+ * /buzzmobile/wheel_base: 2.032
+ * /buzzmobile/wheel_circumference: 2.198
+ * /buzzmobile/wheel_separation: 1.3716
+ * /rosdistro: indigo
+ * /rosversion: 1.11.20
+
+NODES
+
+[1mROS_MASTER_URI=http://localhost:11311[0m
+core service [/rosout] found
+[1mprocess[buzzmobile/bearing_py_ubuntu_42880_3865761853036270177-2]: started with pid [43113][0m
+[1m[buzzmobile/bearing_py_ubuntu_42880_3865761853036270177-2] process has died without exit code [pid 43113, cmd /home/cole/catkin_ws/src/buzzmobile/buzzmobile/process/bearing/bearing.py __name:=bearing_py_ubuntu_42880_3865761853036270177 __log:=/home/cole/.ros/log/7dc450d8-f174-11e6-a0f6-000c2946346a/buzzmobile-bearing_py_ubuntu_42880_3865761853036270177-2.log].
+log file: /home/cole/.ros/log/7dc450d8-f174-11e6-a0f6-000c2946346a/buzzmobile-bearing_py_ubuntu_42880_3865761853036270177-2*.log[0m
+====================== 1 failed, 3 passed in 9.85 seconds ======================
