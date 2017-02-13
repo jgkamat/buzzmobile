@@ -3,9 +3,19 @@ from tests.test_utils import with_roscore, mock_pub, check_topic, with_launch_fi
 import numpy as np
 from collections import namedtuple
 
+import os
+os.system('source /opt/ros/indigo/setup.bash')
+os.system('source ~/catkin_ws/devel/setup.bash')
+
 from sensor_msgs.msg import Joy
-from msg import CarPose
-from msg import CarState
+
+import buzzmobile
+print(buzzmobile.__path__)
+print(buzzmobile.__package__)
+print(buzzmobile.__file__)
+
+from buzzmobile.msg import CarPose
+from buzzmobile.msg import CarState
 
 @with_roscore
 class TestCarState(unittest.TestCase):

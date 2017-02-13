@@ -5,8 +5,8 @@ set -e
 
 # Activate VirtualEnv
 source bin/activate
-source /opt/ros/indigo/setup.sh
-source ../../devel/setup.sh
+source /opt/ros/indigo/setup.bash
+source ~/catkin_ws/devel/setup.bash
 
 # Run unit tests
 pytest buzzmobile/tests/simulation
