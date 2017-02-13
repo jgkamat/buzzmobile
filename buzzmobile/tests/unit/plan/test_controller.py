@@ -13,14 +13,14 @@ class TestCarState(unittest.TestCase):
     @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'controller')
     def test_state(self):
-        with mock_pub('/joy', Joy, queue_size=None) as joy_node:
+         with mock_pub('/joy', Joy, queue_size=None) as joy_node:
             
             # TODO When this line is enabled, it causes the bearing test to
             # fail stating the message has not been sent yet.
             # Even though there is an await in the bearing test.
             # Also, it doesn't matter which topic is checked
-            with check_topic('/buzzmobile/controller', CarState) as cs:
-                assert(True)
+            with check_topic('/buzzmobile/car_state', CarState) as cs:
                 # Ensure starts in Start Mode
-                #await(cs.wait_for_message())
-                #assert(cs.state == cs.START)
+                joy_node.send(Joy())
+                await(cs.wait_for_message())
+                assert cs.message.state == CarState.START
