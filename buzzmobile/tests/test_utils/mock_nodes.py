@@ -4,7 +4,6 @@ Contains tools to send and recieve data from fake nodes and topics.
 """
 
 import contextlib
-import functools
 import time
 import rospy
 
@@ -77,7 +76,7 @@ class TestNode(object):
         if elapsed >= timeout:
             raise TimeoutError(('Timed out waiting '
                 'for message on {}').format(self.topic))
-        yield
+        yield elapsed
 
 @contextlib.contextmanager
 def check_topic(topic, rosmsg_type, callback=None):
@@ -92,7 +91,6 @@ def check_topic(topic, rosmsg_type, callback=None):
 
     rospy.init_node('test_'+topic.split('/')[-1], anonymous=True)
     test_node = TestNode(topic, rosmsg_type)
-    new_callback = functools.partial(callback, test_node)
 
     def cb_wrapper(message):
         """Wrapper around the user-provided callback.
@@ -102,16 +100,18 @@ def check_topic(topic, rosmsg_type, callback=None):
         test_node.received = True
         test_node._message = message  # pylint: disable=protected-access
 
-        return new_callback(message)
+        return callback(message)
 
     rospy.Subscriber(topic, rosmsg_type, cb_wrapper)
-    yield test_node
-    rospy.signal_shutdown('test complete')
+    try:
+        yield test_node
+    finally:
+        rospy.signal_shutdown('test complete')
 
-    # Ros really doesn't want you to reinitialize a node once it's been
-    # shutdown because there can be bad side effects, but we are good
-    # at cleaning up after ourselves.
-    rospy.client._init_node_args = None  # pylint: disable=protected-access
-    rospy.core._shutdown_flag = False  # pylint: disable=protected-access
-    rospy.core._in_shutdown = False  # pylint: disable=protected-access
+        # Ros really doesn't want you to reinitialize a node once it's been
+        # shutdown because there can be bad side effects, but we are good
+        # at cleaning up after ourselves.
+        rospy.client._init_node_args = None  # pylint: disable=protected-access
+        rospy.core._shutdown_flag = False  # pylint: disable=protected-access
+        rospy.core._in_shutdown = False  # pylint: disable=protected-access
 

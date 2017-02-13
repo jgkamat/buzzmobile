@@ -18,7 +18,7 @@ class TestBearing(unittest.TestCase):
 
 @with_roscore
 class TestBearingNode(unittest.TestCase):
-    
+
     @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'bearing.py')
     def test_bearing_node(self):
@@ -28,7 +28,8 @@ class TestBearingNode(unittest.TestCase):
                 fix_node.send(NavSatFix(None, None, 33.636700, -84.427863, None, None, None))
                 fix_node.send(NavSatFix(None, None, 39.029128, -111.838257, None, None, None))
 
-            # check the output from the node
-            await(ct.wait_for_message())
-            assert np.isclose(ct.message.data, 1.19212)
-            
+                # check the output from the node
+                await(ct.wait_for_message())
+                assert np.isclose(ct.message.data, 1.19212)
+
+

@@ -17,7 +17,7 @@ def inputer_node():
     # Publish a nonsense initial value to make sure subscribers don't explode
     pub.publish("")
     while not rospy.is_shutdown():
-        new_dst = input("Dest >> ")
+        new_dst = raw_input("Dest >> ")
         pub.publish(new_dst)
 
 if __name__ == '__main__': inputer_node()
