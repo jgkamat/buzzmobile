@@ -4,8 +4,8 @@ import numpy as np
 from collections import namedtuple
 
 from sensor_msgs.msg import Joy
-from buzzmobile.msg import CarPose
-from buzzmobile.msg import CarState
+from msg import CarPose
+from msg import CarState
 
 @with_roscore
 class TestCarState(unittest.TestCase):
