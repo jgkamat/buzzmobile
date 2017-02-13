@@ -8,7 +8,6 @@ Publishes:
 import rospy
 
 from std_msgs.msg import String
-from buzzmobile.msg import CarState
 
 
 def inputer_node():
