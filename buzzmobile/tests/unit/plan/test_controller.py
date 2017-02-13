@@ -3,9 +3,19 @@ from tests.test_utils import with_roscore, mock_pub, check_topic, with_launch_fi
 import numpy as np
 from collections import namedtuple
 
-from sensor_msgs.msg import Joy
-from msg import CarPose
-from msg import CarState
+try:
+    from sensor_msgs.msg import Joy
+except ImportError as e:
+    raise (ImportError('sensor_msgs'))
+
+try:
+    from buzzmobile.msg import CarPose
+except ImportError as e:
+    raise (ImportError('first bzm'))
+try:
+    from buzzmobile.msg import CarState
+except ImportError as e:
+    raise (ImportError('second bzm'))
 
 @with_roscore
 class TestCarState(unittest.TestCase):
