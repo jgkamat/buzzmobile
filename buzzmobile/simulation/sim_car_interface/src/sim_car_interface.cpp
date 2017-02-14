@@ -1,6 +1,4 @@
 #include <ros/ros.h>
-#include <rr_platform/speed.h>
-#include <rr_platform/steering.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/JointState.h>
 #include <buzzmobile/CarPose.h>
