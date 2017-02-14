@@ -1,5 +1,5 @@
 import unittest
-from tests.test_utils import with_roscore, mock_pub, check_topic, with_launch_file, launch_node, await
+from tests.test_utils import RosTest, mock_pub, check_topic, with_launch_file, launch_node, await
 import numpy as np
 from collections import namedtuple
 
@@ -7,8 +7,7 @@ from sensor_msgs.msg import Joy
 from buzzmobile.msg import CarPose
 from buzzmobile.msg import CarState
 
-@with_roscore
-class TestCarState(unittest.TestCase):
+class TestCarState(RosTest):
 
     @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'controller')

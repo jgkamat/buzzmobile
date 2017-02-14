@@ -1,5 +1,5 @@
 import unittest
-from tests.test_utils import with_roscore, mock_pub, check_topic, with_launch_file, launch_node, await
+from tests.test_utils import RosTest, mock_pub, check_topic, with_launch_file, launch_node, await
 import numpy as np
 from collections import namedtuple
 from process.bearing import calculate_directions
@@ -16,8 +16,9 @@ class TestBearing(unittest.TestCase):
         assert np.isclose(calculate_directions.get_distance(fix1, fix2), 2517000, rtol=.01)
 
 
-@with_roscore
-class TestBearingNode(unittest.TestCase):
+class TestBearingNode(RosTest):
+    def setUp(self):
+        pass
 
     @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'bearing.py')
