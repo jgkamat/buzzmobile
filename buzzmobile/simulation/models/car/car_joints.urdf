@@ -145,8 +145,7 @@
     </gazebo>
 
 
-
-    <!--Sensor Links-->
+   <!--Sensor Links-->
 
     <link name="laser"/>
     <gazebo reference="laser">
@@ -424,6 +423,6 @@
             <hardwareInterface>EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
-    </transmission>
+    </transmission>-->
 
 </robot>

@@ -15,14 +15,16 @@
         </group>
         <include file="$(find buzzmobile)/launch/includes/sim_interface.launch"/>
     </group>
-
-    <!-- Start gazebo server, load world, optionally start viz client -->
-    <node pkg="gazebo_ros" name="gazebo" type="gzserver"
-          args="-e ode $(arg world) use_sim_time:=true"/>
-    <group if="$(arg gzclient)">
-        <node pkg="gazebo_ros" name="gazebo_gui" type="gzclient"/>
-    </group>
-
-    <!-- Spawn car -->
-    <node pkg="buzzmobile" name="sim_spawn_car" type="sim_spawn_car.sh" />
+    <!--<group ns="buzzmobile">-->
+	    <!-- Start gazebo server, load world, optionally start viz client -->
+	    <node pkg="gazebo_ros" name="gazebo" type="gzserver"
+		  args="-e ode $(arg world) use_sim_time:=true"
+		  output="screen"/>
+	    <group if="$(arg gzclient)">
+		<node pkg="gazebo_ros" name="gazebo_gui" type="gzclient"/>
+	    </group>
+	<param name="robot_description" command="cat $(find buzzmobile)/simulation/models/car/car_joints.urdf"/>
+	    <!-- Spawn car -->
+	    <node pkg="buzzmobile" name="sim_spawn_car" type="sim_spawn_car.sh"/>
+	<!--</group>-->
 </launch>
