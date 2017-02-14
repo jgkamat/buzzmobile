@@ -157,6 +157,23 @@ To see info about the recorded data, do `rosbag info filename.bag`
 To play the data (and publish those messages), do `rosbag play test.bag`. To play
 in a loop, just add the `-l` flag.
 
+Developing
+----------
+
+If you ever need to add ros dependencies, add them to `buzzmobile/packages.xml` and install them with:
+
+```bash
+cd ~/catkin_ws/src
+rosdep install -y --from-paths ./buzzmobile/buzzmobile --ignore-src --rosdistro=indigo
+```
+
+If you need to add python deps, make sure you're in the virtual environment (`rosvenv`), then add the dep to `buzzmobile/setup.py` and do:
+
+```bash
+cd ~/catkin_ws/src/buzzmobile
+pip install -e buzzmobile
+```
+
 
 Starting Car
 ------------
