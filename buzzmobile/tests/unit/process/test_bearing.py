@@ -17,9 +17,6 @@ class TestBearing(unittest.TestCase):
 
 
 class TestBearingNode(RosTest):
-    def setUp(self):
-        pass
-
     @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'bearing.py')
     def test_bearing_node(self):
