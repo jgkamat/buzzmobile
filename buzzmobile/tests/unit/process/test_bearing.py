@@ -20,7 +20,7 @@ class TestBearingNode(RosTest):
     @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'bearing.py')
     def test_bearing_node(self):
-        with mock_pub('/fix', NavSatFix, queue_size=None) as fix_node:
+        with mock_pub('/fix', NavSatFix, queue_size=0) as fix_node:
             with check_topic('/buzzmobile/bearing', Float64) as ct:
                 # send mock data
                 fix_node.send(NavSatFix(None, None, 33.636700, -84.427863, None, None, None))

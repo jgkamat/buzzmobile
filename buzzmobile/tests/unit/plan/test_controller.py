@@ -22,6 +22,6 @@ class TestCarState(RosTest):
                 # Ensure starts in Start Mode
                 assert True
                 # TODO(cole): finish writing test
-                # joy_node.send(Joy())
-                # await(cs.wait_for_message())
-                # assert cs.message.state == CarState.START
+                joy_node.send(Joy())
+                await(cs.wait_for_message())
+                assert cs.message.state == CarState.START
