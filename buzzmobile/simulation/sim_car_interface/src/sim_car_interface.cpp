@@ -46,10 +46,6 @@ constexpr double wheel_circumference = 2.0 * M_PI * 0.036;
 void carPoseCallback(const buzzmobile::CarPose::ConstPtr &msg) {
     speed_set_point = -msg->velocity;
     steer_set_point = -msg->angle;
-
-    // arduino.setSteering(cmd->angle);
-    // arduino.setHorn(cmd->horn);
-    // last_command_time = cmd->header.stamp;
 }
 
 // void steeringCallback(const rr_platform::steeringConstPtr &msg) {
@@ -111,8 +107,6 @@ int main(int argc, char **argv) {
 
     auto carPoseSub = handle.subscribe("/car_pose", 1, carPoseCallback);
     auto stateSub = handle.subscribe("/buzzmobile/joint_states", 1, jointStateCallback);
-    // auto speedSub = handle.subscribe("/speed", 1, speedCallback);
-    // auto steerSub = handle.subscribe("/steering", 1, steeringCallback);
 
     ros::Rate rate{30};
     while(ros::ok()) {

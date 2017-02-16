@@ -4,15 +4,15 @@
     <arg name="world" default="$(find buzzmobile)/simulation/models/world/empty.world"/>
 
     <group ns="buzzmobile">
-        <!-- include file="$(find buzzmobile)/launch/includes/params.launch"/ -->
-        <!-- include file="$(find buzzmobile)/launch/includes/gps.launch"/ -->
-        <!-- include file="$(find buzzmobile)/launch/includes/mapping.launch"/ -->
-        <!-- include file="$(find buzzmobile)/launch/includes/steering.launch"/ -->
-        <!-- include file="$(find buzzmobile)/launch/includes/lidar.launch"/ -->
-        <!-- include file="$(find buzzmobile)/launch/includes/controller.launch"/ -->
-        <!-- group if="$(arg mission_control)" -->
-            <!-- include file="$(find buzzmobile)/launch/includes/visualization.launch"/ -->
-        <!-- /group -->
+        <include file="$(find buzzmobile)/launch/includes/params.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/gps.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/mapping.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/steering.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/lidar.launch"/>
+        <include file="$(find buzzmobile)/launch/includes/controller.launch"/>
+        <group if="$(arg mission_control)">
+            <include file="$(find buzzmobile)/launch/includes/visualization.launch"/>
+        </group>
         <include file="$(find buzzmobile)/launch/includes/sim_interface.launch"/>
     </group>
 
