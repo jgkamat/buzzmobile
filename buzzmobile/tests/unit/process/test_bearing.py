@@ -1,5 +1,5 @@
 import unittest
-from tests.test_utils import RosTest, mock_pub, check_topic, with_launch_file, launch_node, await
+from tests.test_utils import RosTest, mock_pub, check_topic, with_launch_file, launch_node
 import numpy as np
 from collections import namedtuple
 from process.bearing import calculate_directions
@@ -27,7 +27,5 @@ class TestBearingNode(RosTest):
                 fix_node.send(NavSatFix(None, None, 39.029128, -111.838257, None, None, None))
 
                 # check the output from the node
-                await(ct.wait_for_message())
                 assert np.isclose(ct.message.data, 1.19212)
-
 
