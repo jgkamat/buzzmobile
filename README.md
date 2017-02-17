@@ -210,16 +210,30 @@ subsequent press toggles between AUTO and MANUAL mode.
 Testing
 -------
 
-Testing is done with pytest. To run tests, make sure that the environment is
-initialized (run `rosvenv`, `rosinit`, and `rosdevel`) then run `pytest
-buzzmobile/tests`. This will run all tests in the tests directory. Be careful,
-beacuse there is a virtualenv in the root directory of the project, **running
-`pytest` will attempt to run thousands of unittests included with the python
-interpreter.**
+Testing is done with pytest. To run tests, you can run the script in
+`ci_scripts/unittest`, which will run all unit tests. If you want to run a
+specific test, make sure that the environment is initialized (run `rosvenv`,
+`rosinit`, and `rosdevel`) then run:
+
+```bash
+cd ~/catkin_ws/src/buzzmobile/buzzmobile
+pytest tests/unit/path/to/test.py
+```
+
+Be careful! Make sure not to run any tests from outside the inner `buzzmobile/`
+dir, as that creates a name conflict in tests that try importing
+`buzzmobile.std_msgs`.
+
+Also make sure not to run tests from the root directory of the project, as there
+is a virtualenv there: **running `pytest` will attempt to run thousands of
+unittests included with the python interpreter.**
 
 To write additional unit tests, please place within `buzzmobile/tests/unit` in
-directories that match the source files, that is tests for the
+directories that match the source files, that is, tests for the
 `buzzmobile/process/gps_mapper` node should go in
 `buzzmobile/tests/unit/process/test_gps_mapper.py`. Integration and simulation 
 tests should go in the `buzzmobile/tests/integration` and
 `buzzmobile/tests/simulation` test subdirectories respectively.
+
+In order to use the `test_util` api for writing tests, please refeer to the
+readme in `buzzmobile/buzzmobile/tests/test_utils/`.
