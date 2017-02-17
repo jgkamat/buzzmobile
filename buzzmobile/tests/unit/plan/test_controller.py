@@ -10,7 +10,7 @@ class TestCarState(RosTest):
     @with_launch_file('buzzmobile', 'test_params.launch')
     @launch_node('buzzmobile', 'controller')
     def test_state(self):
-        with mock_pub('/joy', Joy, queue_size=None) as joy_node:
+        with mock_pub('/joy', Joy, queue_size=0) as joy_node:
             with check_topic('/buzzmobile/car_state', CarState) as cs:
                 # Ensure starts in Start Mode
                 assert True
