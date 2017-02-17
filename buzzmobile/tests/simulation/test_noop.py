@@ -13,7 +13,7 @@ class TestNoop(RosTest):
         self.true = True
 
     # TODO(irapha): rever this file before committing. Also add readme information.
-    @with_launch_file('buzzmobile', 'simulation.launch', gzclient='true')
+    @with_launch_file('buzzmobile', 'simulation.launch')
     def test_example(self):
         """Example test method.
         """
