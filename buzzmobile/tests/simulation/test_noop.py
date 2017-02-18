@@ -13,6 +13,7 @@ class TestNoop(RosTest):
         self.true = True
 
     # TODO(irapha): rever this file before committing.
+    # Only do so when you can sigkill this test
     @with_launch_file('buzzmobile', 'simulation.launch')
     def test_example(self):
         """Example test method.
