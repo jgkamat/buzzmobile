@@ -1,6 +1,3 @@
-import unittest
-import time
-
 from tests.test_utils import RosTest, with_launch_file, check_topic
 from rosgraph_msgs.msg import Clock
 
