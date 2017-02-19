@@ -8,6 +8,8 @@ source bin/activate
 source /opt/ros/indigo/setup.bash
 source ~/catkin_ws/devel/setup.bash
 
+cd buzzmobile
+
 # Run unit tests
-pytest buzzmobile/tests/simulation
+pytest tests/simulation
 

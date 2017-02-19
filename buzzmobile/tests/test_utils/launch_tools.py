@@ -2,6 +2,7 @@
 """
 import functools
 import os
+import sys
 import time
 
 import rosgraph
@@ -84,7 +85,7 @@ _LAUNCHER = dict()
 # outermost launch_node will create a master launcher and clean up after itself
 # and all child nodes launched for the test.
 
-def with_launch_file(package, launch):
+def with_launch_file(package, launch, **kwargs):
     """Decorator to source a launch file for running nodes.
 
     This should always be run first.
@@ -100,7 +101,11 @@ def with_launch_file(package, launch):
         def new_test(self):
             """Wrapper around the user provided test that runs a launch file.
             """
+            # set env variables and add argvs to sys.argv
             os.environ['ROS_MASTER_URI'] = self.rosmaster_uri
+            new_argvs = ['{}:={}'.format(k, v) for k, v in kwargs.iteritems()]
+            sys.argv.extend(new_argvs)
+
             launch = ROSLauncher(full_name, port=self.port)
             launch.start()
             if self.port in _LAUNCHER:
@@ -110,9 +115,15 @@ def with_launch_file(package, launch):
 
             _LAUNCHER[self.port] = launch
 
-            temp = func(self)
-            _LAUNCHER[self.port].stop()
-            del _LAUNCHER[self.port]
+            try:
+                temp = func(self)
+            except Exception as exc:
+                raise exc
+            finally:
+                _LAUNCHER[self.port].stop()
+                # clean argvs from sys.argv
+                sys.argv = sys.argv[:len(new_argvs)]
+                del _LAUNCHER[self.port]
             return temp
         return new_test
     return launcher
