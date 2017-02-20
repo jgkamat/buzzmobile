@@ -34,7 +34,7 @@ using most, but not all of them.
 - E0001: (syntax error raised for a module; message varies)        
 - E0011: Unrecognized file option %r        
 - E0012: Bad option value %r        
-- E0100: __init__ method is a generator        
+- E0100: \_\_init\_\_ method is a generator        
 - E0101: Explicit return in __init__        
 - E0102: %s already defined line %s        
 - E0103: %r not properly in loop        
@@ -49,21 +49,21 @@ using most, but not all of them.
 - E0213: Method should have "self" as first argument        
 - E0221: Interface resolved to %s is not a class        
 - E0222: Missing method %r from %s interface        
-- E0235: __exit__ must accept 3 arguments: type, value, traceback        
+- E0235: \_\_exit\_\_ must accept 3 arguments: type, value, traceback        
 - E0501: Old: Non ascii characters found but no encoding specified (PEP 263)        
 - E0502: Old: Wrong encoding specified (%s)        
 - E0503: Old: Unknown encoding specified (%s)        
 - E0601: Using variable %r before assignment        
 - E0602: Undefined variable %r        
-- E0603: Undefined variable name %r in __all__        
-- E0604: Invalid object %r in __all__, must contain only strings        
+- E0603: Undefined variable name %r in \_\_all\_\_        
+- E0604: Invalid object %r in \_\_all\_\_, must contain only strings        
 - E0611: No name %r in module %r        
 - E0701: Bad except clauses order (%s)        
 - E0702: Raising %s while only classes, instances or string are allowed        
 - E0710: Raising a new style class which doesn't inherit from BaseException        
 - E0711: NotImplemented raised - should raise NotImplementedError        
 - E0712: Catching an exception which doesn\'t inherit from BaseException: %s        
-- E1001: Use of __slots__ on an old style class        
+- E1001: Use of \_\_slots\_\_ on an old style class        
 - E1002: Use of super on an old style class        
 - E1003: Bad first argument %r given to super()        
 - E1004: Missing argument to super()        
@@ -137,15 +137,15 @@ using most, but not all of them.
 - W0142: Used * or ** magic        
 - W0150: %s statement in finally block may swallow exception        
 - W0199: Assert called on a 2-uple. Did you mean \'assert x,y\'?        
-- W0201: Attribute %r defined outside __init__        
+- W0201: Attribute %r defined outside \_\_init\_\_        
 - W0211: Static method with %r as first argument        
 - W0212: Access to a protected member %s of a client class        
 - W0221: Arguments number differs from %s method        
 - W0222: Signature differs from %s method        
 - W0223: Method %r is abstract in class %r but is not overridden        
-- W0231: __init__ method from base class %r is not called        
-- W0232: Class has no __init__ method        
-- W0233: __init__ method from a non direct base class %r is called        
+- W0231: \_\_init\_\_ method from base class %r is not called        
+- W0232: Class has no \_\_init\_\_ method        
+- W0233: \_\_init\_\_ method from a non direct base class %r is called        
 - W0234: iter returns non-iterator        
 - W0301: Unnecessary semicolon        
 - W0311: Bad indentation. Found %s %s, expected %s        
@@ -158,7 +158,7 @@ using most, but not all of them.
 - W0403: Relative import %r, should be %r        
 - W0404: Reimport %r (imported line %s)        
 - W0406: Module import itself        
-- W0410: __future__ import is not the first non docstring statement        
+- W0410: \_\_future\_\_ import is not the first non docstring statement        
 - W0511: (warning notes in code comments; message varies)        
 - W0512: Cannot decode using encoding "%s", unexpected byte at position %d        
 - W0601: Global variable %r undefined at the module level        
