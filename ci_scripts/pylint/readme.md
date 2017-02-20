@@ -100,10 +100,10 @@ using most, but not all of them.
 - F0401: `Unable to import %s`
 - I0001: `Unable to run raw checkers on built-in module %s`
 - I0010: `Unable to consider inline option %r`
-- I0011: `Locally disabling %s`
+- ~~I0011~~: `Locally disabling %s`
 - I0012: `Locally enabling %s`
 - I0014: `Used deprecated directive "pylint:disable-all" or "pylint:disable=all"`
-- I0020: `Suppressed %s (from line %d)`
+- ~~I0020~~: `Suppressed %s (from line %d)`
 - I0021: `Useless suppression of %s`
 - I0022: `Deprecated pragma "pylint:disable-msg" or "pylint:enable-msg"`
 - R0201: `Method could be a function`
@@ -111,7 +111,7 @@ using most, but not all of them.
 - R0801: `Similar lines in %s files`
 - R0901: `Too many ancestors (%s/%s)`
 - R0902: `Too many instance attributes (%s/%s)`
-- R0903: `Too few public methods (%s/%s)`
+- ~~R0903~~: `Too few public methods (%s/%s)`
 - R0904: `Too many public methods (%s/%s)`
 - R0911: `Too many return statements (%s/%s)`
 - R0912: `Too many branches (%s/%s)`
