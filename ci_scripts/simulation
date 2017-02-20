@@ -8,7 +8,10 @@ source bin/activate
 source /opt/ros/indigo/setup.bash
 source ~/catkin_ws/devel/setup.bash
 
-cd buzzmobile
+# Some tests import buzzmobile.msg, which is in ~/catkin_ws/devel
+# If bozzmobile is a visible folder, then the correct one won't be visible
+# So cd into buzzmobile
+cd ~/catkin_ws/src/buzzmobile/buzzmobile
 
 # Run unit tests
 pytest tests/simulation
