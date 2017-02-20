@@ -152,7 +152,7 @@ using most, but not all of them.
 - W0312: Found indentation with %ss instead of %ss        
 - W0331: Use of the <> operator        
 - W0332: Use of "l" as long integer identifier        
-- W0333: Use of the `` operator        
+- W0333: Use of the \`\` operator        
 - W0401: Wildcard import %s        
 - W0402: Uses of a deprecated module %r        
 - W0403: Relative import %r, should be %r        
