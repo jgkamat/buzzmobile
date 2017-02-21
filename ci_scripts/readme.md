@@ -6,3 +6,4 @@ they can be run locally too.
 - `simulation` - runs tests in `buzzmobile/buzzmobile/tests/simulation`
 - `unittest` - runs tests in `buzzmobile/buzzmobile/tests/unit`
 - `style` - runs pylint style checks on all code based on `ci_scripts/pylint/pylintrc`
+- `update_deps` - update rosdeps and python deps
