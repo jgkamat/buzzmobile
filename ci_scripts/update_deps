@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+
+# Makes this script exit on first error.
+set -e
+
+# Activate VirtualEnv
+source bin/activate
+source /opt/ros/indigo/setup.bash
+source ~/catkin_ws/devel/setup.bash
+
+cd ~/catkin_ws/src
+rosdep install -y --from-paths ./buzzmobile/buzzmobile --ignore-src --rosdistro=indigo
+
+cd ~/catkin_ws/src/buzzmobile
+pip install -e buzzmobile
