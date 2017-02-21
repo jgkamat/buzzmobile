@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
     ros::Publisher leftSteeringPublisher = handle.advertise<std_msgs::Float64>("/left_steer_position_controller/command", 1);
     ros::Publisher rightSteeringPublisher = handle.advertise<std_msgs::Float64>("/right_steer_position_controller/command", 1);
 
-    auto carPoseSub = handle.subscribe("/car_pose", 1, carPoseCallback);
+    auto carPoseSub = handle.subscribe("/buzzmobile/car_pose", 1, carPoseCallback);
     auto stateSub = handle.subscribe("/joint_states", 1, jointStateCallback);
 
     ros::Rate rate{30};
