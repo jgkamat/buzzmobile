@@ -174,6 +174,12 @@ cd ~/catkin_ws/src/buzzmobile
 pip install -e buzzmobile
 ```
 
+Alternatively, you can update both ros and python deps using:
+
+```bash
+./ci_scripts/update_deps
+```
+
 
 Starting Car
 ------------
