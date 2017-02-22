@@ -71,7 +71,7 @@ main ROS process.
 Create new tabs for every node and run them as such:
 
 ```bash
-rosrun buzzmobile image_const
+rosrun buzzmobile image_const.py
 ```
 
 ```bash
