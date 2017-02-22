@@ -4,7 +4,7 @@
 set -e
 
 # Activate VirtualEnv
-source bin/activate
+source ~/catkin_ws/src/buzzmobile/bin/activate
 source /opt/ros/indigo/setup.bash
 source ~/catkin_ws/devel/setup.bash
 
