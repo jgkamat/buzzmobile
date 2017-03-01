@@ -176,7 +176,22 @@
     </gazebo>
 
 
-    <link name="imu"/>
+    <link name="gps"/>
+    <gazebo>
+        <plugin name="gazebo_sensor" filename="libhector_gazebo_ros_gps.so">
+            <alwaysOn>1</alwaysOn>
+            <updateRate>10.0</updateRate>
+            <bodyName>base_footprint</bodyName>
+            <topicName>fix</topicName>
+            <velocityTopicName>fix_velocity</velocityTopicName>
+            <drift>0.0 0.0 0.0</drift>
+            <gaussianNoise>0.0 0.0 0.0</gaussianNoise>
+            <velocityDrift>0 0 0</velocityDrift>
+            <velocityGaussianNoise>0.0 0.0 0.0</velocityGaussianNoise>
+        </plugin>
+    </gazebo>
+
+    <!--<link name="imu"/>
     <gazebo>
         <plugin filename="libhector_gazebo_ros_imu.so" name="imu_sensor">
             <robotNamespace>/</robotNamespace>
@@ -198,7 +213,7 @@
             <headingDriftFrequency>0.0 0.0 0.0</headingDriftFrequency>
             <headingGaussianNoise>0.0 0.0 0.0</headingGaussianNoise>
         </plugin>
-    </gazebo>
+    </gazebo>-->
 
 
     <link name="camera_base">
@@ -345,9 +360,9 @@
         <origin xyz="0.255 0 0.110" rpy="0 0 0"/>
     </joint>
 
-    <joint name="imu" type="fixed">
+    <joint name="gps" type="fixed">
         <parent link="chassis"/>
-        <child link="imu"/>
+        <child link="gps"/>
         <origin xyz="0 0 0.1778" rpy="0 0 0"/>
     </joint>
 
