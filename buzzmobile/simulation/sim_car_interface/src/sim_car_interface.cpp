@@ -35,13 +35,13 @@ double speed_measured_right = 0.0;
 double steer_set_point = 0.0;
 
 // TODO(sahit): change to rosparams
-constexpr double chassis_length = 0.33246;
-constexpr double chassis_width = 0.28732;
+constexpr double chassis_length = 1.8; 
+constexpr double chassis_width = 1.57;
 constexpr double inv_chassis_length = 1.0 / chassis_length;
 constexpr double chassis_width_2 = chassis_width / 2.0;
-constexpr double max_torque = 0.1;
+constexpr double max_torque = 0.25; //lololol
 
-constexpr double wheel_circumference = 2.0 * M_PI * 0.036;
+constexpr double wheel_circumference = 2.0 * M_PI * 0.3302;
 
 void carPoseCallback(const buzzmobile::CarPose::ConstPtr &msg) {
     speed_set_point = -msg->velocity;
