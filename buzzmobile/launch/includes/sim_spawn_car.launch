@@ -12,6 +12,6 @@
     <node pkg="gazebo_ros" name="spawn_model" type="spawn_model" output="screen"
           args="-file $(find buzzmobile)/simulation/models/car/car_joints.urdf
             -urdf -model buzzmobile
-            -x 0 -y 0 -z 0
+            -x 0 -y 0 -z 1 
             -R 0 -P 0 -Y 0"/>
 </launch>
