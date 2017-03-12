@@ -365,6 +365,12 @@
         <child link="gps"/>
         <origin xyz="0 0 0.1778" rpy="0 0 0"/>
     </joint>
+    <joint name="imu" type="fixed">
+        <parent link="chassis"/>
+        <child link="imu"/>
+        <origin xyz="0 0 0.1" rpy="0 0 0"/>
+    </joint>
+
 
     <!--Actuators-->
 
