@@ -1,56 +1,97 @@
 """A collection of utilities to make testing with ros less painful.
 """
 
+import os
+import random
+import socket
 import subprocess
+import time
+import unittest
 
-def with_roscore(obj):
-    """Decorator to run all tests in a testcase with their own roscore.
+import psutil
 
-    This wraps the setUp and tearDown methods to start by first spinning up a
-    roscore process, and tears it down at the very end. This adds a small time
-    penalty, but its worth it.
 
-    Its worth deciding whether to make this work on a per-method, per object,
-    or both basis.
+def rand_port():
+    """Picks a random port number.
+
+    This is potentially unsafe, but shouldn't generally be a problem.
     """
-    old_setup = obj.setUp
-    old_teardown = obj.tearDown
+    return random.randint(10311, 12311)
 
-    def new_setup(self):
-        """Wrapper around the user-defined setUp method that runs roscore.
-        """
-        self.roscore = subprocess.Popen(['roscore'])
-        old_setup(self)
 
-    def new_teardown(self):
-        """Wrapper around the user-defined tearDown method that ends roscore.
-        """
-        old_teardown(self)
-        self.roscore.kill()
-        subprocess.call(['killall', '-9', 'rosmaster'])
-        self.roscore.wait()
-
-    obj.setUp = new_setup
-    obj.tearDown = new_teardown
-    return obj
-
-def await(gen):
-    """Shim to add await syntax to python2, kinda.
-
-    On a high level, this function simply takes the next item from a generator
-    and passes it along, but it blocks until that item is gotten. When used in
-    the context
-
-        await(TestNode.wait_for_message())
-
-    it will wait for the `wait_for_message` call to yield the first (and only)
-    time. This will happen only if the node has received a message
-    (`self.recieved == True`), which means that you can then safely poll for
-    the recieved message (`TestNode.message.data` or otherwise).
-
-    In other words, if await(Node) doesn't raise an error, you should have
-    successfully recieved a message, and can therefore test against it,
-    otherwise the message access can raise a NoMessage error.
+class RosTestMeta(type):
+    """Metaclass for RosTest that adds the setup/teardown we want.
     """
-    for item in gen:
-        yield item
+    def __new__(mcs, name, bases, dct):
+
+        # It will break unless we throw in fake setup and teardown methods if
+        # the real ones don't exist yet.
+
+        def noop(_):
+            """Do nothing function.
+
+            This is injected if there is no user-defined setUp or tearDown
+            method on an instance of RosTest.
+            """
+            pass
+
+        try:
+            old_setup = dct['setUp']
+        except KeyError:
+            old_setup = noop
+        try:
+            old_teardown = dct['tearDown']
+        except KeyError:
+            old_teardown = noop
+
+        def new_setup(self):
+            """Wrapper around the user-defined setUp method that runs roscore.
+            """
+            self.port = rand_port()
+            self.rosmaster_uri = 'http://{}:{}'.format(socket.gethostname(),
+                    self.port)
+            env = {k:v for k, v in os.environ.iteritems()}
+            env.update({'ROS_MASTER_URI': self.rosmaster_uri})
+            roscore_initialized = False
+            while not roscore_initialized:
+                self.roscore = subprocess.Popen(
+                        ['roscore', '-p', str(self.port)], env=env)
+                # an error will return a nonzero errorcode, and None indicates
+                # that the process is still running, so falsy results are good
+                time.sleep(1)
+                if not self.roscore.poll():
+                    roscore_initialized = True
+                else:
+                    self.roscore.kill()
+                    self.roscore = None
+            old_setup(self)
+
+        def new_teardown(self):
+            """Wrapper around the user-defined tearDown method to end roscore.
+            """
+            proc = psutil.Process(self.roscore.pid)
+            children = proc.children(recursive=True)
+
+            old_teardown(self)
+            self.roscore.kill()
+            self.roscore.wait()
+            self.roscore = None
+            for child in children:
+                child.terminate()
+                child.wait()
+
+
+        dct['setUp'] = new_setup
+        dct['tearDown'] = new_teardown
+        dct['setUp'].__name__ = 'setUp'
+        dct['tearDown'].__name__ = 'tearDown'
+        return super(RosTestMeta, mcs).__new__(mcs, name, bases, dct)
+
+
+class RosTest(unittest.TestCase):
+    """A subclass of TestCase that exposes some additional ros-related attrs.
+
+    self.port is the port this instance will run on.
+    self.rosmaster_uri is equivalent to the ROS_MASTER_URI environmental var
+    """
+    __metaclass__ = RosTestMeta

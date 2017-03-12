@@ -2,8 +2,6 @@
 #include "arduino.h"
 #include <buzzmobile/CarPose.h>
 #include <std_msgs/Bool.h>
-//#include <core_msgs/Odom.h>
-//#include <core_msgs/MotionCommand.h>
 
 using namespace std;
 

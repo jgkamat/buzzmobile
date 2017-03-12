@@ -9,7 +9,7 @@
 
 #Modified to handle custom todo messages, taken from pylint source
 
-"""Check source code is ascii only or has an encoding declaration (PEP 263)"""
+"""Check every 'TODO' declared in comments have an owner assigned"""
 
 # pylint: disable=W0511
 

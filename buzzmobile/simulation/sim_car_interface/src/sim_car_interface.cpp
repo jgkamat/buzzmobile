@@ -1,6 +1,4 @@
 #include <ros/ros.h>
-#include <rr_platform/speed.h>
-#include <rr_platform/steering.h>
 #include <std_msgs/Float64.h>
 #include <sensor_msgs/JointState.h>
 #include <buzzmobile/CarPose.h>
@@ -48,10 +46,6 @@ constexpr double wheel_circumference = 2.0 * M_PI * 0.036;
 void carPoseCallback(const buzzmobile::CarPose::ConstPtr &msg) {
     speed_set_point = -msg->velocity;
     steer_set_point = -msg->angle;
-
-    // arduino.setSteering(cmd->angle);
-    // arduino.setHorn(cmd->horn);
-    // last_command_time = cmd->header.stamp;
 }
 
 // void steeringCallback(const rr_platform::steeringConstPtr &msg) {
@@ -111,10 +105,8 @@ int main(int argc, char **argv) {
     ros::Publisher leftSteeringPublisher = handle.advertise<std_msgs::Float64>("/left_steer_position_controller/command", 1);
     ros::Publisher rightSteeringPublisher = handle.advertise<std_msgs::Float64>("/right_steer_position_controller/command", 1);
 
-    auto carPoseSub = handle.subscribe("/car_pose", 1, carPoseCallback);
-    auto stateSub = handle.subscribe("/buzzmobile/joint_states", 1, jointStateCallback);
-    // auto speedSub = handle.subscribe("/speed", 1, speedCallback);
-    // auto steerSub = handle.subscribe("/steering", 1, steeringCallback);
+    auto carPoseSub = handle.subscribe("/buzzmobile/car_pose", 1, carPoseCallback);
+    auto stateSub = handle.subscribe("/joint_states", 1, jointStateCallback);
 
     ros::Rate rate{30};
     while(ros::ok()) {

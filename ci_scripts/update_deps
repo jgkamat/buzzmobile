@@ -8,5 +8,8 @@ source ~/catkin_ws/src/buzzmobile/bin/activate
 source /opt/ros/indigo/setup.bash
 source ~/catkin_ws/devel/setup.bash
 
-# Run pylint on all files
-pylint buzzmobile --rcfile=ci_scripts/pylint/pylintrc
+cd ~/catkin_ws/src
+rosdep install -y --from-paths ./buzzmobile/buzzmobile --ignore-src --rosdistro=indigo
+
+cd ~/catkin_ws/src/buzzmobile
+pip install -e buzzmobile

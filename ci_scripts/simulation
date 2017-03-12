@@ -4,10 +4,15 @@
 set -e
 
 # Activate VirtualEnv
-source bin/activate
-source /opt/ros/indigo/setup.sh
-source ../../devel/setup.sh
+source ~/catkin_ws/src/buzzmobile/bin/activate
+source /opt/ros/indigo/setup.bash
+source ~/catkin_ws/devel/setup.bash
+
+# Some tests import buzzmobile.msg, which is in ~/catkin_ws/devel
+# If bozzmobile is a visible folder, then the correct one won't be visible
+# So cd into buzzmobile
+cd ~/catkin_ws/src/buzzmobile/buzzmobile
 
 # Run unit tests
-pytest buzzmobile/tests/simulation
+pytest tests/simulation
 

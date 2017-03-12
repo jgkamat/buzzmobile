@@ -11,12 +11,12 @@
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/buzzmobile.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/car_mesh.dae"/>
             </geometry>
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/buzzmobile.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/car_mesh.dae"/>
             </geometry>
         </collision>
     </link>
@@ -41,12 +41,12 @@
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/wheel.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/wheel.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
         </collision>
     </link>
@@ -66,12 +66,12 @@
         <visual>
             <origin rpy="0 0 3.14" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/wheel.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/wheel.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
         </collision>
     </link>
@@ -98,12 +98,12 @@
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/wheel.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/wheel.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
         </collision>
     </link>
@@ -129,12 +129,12 @@
         <visual>
             <origin rpy="0 0 3.14" xyz="0 0 0"/>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/wheel.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
         </visual>
         <collision>
             <geometry>
-                <mesh filename="package://buzzmobile/simulation/models/buzzmobile/mesh/wheel.dae"/>
+                <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
         </collision>
     </link>
@@ -145,8 +145,7 @@
     </gazebo>
 
 
-
-    <!--Sensor Links-->
+   <!--Sensor Links-->
 
     <link name="laser"/>
     <gazebo reference="laser">
@@ -424,6 +423,6 @@
             <hardwareInterface>EffortJointInterface</hardwareInterface>
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
-    </transmission>
+    </transmission>-->
 
 </robot>

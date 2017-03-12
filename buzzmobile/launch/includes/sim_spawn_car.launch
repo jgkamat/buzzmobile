@@ -1,0 +1,17 @@
+<launch>
+    <!-- Load Joint Mappings and Service Controllers -->
+    <rosparam command="load" file="$(find buzzmobile)/simulation/models/car/service_controllers_to_joints_mapping.yaml"/>
+    <node pkg="controller_manager" name="spawner" type="spawner"
+          args="left_wheel_effort_controller right_wheel_effort_controller
+          left_steer_position_controller right_steer_position_controller
+          joint_state_controller"/>
+
+
+    <!-- Spawn Car -->
+    <param name="robot_description" command="cat $(find buzzmobile)/simulation/models/car/car_joints.urdf"/>
+    <node pkg="gazebo_ros" name="spawn_model" type="spawn_model" output="screen"
+          args="-file $(find buzzmobile)/simulation/models/car/car_joints.urdf
+            -urdf -model buzzmobile
+            -x 0 -y 0 -z 0
+            -R 0 -P 0 -Y 0"/>
+</launch>
