@@ -191,7 +191,7 @@
         </plugin>
     </gazebo>
 
-    <!--<link name="imu"/>
+    <link name="imu"/>
     <gazebo>
         <plugin filename="libhector_gazebo_ros_imu.so" name="imu_sensor">
             <robotNamespace>/</robotNamespace>
@@ -213,7 +213,7 @@
             <headingDriftFrequency>0.0 0.0 0.0</headingDriftFrequency>
             <headingGaussianNoise>0.0 0.0 0.0</headingGaussianNoise>
         </plugin>
-    </gazebo>-->
+    </gazebo>
 
 
     <link name="camera_base">
