@@ -25,6 +25,6 @@
     </group>
 
     <!-- Spawn car -->
-    <!-- node pkg="buzzmobile" name="sim_spawn_car" type="sim_spawn_car.sh"/ -->
+    <!--<node pkg="buzzmobile" name="sim_spawn_car" type="sim_spawn_car.sh"/>-->
     <include file="$(find buzzmobile)/launch/includes/sim_spawn_car.launch"/>
 </launch>
