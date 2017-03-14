@@ -5,7 +5,7 @@
     <link name="chassis">
         <inertial>
             <origin xyz="0 0 0"/>
-            <mass value="5.0"/>
+            <mass value="136.0"/>
             <inertia ixx="0.10595165" ixy="-0.002487144" ixz="0.011981253" iyy="0.126271962" iyz="0.011832006" izz="0.033185337"/>
         </inertial>
         <visual>
@@ -27,7 +27,7 @@
 
     <link name="back_axle">
         <inertial> <!--Null inertia-->
-            <mass value="0.001"/>
+            <mass value="3.311"/>
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
@@ -35,7 +35,7 @@
     <link name="wheel_back_left">
         <inertial>
             <origin rpy="0 0 0" xyz="0 0 0" />
-            <mass value="0.1" />
+            <mass value="2" />
             <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
         </inertial>
         <visual>
@@ -60,11 +60,11 @@
     <link name="wheel_back_right">
         <inertial>
             <origin rpy="0 0 0" xyz="0 0 0" />
-            <mass value="0.1" />
+            <mass value="2" />
             <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
         </inertial>
         <visual>
-            <origin rpy="0 0 3.14" xyz="0 0 0"/>
+            <origin rpy="0 0 3.14" xyz="0 -0.645 0"/>
             <geometry>
                 <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
@@ -84,7 +84,7 @@
 
     <link name="steering_front_left">
         <inertial> <!--Null inertia-->
-            <mass value="0.001"/>
+            <mass value="2"/>
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
@@ -92,7 +92,7 @@
     <link name="wheel_front_left">
         <inertial>
             <origin xyz="0 0 0" />
-            <mass value="0.1" />
+            <mass value="2" />
             <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
         </inertial>
         <visual>
@@ -115,7 +115,7 @@
 
     <link name="steering_front_right">
         <inertial> <!--Null inertia-->
-            <mass value="0.001"/>
+            <mass value="0.1"/>
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
@@ -123,7 +123,7 @@
     <link name="wheel_front_right">
         <inertial>
             <origin xyz="0 0 0" />
-            <mass value="0.1" />
+            <mass value="2" />
             <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
         </inertial>
         <visual>
@@ -282,7 +282,7 @@
     <joint name="base_footprint_to_chassis" type="fixed">
         <parent link="base_footprint"/>
         <child link="chassis"/>
-        <origin xyz="0 0 0.036" rpy="0 0 0"/>
+        <origin xyz="0 0 0.3302" rpy="0 0 0"/>
     </joint>
 
     <joint name="chassis_to_back_axle" type="fixed">
@@ -294,20 +294,20 @@
     <joint name="axle_to_left_wheel" type="continuous">
         <parent link="back_axle"/>
         <child link="wheel_back_left"/>
-        <origin xyz="0 0.14439 0" rpy="0 0 0"/>
+        <origin xyz="0 0.645 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
     </joint>
     <joint name="axle_to_right_wheel" type="continuous">
         <parent link="back_axle"/>
         <child link="wheel_back_right"/>
-        <origin xyz="0 -0.14439 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
     </joint>
 
     <joint name="chassis_to_left_steering" type="revolute">
         <parent link="chassis"/>
         <child link="steering_front_left"/>
-        <origin xyz="0.33246 0.14366 0" rpy="0 0 0"/>
+        <origin xyz="2.032 0.645 0" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-0.366519" upper="0.366519" effort="100000.0" velocity="1000000.0"/>
     </joint>
@@ -321,7 +321,7 @@
     <joint name="chassis_to_right_steering" type="revolute">
         <parent link="chassis"/>
         <child link="steering_front_right"/>
-        <origin xyz="0.33246 -0.14366 0" rpy="0 0 0"/>
+        <origin xyz="2.032 -0.645 0" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-0.366519" upper="0.366519" effort="1000.0" velocity="1000.0"/>
     </joint>
