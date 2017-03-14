@@ -105,8 +105,13 @@ int main(int argc, char **argv) {
     ros::Publisher leftSteeringPublisher = handle.advertise<std_msgs::Float64>("/left_steer_position_controller/command", 1);
     ros::Publisher rightSteeringPublisher = handle.advertise<std_msgs::Float64>("/right_steer_position_controller/command", 1);
 
+<<<<<<< HEAD
     auto carPoseSub = handle.subscribe("/buzzmobile/car_pose", 1, carPoseCallback);
     auto stateSub = handle.subscribe("/joint_states", 1, jointStateCallback);
+=======
+    auto carPoseSub = handle.subscribe("/car_pose", 1, carPoseCallback);
+    auto stateSub = handle.subscribe("/buzzmobile/joint_states", 1, jointStateCallback);
+>>>>>>> parent of 6094942... joint states is being subscribed to by sim_car_interface and published by gazebo
 
     ros::Rate rate{30};
     while(ros::ok()) {
