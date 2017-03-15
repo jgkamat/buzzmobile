@@ -82,7 +82,7 @@ void fillSteeringPositions(const double set_angle, double &left, double &right) 
 }
 
 void fillWheelSpeeds(const double steering_angle, const double speed, double &left, double &right) {
-    if(steering_angle == 0.0) {
+    if (steering_angle == 0.0) {
         left = speed;
         right = speed;
     } else {
@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
     auto stateSub = handle.subscribe("/joint_states", 1, jointStateCallback);
 
     ros::Rate rate{30};
-    while(ros::ok()) {
+    while (ros::ok()) {
         ros::spinOnce();
 
         double left_speed, right_speed;

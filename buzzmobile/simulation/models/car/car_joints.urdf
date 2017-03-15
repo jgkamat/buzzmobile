@@ -5,7 +5,8 @@
     <link name="chassis">
         <inertial>
             <origin xyz="0 0 0"/>
-            <mass value="136.0"/>
+            <!-- mass value="136.0"/ -->
+            <mass value="5.0"/>
             <inertia ixx="0.10595165" ixy="-0.002487144" ixz="0.011981253" iyy="0.126271962" iyz="0.011832006" izz="0.033185337"/>
         </inertial>
         <visual>
@@ -27,7 +28,8 @@
 
     <link name="back_axle">
         <inertial> <!--Null inertia-->
-            <mass value="3.311"/>
+            <mass value="0.001"/>
+            <!-- mass value="3.311"/ -->
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
@@ -35,7 +37,8 @@
     <link name="wheel_back_left">
         <inertial>
             <origin rpy="0 0 0" xyz="0 0 0" />
-            <mass value="2" />
+            <!-- mass value="2" / -->
+            <mass value="0.1" />
             <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
         </inertial>
         <visual>
@@ -60,7 +63,8 @@
     <link name="wheel_back_right">
         <inertial>
             <origin rpy="0 0 0" xyz="0 0 0" />
-            <mass value="2" />
+            <!-- mass value="2" / -->
+            <mass value="0.1" />
             <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
         </inertial>
         <visual>
@@ -84,7 +88,8 @@
 
     <link name="steering_front_left">
         <inertial> <!--Null inertia-->
-            <mass value="2"/>
+            <!-- mass value="2"/ -->
+            <mass value="0.001"/>
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
@@ -93,6 +98,7 @@
         <inertial>
             <origin xyz="0 0 0" />
             <mass value="2" />
+            <!-- mass value="0.1" / -->
             <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
         </inertial>
         <visual>
@@ -115,7 +121,8 @@
 
     <link name="steering_front_right">
         <inertial> <!--Null inertia-->
-            <mass value="0.1"/>
+            <!-- mass value="0.1"/ -->
+            <mass value="0.001"/>
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
@@ -123,7 +130,8 @@
     <link name="wheel_front_right">
         <inertial>
             <origin xyz="0 0 0" />
-            <mass value="2" />
+            <!-- mass value="2" / -->
+            <mass value="0.1" />
             <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
         </inertial>
         <visual>
