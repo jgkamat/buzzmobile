@@ -82,7 +82,7 @@ void fillSteeringPositions(const double set_angle, double &left, double &right) 
 }
 
 void fillWheelSpeeds(const double steering_angle, const double speed, double &left, double &right) {
-    if(steering_angle == 0.0) {
+    if (steering_angle == 0.0) {
         left = speed;
         right = speed;
     } else {
@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
 >>>>>>> parent of 6094942... joint states is being subscribed to by sim_car_interface and published by gazebo
 
     ros::Rate rate{30};
-    while(ros::ok()) {
+    while (ros::ok()) {
         ros::spinOnce();
 
         double left_speed, right_speed;
