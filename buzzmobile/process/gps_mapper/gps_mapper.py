@@ -129,6 +129,8 @@ def median_filter(fix):
     if len(g['fixes']) % 2 and len(g['fixes']) > 0:
         return sorted_points[index]
     elif len(g['fixes']) > 1:
+        rospy.loginfo("sorted point: ")
+        rospy.loginfo(sorted_points)
         return ((sorted_points[index][0] + sorted_points[index + 1][0]) * 0.5,
                 (sorted_points[index][1] + sorted_points[index + 1][1]) * 0.5)
     elif len(g['fixes'] == 1):

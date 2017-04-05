@@ -1,4 +1,4 @@
 <launch>
     <node pkg="buzzmobile" name="bearing" type="bearing.py"/>
-    <node pkg="buzzmobile" name="gps_mapper" type="gps_mapper.py"/>
+    <node pkg="buzzmobile" name="gps_mapper" type="gps_mapper.py" output="screen"/>
 </launch>
