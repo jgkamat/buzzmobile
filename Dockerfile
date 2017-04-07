@@ -1,5 +1,5 @@
 # You can change this to any version of ubuntu with little consequence
-FROM ubuntu:14.04
+FROM ros:indigo
 MAINTAINER George Burdell contactgtagency@gmail.com
 
 # Setup apt to be happy with no console input

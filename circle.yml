@@ -2,6 +2,7 @@ machine:
   services:
     - docker
 
+
 checkout:
   post:
       # Make sure that submodules are really, truly up to date
@@ -14,9 +15,6 @@ dependencies:
     - ./DoCIF/commands/buildbaseimage.sh
       # Actually the test step
     - ./DoCIF/commands/runtests.sh
-  cache_directories:
-      # This shouldn't actually cache anything because config.docif says not to
-    - ~/.ccache # See $CACHE_DIRECTORIES in config.docif
 
 # The test phase dosen't actually run tests. We need the caching from the deploy step.
 test:

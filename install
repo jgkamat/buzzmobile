@@ -8,7 +8,7 @@
 # Takes the same arguments as apt-get
 safe-apt-get() {
     i=0
-    
+
     # Wait while the dpkg lock is set
     while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do
         case $(($i % 4)) in
@@ -17,10 +17,10 @@ safe-apt-get() {
             2 ) j="|" ;;
             3 ) j="/" ;;
         esac
-        echo -en "\r[$j] Waiting for other software managers to finish..." 
+        echo -en "\r[$j] Waiting for other software managers to finish..."
         sleep 0.5
         ((i=i+1))
-    done 
+    done
 
     sudo apt-get "$@"
 }
@@ -30,17 +30,17 @@ set -e
 
 # need this to be able to install ds4drv, and this should be done outside the
 # virtualenvironment
-safe-apt-get -y install python-dev
+safe-apt-get -y install python-dev python-pip
 
 # install virtualenv for python2 and create a virtual environment
-safe-apt-get -y install python-virtualenv
+sudo pip install virtualenv
 python -m virtualenv .
 
 # activate the virtualenv we just created
 source bin/activate
 
 # remove a name conflict with catkin_make later
-rm local/buzzmobile
+rm -f local/buzzmobile
 
 # default pip version in a venv is 1.5.4, we want to upgrade to a newer version
 # that supports anylinux wheels, specifically this is for OpenCV and
@@ -71,14 +71,14 @@ safe-apt-get install -y psmisc
 safe-apt-get install -y build-essential cmake libqt4-dev libxml2-dev libxslt1-dev python-dev qtmobility-dev python-pip python-qt4
 
 # pyqt only installs at a system level, which means we need to symlink
-ln -s /usr/lib/python2.7/dist-packages/PyQt4/ ./lib/python2.7/site-packages/
-ln -s /usr/lib/python2.7/dist-packages/sip.so ./lib/python2.7/site-packages/
+ln -sf /usr/lib/python2.7/dist-packages/PyQt4/ ./lib/python2.7/site-packages/
+ln -sf /usr/lib/python2.7/dist-packages/sip.so ./lib/python2.7/site-packages/
 
 # ---------
 # Everything above this point has been installing various python dependencies
 # for things we do. Stuff below this is the ros build and install.
 
-sudo rosdep init # This can only be run once. Possible enhancement, check this
+sudo rosdep init || true # This can only be run once. Possible enhancement, check this
 rosdep update
 
 # Build our project and install rosdeps
