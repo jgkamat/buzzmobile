@@ -39,7 +39,7 @@ constexpr double chassis_length = 1.8;
 constexpr double chassis_width = 1.57;
 constexpr double inv_chassis_length = 1.0 / chassis_length;
 constexpr double chassis_width_2 = chassis_width / 2.0;
-constexpr double max_torque = 0.25; //lololol
+constexpr double max_torque = 2.5; //lololol
 
 constexpr double wheel_circumference = 2.0 * M_PI * 0.3302;
 
