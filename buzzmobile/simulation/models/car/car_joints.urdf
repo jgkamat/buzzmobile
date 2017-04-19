@@ -5,9 +5,9 @@
     <link name="chassis">
         <inertial>
             <origin xyz="0 0 0"/>
-            <!-- mass value="136.0"/ -->
+            <mass value="136.0">
             <mass value="5.0"/>
-            <inertia ixx="0.10595165" ixy="-0.002487144" ixz="0.011981253" iyy="0.126271962" iyz="0.011832006" izz="0.033185337"/>
+            <inertia ixx="39179.495" ixy="-257.203201" ixz="3771.5865371" iyy="95397.6332" iyz="-20.60398" izz="94045.9387"/>
         </inertial>
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -28,18 +28,16 @@
 
     <link name="back_axle">
         <inertial> <!--Null inertia-->
-            <mass value="0.001"/>
-            <!-- mass value="3.311"/ -->
-            <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+            <mass value="3.311"/>
+            <inertia ixx="0.225889" ixy="0" ixz="0" iyy="1041.8041" iyz="0" izz="1041.8041"/>
         </inertial>
     </link>
 
     <link name="wheel_back_left">
         <inertial>
             <origin rpy="0 0 0" xyz="0 0 0" />
-            <!-- mass value="2" / -->
-            <mass value="0.1" />
-            <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
+            <mass value="2"/>
+            <inertia  ixx="0.132" ixy="0.0"  ixz="0.0"  iyy="0.132"  iyz="0.0"  izz="0.263" />
         </inertial>
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -63,9 +61,8 @@
     <link name="wheel_back_right">
         <inertial>
             <origin rpy="0 0 0" xyz="0 0 0" />
-            <!-- mass value="2" / -->
-            <mass value="0.1" />
-            <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
+            <mass value="2"/>
+            <inertia  ixx="0.132" ixy="0.0"  ixz="0.0"  iyy="0.132"  iyz="0.0"  izz="0.263" />
         </inertial>
         <visual>
             <origin rpy="0 0 3.14" xyz="0 -0.645 0"/>
@@ -88,8 +85,7 @@
 
     <link name="steering_front_left">
         <inertial> <!--Null inertia-->
-            <!-- mass value="2"/ -->
-            <mass value="0.001"/>
+            <mass value="0.1">
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
@@ -97,9 +93,8 @@
     <link name="wheel_front_left">
         <inertial>
             <origin xyz="0 0 0" />
-            <mass value="2" />
-            <!-- mass value="0.1" / -->
-            <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
+            <mass value="2"/>
+            <inertia  ixx="0.132" ixy="0.0"  ixz="0.0"  iyy="0.132"  iyz="0.0"  izz="0.263" />
         </inertial>
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -121,8 +116,7 @@
 
     <link name="steering_front_right">
         <inertial> <!--Null inertia-->
-            <!-- mass value="0.1"/ -->
-            <mass value="0.001"/>
+            <mass value="0.1"/>
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
@@ -130,9 +124,8 @@
     <link name="wheel_front_right">
         <inertial>
             <origin xyz="0 0 0" />
-            <!-- mass value="2" / -->
-            <mass value="0.1" />
-            <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
+            <mass value="2"/>
+            <inertia  ixx="0.132" ixy="0.0"  ixz="0.0"  iyy="0.132"  iyz="0.0"  izz="0.263" />
         </inertial>
         <visual>
             <origin rpy="0 0 3.14" xyz="0 0 0"/>
@@ -365,7 +358,7 @@
     <joint name="lidar_joint" type="fixed">
         <parent link="chassis"/>
         <child link="laser"/>
-        <origin xyz="0.255 0 0.110" rpy="0 0 0"/>
+        <origin xyz="0.255 0 5" rpy="0 0 0"/>
     </joint>
 
     <joint name="gps" type="fixed">
