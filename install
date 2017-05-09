@@ -78,10 +78,7 @@ ln -sf /usr/lib/python2.7/dist-packages/sip.so ./lib/python2.7/site-packages/
 # Everything above this point has been installing various python dependencies
 # for things we do. Stuff below this is the ros build and install.
 
-# Only run rosdep init if we don't have ros sources installed already.
-if ! [ -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
-    sudo rosdep init
-fi
+sudo rosdep init || true # This can only be run once. Possible enhancement, check this
 rosdep update
 
 # Build our project and install rosdeps
