@@ -356,7 +356,7 @@
     <joint name="lidar_joint" type="fixed">
         <parent link="chassis"/>
         <child link="laser"/>
-        <origin xyz="2 0 0" rpy="0 0 0"/>
+        <origin xyz="2.182 0 0" rpy="0 0 0"/>
     </joint>
 
     <joint name="gps" type="fixed">
