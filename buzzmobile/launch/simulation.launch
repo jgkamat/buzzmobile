@@ -9,8 +9,7 @@
         <include file="$(find buzzmobile)/launch/includes/mapping.launch"/>
         <include file="$(find buzzmobile)/launch/includes/steering.launch"/>
         <include file="$(find buzzmobile)/launch/includes/lidar.launch"/>
-        <node pkg="buzzmobile" name="car_pose_mux" type="car_pose_mux.py"/>
-        <!--<include file="$(find buzzmobile)/launch/includes/controller.launch"/>-->
+        <include file="$(find buzzmobile)/launch/includes/controller.launch"/>
         <group if="$(arg mission_control)">
             <include file="$(find buzzmobile)/launch/includes/visualization.launch"/>
         </group>

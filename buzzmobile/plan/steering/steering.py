@@ -33,7 +33,7 @@ TENTACLE_PUB = rospy.Publisher('tentacle_frame', Image, queue_size=1)
 PIXELS_PER_M = rospy.get_param('pixels_per_m')
 HEIGHT = rospy.get_param('image_height')
 WIDTH = rospy.get_param('image_width')
-MAX_ANGLE = rospy.get_param('max_steering_angle')
+MAX_ANGLE = rospy.get_param('max_steering_angle', 1.0)
 TRAVEL_DISTANCE = rospy.get_param('travel_distance')
 NUM_POINTS = rospy.get_param('num_points_in_tentacle')
 WHEEL_BASE = rospy.get_param('wheel_base')
@@ -41,7 +41,7 @@ ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
 BRAKING_DISTANCE = rospy.get_param('braking_distance')
 THRESHHOLD = rospy.get_param('braking_score_threshhold')
 BUZZMOBILE_WIDTH = rospy.get_param('buzzmobile_width')
-MAX_SPEED = rospy.get_param('max_speed', 1.0) #TODO measure car max speed
+MAX_SPEED = rospy.get_param('max_speed') #TODO measure car max speed
 
 IMMEDIATE_FUTURE_MASK = np.zeros((HEIGHT, WIDTH), np.uint8)
 cv2.circle(IMMEDIATE_FUTURE_MASK, (WIDTH//2, HEIGHT),
