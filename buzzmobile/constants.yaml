@@ -44,7 +44,9 @@ wheel_separation: 1.3716 # distance between left and right wheels in meters
 max_steering_angle: 0.262 # radians (=15 degrees)
 
 # Max speed of buzzmobile in m/s
-max_speed: 1 #TODO: measure the max speed.
+# whenever this number is updated, the number in 
+# buzzmobile/plan/steering/steering.py also needs to be updated
+max_speed: 0.2 #TODO: measure the max speed.
 
 # Resolution of potential paths, that is to say, the higher this number, the
 # more tentacles/linear paths will be judged
