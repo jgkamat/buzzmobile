@@ -41,7 +41,7 @@ ANGLE_MULTIPLIER = rospy.get_param('angle_multiplier')
 BRAKING_DISTANCE = rospy.get_param('braking_distance')
 THRESHHOLD = rospy.get_param('braking_score_threshhold')
 BUZZMOBILE_WIDTH = rospy.get_param('buzzmobile_width')
-MAX_SPEED = rospy.get_param('max_speed') #TODO measure car max speed
+MAX_SPEED = rospy.get_param('max_speed')  
 
 IMMEDIATE_FUTURE_MASK = np.zeros((HEIGHT, WIDTH), np.uint8)
 cv2.circle(IMMEDIATE_FUTURE_MASK, (WIDTH//2, HEIGHT),
