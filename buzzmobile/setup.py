@@ -25,6 +25,6 @@ setup(
         'ds4drv', # requires apt-get install python-dev
         'empy==3.3.2', # required to make catkin_make work
         'netifaces==0.10.5',  # required for testing
-        'pyrostest>0.1.2',  # required for testing
+        'pyrostest>=0.1.2',  # required for testing
         ],
 )
