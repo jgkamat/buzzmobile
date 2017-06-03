@@ -48,6 +48,9 @@ rm local/buzzmobile
 # install them here through their .whl files
 pip install --upgrade pip
 
+# Fix an insecure platform warning
+pip install urllib3[secure]
+
 # before we install those though, we need to install buzzmobile, as it installs
 # some ROS dependencies, as well as numpy, needed for tf and opencv
 pip install -e buzzmobile
