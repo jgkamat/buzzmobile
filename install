@@ -49,7 +49,7 @@ rm local/buzzmobile
 pip install --upgrade pip
 
 # Fix an insecure platform warning
-pip install urllib3[secure]
+pip install pyOpenSSL cryptography idna certifi
 
 # before we install those though, we need to install buzzmobile, as it installs
 # some ROS dependencies, as well as numpy, needed for tf and opencv
