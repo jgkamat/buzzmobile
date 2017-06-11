@@ -11,7 +11,7 @@ class TestGazeboConnection(RosTest):
         with self.check_topic('/clock', Clock) as ct:
             assert(ct.message)
             print(ct.message)
-            time.sleep(30)
+        time.sleep(0.01)
         with self.check_topic('/clock', Clock, 20) as ct1:
             print(ct1.message)
             assert(ct1.message)
