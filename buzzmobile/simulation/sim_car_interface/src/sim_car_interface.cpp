@@ -35,13 +35,14 @@ double speed_measured_right = 0.0;
 double steer_set_point = 0.0;
 
 // TODO(sahit): change to rosparams
-constexpr double chassis_length = 0.33246;
-constexpr double chassis_width = 0.28732;
+constexpr double chassis_length = 1.8; 
+constexpr double chassis_width = 1.57;
 constexpr double inv_chassis_length = 1.0 / chassis_length;
 constexpr double chassis_width_2 = chassis_width / 2.0;
-constexpr double max_torque = 0.1;
+//TODO(sahit): this can also be calculated/measured when we have the car
+constexpr double max_torque = 2.5; 
 
-constexpr double wheel_circumference = 2.0 * M_PI * 0.036;
+constexpr double wheel_circumference = 2.0 * M_PI * 0.3302;
 
 void carPoseCallback(const buzzmobile::CarPose::ConstPtr &msg) {
     speed_set_point = -msg->velocity;
@@ -82,7 +83,7 @@ void fillSteeringPositions(const double set_angle, double &left, double &right) 
 }
 
 void fillWheelSpeeds(const double steering_angle, const double speed, double &left, double &right) {
-    if(steering_angle == 0.0) {
+    if (steering_angle == 0.0) {
         left = speed;
         right = speed;
     } else {
@@ -109,7 +110,7 @@ int main(int argc, char **argv) {
     auto stateSub = handle.subscribe("/joint_states", 1, jointStateCallback);
 
     ros::Rate rate{30};
-    while(ros::ok()) {
+    while (ros::ok()) {
         ros::spinOnce();
 
         double left_speed, right_speed;
