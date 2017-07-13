@@ -1,6 +1,6 @@
-# buzzmobile [![Build Status](https://circleci.com/gh/gtagency/buzzmobile/tree/master.svg?style=svg)](https://circleci.com/gh/gtagency/buzzmobile/tree/master)
+# buzzmobile ![bzm](/buzzmobile_small.png?raw=true) [![Build Status](https://circleci.com/gh/gtagency/buzzmobile/tree/master.svg?style=svg)](https://circleci.com/gh/gtagency/buzzmobile/tree/master)
 
-![bzm](/buzzmobile_small.png?raw=true)
+
 
 An autonomous parade vehicle, modeled after Georgia Tech's Rambling Wreck
 
