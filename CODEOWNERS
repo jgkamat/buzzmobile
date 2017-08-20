@@ -1,0 +1,21 @@
+# Code Ownership for buzzmobile.
+# Order matters. The last match is used, so more specific owners should be 
+# last.
+
+# Default owners/reviewers for anything.
+* @irapha @joshuamorton
+
+# Language specific reviewers:
+*.py @iraphael @joshuamorton
+*.cpp @chsahit
+
+# Folder and package level ownership.
+ci_scripts/* @irapha @joshuamorton
+
+# Buzzmobile subpackage overrides.
+buzzmobile/simulation/* @chsahit
+buzzmobile/tests/* @joshuamorton
+
+# File specific ownership.
+install @joshuamorton @coletaylor788
+buzzmobile/setup.py @joshuamorton
