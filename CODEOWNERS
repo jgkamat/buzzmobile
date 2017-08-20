@@ -3,7 +3,7 @@
 # last.
 
 # Default owners/reviewers for anything.
-* @irapha @joshuamorton
+* @irapha @joshuamorton @chsahit
 
 # Language specific reviewers:
 *.py @irapha @joshuamorton
