@@ -6,7 +6,7 @@
 * @irapha @joshuamorton
 
 # Language specific reviewers:
-*.py @iraphael @joshuamorton
+*.py @irapha @joshuamorton
 *.cpp @chsahit
 
 # Folder and package level ownership.
