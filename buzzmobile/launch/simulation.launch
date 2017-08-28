@@ -24,7 +24,7 @@
         <node pkg="gazebo_ros" name="gazebo_gui" type="gzclient"/>
     </group>
 
-    <!-- Spawn car -->
+    <!-- Spawn Car -->
     <!-- node pkg="buzzmobile" name="sim_spawn_car" type="sim_spawn_car.sh"/ -->
     <include file="$(find buzzmobile)/launch/includes/sim_spawn_car.launch"/>
 </launch>

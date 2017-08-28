@@ -5,8 +5,8 @@
     <link name="chassis">
         <inertial>
             <origin xyz="0 0 0"/>
-            <mass value="5.0"/>
-            <inertia ixx="0.10595165" ixy="-0.002487144" ixz="0.011981253" iyy="0.126271962" iyz="0.011832006" izz="0.033185337"/>
+            <mass value="136.0"/>
+            <inertia ixx="39179.495" ixy="-257.203201" ixz="3771.586" iyy="95397.6332" iyz="-20.60398" izz="94045.9387"/>
         </inertial>
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -24,19 +24,18 @@
         <material>Gazebo/Grey</material>
     </gazebo>
 
-
     <link name="back_axle">
         <inertial> <!--Null inertia-->
-            <mass value="0.001"/>
-            <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+            <mass value="3.311"/>
+            <inertia ixx="0.225889" ixy="0" ixz="0" iyy="1041.8041" iyz="0" izz="1041.8041"/>
         </inertial>
     </link>
 
     <link name="wheel_back_left">
         <inertial>
-            <origin rpy="0 0 0" xyz="0 0 0" />
-            <mass value="0.1" />
-            <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <mass value="2"/>
+            <inertia ixx="0.132" ixy="0.0"  ixz="0.0"  iyy="0.132"  iyz="0.0"  izz="0.263"/>
         </inertial>
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -59,12 +58,12 @@
 
     <link name="wheel_back_right">
         <inertial>
-            <origin rpy="0 0 0" xyz="0 0 0" />
-            <mass value="0.1" />
-            <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <mass value="2"/>
+            <inertia  ixx="0.132" ixy="0.0"  ixz="0.0"  iyy="0.132"  iyz="0.0"  izz="0.263"/>
         </inertial>
         <visual>
-            <origin rpy="0 0 3.14" xyz="0 0 0"/>
+            <origin rpy="0 0 3.14" xyz="0 -0.645 0"/>
             <geometry>
                 <mesh filename="package://buzzmobile/simulation/models/car/wheel_mesh.dae"/>
             </geometry>
@@ -84,16 +83,16 @@
 
     <link name="steering_front_left">
         <inertial> <!--Null inertia-->
-            <mass value="0.001"/>
+            <mass value="0.1"/>
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
 
     <link name="wheel_front_left">
         <inertial>
-            <origin xyz="0 0 0" />
-            <mass value="0.1" />
-            <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
+            <origin xyz="0 0 0"/>
+            <mass value="2"/>
+            <inertia ixx="0.132" ixy="0.0"  ixz="0.0"  iyy="0.132"  iyz="0.0"  izz="0.263"/>
         </inertial>
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -115,16 +114,16 @@
 
     <link name="steering_front_right">
         <inertial> <!--Null inertia-->
-            <mass value="0.001"/>
+            <mass value="0.1"/>
             <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
         </inertial>
     </link>
 
     <link name="wheel_front_right">
         <inertial>
-            <origin xyz="0 0 0" />
-            <mass value="0.1" />
-            <inertia  ixx="0.000405599" ixy="0.0"  ixz="0.0"  iyy="0.000405599"  iyz="0.0"  izz="0.000518265" />
+            <origin xyz="0 0 0"/>
+            <mass value="2"/>
+            <inertia  ixx="0.132" ixy="0.0"  ixz="0.0"  iyy="0.132"  iyz="0.0"  izz="0.263"/>
         </inertial>
         <visual>
             <origin rpy="0 0 3.14" xyz="0 0 0"/>
@@ -175,6 +174,21 @@
         </sensor>
     </gazebo>
 
+
+    <link name="gps"/>
+    <gazebo>
+        <plugin name="gazebo_sensor" filename="libhector_gazebo_ros_gps.so">
+            <alwaysOn>1</alwaysOn>
+            <updateRate>10.0</updateRate>
+            <bodyName>base_footprint</bodyName>
+            <topicName>fix</topicName>
+            <velocityTopicName>fix_velocity</velocityTopicName>
+            <drift>0.0 0.0 0.0</drift>
+            <gaussianNoise>0.0 0.0 0.0</gaussianNoise>
+            <velocityDrift>0 0 0</velocityDrift>
+            <velocityGaussianNoise>0.0 0.0 0.0</velocityGaussianNoise>
+        </plugin>
+    </gazebo>
 
     <link name="imu"/>
     <gazebo>
@@ -267,7 +281,7 @@
     <joint name="base_footprint_to_chassis" type="fixed">
         <parent link="base_footprint"/>
         <child link="chassis"/>
-        <origin xyz="0 0 0.036" rpy="0 0 0"/>
+        <origin xyz="0 0 0.3302" rpy="0 0 0"/>
     </joint>
 
     <joint name="chassis_to_back_axle" type="fixed">
@@ -279,20 +293,20 @@
     <joint name="axle_to_left_wheel" type="continuous">
         <parent link="back_axle"/>
         <child link="wheel_back_left"/>
-        <origin xyz="0 0.14439 0" rpy="0 0 0"/>
+        <origin xyz="0 0.645 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
     </joint>
     <joint name="axle_to_right_wheel" type="continuous">
         <parent link="back_axle"/>
         <child link="wheel_back_right"/>
-        <origin xyz="0 -0.14439 0" rpy="0 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
     </joint>
 
     <joint name="chassis_to_left_steering" type="revolute">
         <parent link="chassis"/>
         <child link="steering_front_left"/>
-        <origin xyz="0.33246 0.14366 0" rpy="0 0 0"/>
+        <origin xyz="2.032 0.645 0" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-0.366519" upper="0.366519" effort="100000.0" velocity="1000000.0"/>
     </joint>
@@ -306,7 +320,7 @@
     <joint name="chassis_to_right_steering" type="revolute">
         <parent link="chassis"/>
         <child link="steering_front_right"/>
-        <origin xyz="0.33246 -0.14366 0" rpy="0 0 0"/>
+        <origin xyz="2.032 -0.645 0" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-0.366519" upper="0.366519" effort="1000.0" velocity="1000.0"/>
     </joint>
@@ -342,14 +356,20 @@
     <joint name="lidar_joint" type="fixed">
         <parent link="chassis"/>
         <child link="laser"/>
-        <origin xyz="0.255 0 0.110" rpy="0 0 0"/>
+        <origin xyz="2.182 0 0" rpy="0 0 0"/>
     </joint>
 
+    <joint name="gps" type="fixed">
+        <parent link="chassis"/>
+        <child link="gps"/>
+        <origin xyz="0 0 0.1778" rpy="0 0 0"/>
+    </joint>
     <joint name="imu" type="fixed">
         <parent link="chassis"/>
         <child link="imu"/>
-        <origin xyz="0 0 0.1778" rpy="0 0 0"/>
+        <origin xyz="0 0 0.1" rpy="0 0 0"/>
     </joint>
+
 
     <!--Actuators-->
 

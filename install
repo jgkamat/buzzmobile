@@ -28,9 +28,10 @@ safe-apt-get() {
 # Makes this script exit on first error.
 set -e
 
-# need this to be able to install ds4drv, and this should be done outside the
-# virtualenvironment
-safe-apt-get -y install python-dev python-pip
+# need this to be able to install ds4drv and urllib3[secure], and this should
+# be done outside the  virtualenvironment
+safe-apt-get -y install python-dev libffi-dev libssl-dev libxml2-dev python-pip
+safe-apt-get -y install libxslt1-dev libjpeg8-dev zlib1g-dev
 
 # install virtualenv for python2 and create a virtual environment
 sudo pip install virtualenv
@@ -47,6 +48,9 @@ rm -f local/buzzmobile
 # tensorflow, which cannot be installed via a setup.py, and so we manually
 # install them here through their .whl files
 pip install --upgrade pip
+
+# Fix an insecure platform warning
+pip install urllib3[secure]
 
 # before we install those though, we need to install buzzmobile, as it installs
 # some ROS dependencies, as well as numpy, needed for tf and opencv
